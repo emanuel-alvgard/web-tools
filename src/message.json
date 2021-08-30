@@ -1,0 +1,76 @@
+ // MESSAGE 1 (from client)
+ 
+ {
+    "response": [],
+
+    "request": 
+    [
+        {
+            "action": "authenticate", 
+            "key": "lkjf9032jsdh823"
+        },
+        {
+            "action": "get", 
+            "class": "Human", 
+            "id": 0, 
+            "name": null,
+            "age": null, 
+            "city": null
+        },
+        {
+            "action": "get", 
+            "class": "Human", 
+            "id": 1, 
+            "name": null, 
+            "city": null
+        },
+        {
+            "action": "createHtmlDiv", 
+            "div_text": "Hello World!"
+        },
+        {
+            "action": "someVoidFunction"
+        }
+    ]
+}
+
+
+
+// MESSAGE 2 (from server)
+
+{
+    "response": 
+    [
+        {
+            "action": "authenticate",
+            "key": "lkjf9032jsdh823", 
+            "return": "SUCCESS"
+        },
+        {   
+            "action": "get",
+            "class": "Human",
+            "id": 0,
+            "name": "Peter",
+            "age": 42, 
+            "city": "Sävsjö"
+        },
+        {
+            "action": "get",
+            "class": "Human",
+            "id": 1,
+            "name": "Olof", 
+            "city": "Nässjö"
+        },
+        {
+            "action": "createHtmlDiv",
+            "div_text": "Hello World!",
+            "return": "<div>Hello World!</div>"
+        },
+        {
+            "action": "someVoidFunction",
+            "return": "SUCCESS"
+        }
+    ],
+
+    "request": []
+}
