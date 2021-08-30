@@ -13,14 +13,36 @@ let elements = [
 let html = "";
 
 
+function create() {} // inits View and returns root
+
 function add(string, attributes, content, ) {
     let tag = []
     tag.push();
 }
 
+function remove() {}
+
+function recursive() {
+    
+    return recursive();
+}
+
 function build() {
 
-    for (let i = 0; i < parent.length; i ++) {
+    for (let i = 0; i < elements.length; i ++) {
+        for (let j = 0; j < parent.length; j ++) {
+            if (built[j] === 1) { continue; }
+            if (parent[j] != i) { continue; }
 
+        }
     }
+}
+
+
+export {
+    create,
+    add,
+    remove,
+    build,
+    html
 }
