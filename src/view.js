@@ -1,48 +1,69 @@
-// SOA
-let built = [0, 0, 0];
-let parent = [0, 0, 1];
+let attributes = {
+    id: ""
+}
 
-// AOS
+let index = 0;
+
 let elements = [
-    ["div", "id=0", ""], // this is the pre existing root element
-    ["div", "id=1", "Hello!"],
-    ["div", "id=2", "World!"],
-    ["div", "id=3", "World!"],
+    ["<div", new attributes, ">", "</div>"] // this is the pre existing root element (move into create function)
 ]
 
-let html = "";
+
+function create() {
+    // add root element to elements
+    return elements[0];
+} // inits View and returns root
+
+function current_index() { index += 1; return index - 1; }
+
+// TAGS
+function eDiv(content) {
+    elements.push(["<div", new attributes, ">", content, "</div>"]);
+    return current_index();
+}
+function eButton() {
+    elements.push(['<button type="button"', new attributes, ">", content, "</button>"]);
+    return current_index();
+}
+function eLink() {} // <a>
 
 
-function create() {} // inits View and returns root
-
-function add(string, attributes, content, ) {
-    let tag = []
-    tag.push();
+// ATTRIBUTES
+function aId(index, value) {
+    if (typeof value !== String) { value = toString(value); } 
+    elements[index][1]["id"] = "id=" + value;
+    return;
 }
 
-function remove() {}
+function aClass() {}
 
-function recursive() {
-    
-    return recursive();
-}
 
 function build() {
+    let html = "";
 
-    for (let i = 0; i < elements.length; i ++) {
-        for (let j = 0; j < parent.length; j ++) {
-            if (built[j] === 1) { continue; }
-            if (parent[j] != i) { continue; }
-
-        }
-    }
+    return html;
 }
+
+
+
 
 
 export {
+    
+    // HTML
     create,
-    add,
-    remove,
     build,
-    html
+    html,
+    
+    // ELEMENTS
+    eDiv,
+    eButton,
+    eLink,
+    
+    // ATTRIBUTES
+    aId,
+    aClass,
+    
+    // COMPONENTS
 }
+

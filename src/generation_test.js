@@ -2,7 +2,19 @@ import View from "view.js"
 
 let view = View.create();
 
-let menu = View.add("div", view, "Hello!");
-let home_button = View.add("button", menu, "HOME");
-let about_button = View.add("button", menu, "ABOUT");
-let contact_button = View.add("button", menu, "CONTACT");
+// e = element
+// a = attribute
+// c = component
+
+// HEADER
+let home = View.eButton("HOME");
+View.aId(home, "home-button");
+View.aClass("dynamic");
+
+let about = View.eButton("ABOUT");
+let contact = View.eButton("CONTACT");
+
+
+let result = View.build();
+
+
