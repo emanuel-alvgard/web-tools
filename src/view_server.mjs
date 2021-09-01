@@ -1,14 +1,7 @@
 // INTERNAL DATA
 let index = 0;
-let head_elements = [];
-let body_elements = [];
-
-let attributes =  {
-    id: '',
-    class: '',
-    background_color: ''
-};
-
+let head = [];
+let body = [];
 
 
 // INTERNAL FUNCTIONS
@@ -18,11 +11,26 @@ function current_index() { index += 1; return index - 1; }
 
 // GLOBAL
 function create() {
-    let a = Object.create(attributes);
-    body_elements.push(['<div', a, '>', '', '</div>']);
+    body.push(
+        [
+            '<', 
+            'div', 
+            ' id="', 
+            ' class="', 
+            ' style="',
+            '"',  
+            '>', 
+            '', 
+            '</', 
+            'div', 
+            '>'
+        ]
+    );
     return current_index();
 } 
 
+
+ // @REDO
 function build() {
     let html = '<!DOCTYPE html><html>';
     let head = '<head>';
@@ -31,7 +39,7 @@ function build() {
 
     // HEAD
     let i = 0;
-    let len = head_elements.length;
+    let len = head.length;
     while (i < len) {
         // concatenation here
         element = '';
@@ -40,9 +48,9 @@ function build() {
 
     // BODY
     i = 0;
-    len = body_elements.length;
+    len = body.length;
     while (i < len) {
-        let e = body_elements[i];
+        let e = body[i];
         element += e[0];
 
         let a = Object.values(e[1]);
@@ -66,43 +74,74 @@ function build() {
     return html;
 }
 
-// HEAD ELEMENTS
+// MISC
+function comment(text) {
+
+}
+
+// HEAD body
 function meta() {}
 
 
-// BODY ELEMENTS
-function div(content) {
-    let a = Object.create(attributes);
-    body_elements.push(['<div', a, '>', content, '</div>']);
+// BODY body
+function element(type, content) {
+    body.push(
+        [
+            '<',
+            type, 
+            ' id="', 
+            ' class="', 
+            ' style="',
+            '"', 
+            '>', 
+            content, 
+            '</', 
+            type, 
+            '>'
+        ]
+    );
     return current_index();
 }
-function button(content) {
-    let a = Object.create(attributes);
-    body_elements.push(['<button type="button"', a, '>', content, '</button>']);
-    return current_index();
-}
-function link(content) {}
-
 
 
 // ATTRIBUTES
 function set_id(index, value) {
-    body_elements[index][1].id = 'id="' + value + '"';
+    body[index][2] += value + '"';
     return;
 }
 
 function set_class(index, value) {
-    body_elements[index][1].class = 'class="' + value + '"';
+    body[index][3] += value + '"';
     return;
 }
 
-function set_background_color(index, value) {
-    body_elements[index][1].backgroud_color = 'style="background-color:' + value + '"';
+function set_style(style, index, value) {
+    
+    let space = " ";
+    if (body[index][4] === ' style="') { space = ''; } 
+    body[index][4] += space + style + ':' + value + ';';
+
     return;
 }
+
+
+
+// SCRIPTS
+function script_inline(script) {}
+function script_module(path) {}
+function script_file(path) {}
 
 
 // COMPONENTS
+
+
+
+
+
+
+
+
+
 
 
 
@@ -111,16 +150,22 @@ export default {
     // HTML
     create,
     build,
+
+    // MISC
+    comment,
     
-    // body_ELEMENTS
-    div,
-    button,
-    link,
+    // body
+    element,
     
     // ATTRIBUTES
     set_id,
     set_class,
-    set_background_color
+    set_style,
+
+    // SCRIPTS
+    script_inline,
+    script_module,
+    script_file
 
     // COMPONENTS
 }
