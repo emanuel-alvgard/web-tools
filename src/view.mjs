@@ -5,7 +5,8 @@ let body_elements = [];
 
 let attributes =  {
     id: '',
-    class: ''
+    class: '',
+    background_color: ''
 };
 
 
@@ -95,6 +96,11 @@ function set_class(index, value) {
     return;
 }
 
+function set_background_color(index, value) {
+    body_elements[index][1].backgroud_color = 'style="background-color:' + value + '"';
+    return;
+}
+
 
 // COMPONENTS
 
@@ -114,7 +120,8 @@ export default {
     // ATTRIBUTES
     set_id,
     set_class,
-    
+    set_background_color
+
     // COMPONENTS
 }
 
