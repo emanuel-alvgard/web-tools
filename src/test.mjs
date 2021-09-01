@@ -30,16 +30,13 @@ View.script_file("./example.js");
 
 
 // links home to contact with speed-multipliers for (x, y, z, scale, rotation)
-View.link_element_relative(home, contact, 1.0, 1.0, 1.0, 1.0, 1.0);
-
-// links home to contact with absolute values for (x, y, z, scale, rotation)
-View.link_element_absolute(home, contact, 500, 500, 1, 1.0, 0);
+View.link_element(home, contact, 1.0, 1.0, 1.0, 1.0, 1.0);
+View.unlink_element(home);
 
 // links face A of home to face B of contact with a multiplier for (speed)
-View.link_face_relative("A", home, "B", contact, 1.0);
+View.link_face("A", home, "B", contact, 1.0);
+View.unlink_face("A", home);
 
-// links face A of home to face B of contact with absolute values for (distance)
-View.link_face_absolute("A", home, "B", 500);
 
 let result = View.build();
 
