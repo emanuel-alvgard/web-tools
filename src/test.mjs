@@ -18,7 +18,7 @@ View.set_class(home, "menu-button");
 View.set_class(about, "menu-button");
 View.set_class(contact, "menu-button");
 
-// background-color
+// style
 View.set_style("background-color", home, "rgb(255, 255, 255)");
 View.set_style("background-color", about, "rgb(255, 255, 255)");
 View.set_style("background-color", contact, "rgb(255, 255, 255)");
