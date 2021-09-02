@@ -32,6 +32,11 @@ View.script_inline("console.log('this is inlined!')");
 View.script_module("./example.mjs");
 View.script_file("./example.js");
 
+
+/* drafts
+View.set_style_by_class(style, class, value);
+
+*/
 /*
 // links home to contact with speed-multipliers for (x, y, z, scale, rotation)
 View.link_element(home, contact, 1.0, 1.0, 1.0, 1.0, 1.0);
