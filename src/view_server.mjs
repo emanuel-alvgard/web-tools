@@ -1,89 +1,41 @@
 // INTERNAL DATA
-let index = 0;
+let head_index = 0;
+let body_index = 0;
 let head = [];
 let body = [];
 
 
 // INTERNAL FUNCTIONS
-function current_index() { index += 1; return index - 1; }
-
-
-
-// GLOBAL
-function create() {
-    body.push(
-        [
-            '<', 
-            'div', 
-            ' id="', 
-            ' class="', 
-            ' style="',
-            '"',  
-            '>', 
-            '', 
-            '</', 
-            'div', 
-            '>'
-        ]
-    );
-    return current_index();
-} 
-
-
- // @REDO
-function build() {
-    let html = '<!DOCTYPE html><html>';
-    let head = '<head>';
-    let body = '<body>';
-    let element = '';
-
-    // HEAD
-    let i = 0;
-    let len = head.length;
-    while (i < len) {
-        // concatenation here
-        element = '';
-        i += 1;
+function current_index(section) { 
+    if (section === 'head') {
+        head_index += 1; 
+        return head_index - 1;
     }
-
-    // BODY
-    i = 0;
-    len = body.length;
-    while (i < len) {
-        let e = body[i];
-        element += e[0];
-
-        let a = Object.values(e[1]);
-        for (let j = 0; j < a.length; j ++) {
-            if (a[j] !== '') { element += ' ' + a[j]; }
-        }
-        
-        element += e[2];
-        element += e[3];
-        if (i != 0) { element += e[4]; }
-
-        body += element;
-        element = '';
-        i += 1;
-    } 
-
-    head += '</head>';
-    body += '</div></body>';
-    html += head + body + '</html>';
-
-    return html;
+    else if (section === 'body') {
+        body_index += 1; 
+        return body_index - 1;
+    }
 }
+
+
 
 // MISC
-function comment(text) {
-
+function comment(section, text) {
+    if (section === 'head') {
+        head.push(['<!--', text, '-->']);
+        return current_index('head');
+    }
+    else if (section === 'body') {
+        body.push(['<!--', text, '-->']);
+        return current_index('body');
+    }
 }
 
-// HEAD body
+// HEAD
 function meta() {}
 
 
-// BODY body
+// BODY
 function element(type, content) {
     body.push(
         [
@@ -100,7 +52,7 @@ function element(type, content) {
             '>'
         ]
     );
-    return current_index();
+    return current_index('body');
 }
 
 
@@ -136,6 +88,99 @@ function script_file(path) {}
 
 
 
+
+
+
+// GLOBAL
+function create() {
+    body.push(
+        [
+            '<', 
+            'div', 
+            ' id="', 
+            ' class="', 
+            ' style="',
+            '"',  
+            '>', 
+            '', 
+            '</', 
+            'div', 
+            '>'
+        ]
+    );
+    return current_index('body');
+} 
+
+
+
+
+
+
+
+ 
+function build() {
+    
+    let html = '<!DOCTYPE html><html>';
+    let _head = '<head>';
+    let _body = '<body>';
+    let element = '';
+
+    // @NOT
+    // HEAD
+    let i = 0;
+    let len = head.length;
+    while (i < len) {
+        element += head[i][0];
+        element += head[i][1];
+        element += head[i][2];
+        
+        _head += element;
+        element = '';
+        i += 1;
+    }
+
+    // @NOT still needs solution for scripts
+    // BODY
+    i = 0;
+    len = body.length;
+    while (i < len) {
+
+        if (body[i][0] === '<') {
+            
+            let has_attributes = 0;
+            element += body[i][0];
+            element += body[i][1];
+            if (body[i][2] !== ' id="') { element += body[i][2]; has_attributes = 1; }
+            if (body[i][3] !== ' class="') { element += body[i][3]; has_attributes = 1; }
+            if (body[i][4] !== ' style="') { element += body[i][4]; has_attributes = 1; }
+            if (has_attributes === 1) { element += body[i][5]; }
+            element += body[i][6];
+            element += body[i][7];
+            if (i !== 0) {
+                element += body[i][8];
+                element += body[i][9];
+                element += body[i][10]; 
+            }
+        }
+        else {
+
+            element += body[i][0];
+            element += body[i][1];
+            element += body[i][2];
+        }
+
+
+        _body += element;
+        element = '';
+        i += 1;
+    } 
+
+    _head += '</head>';
+    _body += '</div></body>';
+    html += _head + _body + '</html>';
+
+    return html;
+}
 
 
 
