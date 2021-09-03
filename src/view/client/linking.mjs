@@ -34,6 +34,7 @@ data = {
 
 
 function link_element() {}
+
 function link_face(subject_face, subject_index, target_face, target_index, multiplier) {
     
     data[subject_face + '_link'][subject_index] = [target_face, target_index];
@@ -44,7 +45,7 @@ function link_face(subject_face, subject_index, target_face, target_index, multi
 function unlink_element() {}
 function unlink_face() {}
 
-function update_links() {
+function update() {
     // update A,B,C,D according to thier link and multiplier data
 }
 
