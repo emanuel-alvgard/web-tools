@@ -24,7 +24,7 @@ function upper(data) {
     return true;
 }
 
-function string_static(data) {
+function subset(data) {
     
     let i = 0;
     let target_len = data.target.length;
@@ -46,7 +46,6 @@ function string_static(data) {
     return true;
 }
 
-function string_dynamic(data) {}
 
 
 
@@ -103,12 +102,7 @@ let data_1 = {
     target: 'test'
 }
 
-let string_expected = '100100100';
+let subset_expected = '100100100';
 
-test('string_static', string_static, data_1, string_expected);
+test('subset', subset, data_1, subset_expected);
 
-let data_2 = {
-    string: 'testertestertester',
-    pointer: 0,
-    target: '[50](Aa)'
-}
