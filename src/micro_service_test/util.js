@@ -1,5 +1,6 @@
 'use strict';
 
+// CHARACTER
 function digit(data) {
     let c = data.string.charCodeAt(data.pointer);
     if (c < 48) { return false; }
@@ -24,7 +25,8 @@ function upper(data) {
     return true;
 }
 
-function subset(data) {
+// STRING
+function static_subset(data) {
     
     let i = 0;
     let target_len = data.target.length;
@@ -47,7 +49,12 @@ function subset(data) {
 }
 
 
+function dynamic_subset(data) {
+    
+}
 
+
+function iterate_substrings(data) {}
 
 
 
@@ -102,7 +109,19 @@ let data_1 = {
     target: 'test'
 }
 
-let subset_expected = '100100100';
+let static_subset_expected = '100100100';
 
-test('subset', subset, data_1, subset_expected);
+test('static_subset', static_subset, data_1, static_subset_expected);
 
+let data_2 = {
+    string: '',
+    pointer: 0,
+    characters: 'Aa0',
+    max: 50
+}
+
+let data_2 = {
+    string: '',
+    pointer: 0,
+    delimiter: '/'
+}
