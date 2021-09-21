@@ -25,8 +25,14 @@ function upper(data) {
     return true;
 }
 
+function symbol(data, symbol) {
+    
+}
+// symbol(data, '|');
+
+
 // STRING
-function static_subset(data) {
+function static_subset(data, string) {
     
     let i = 0;
     let target_len = data.target.length;
@@ -53,13 +59,14 @@ function dynamic_subset(data) {
     
 }
 
+// example 
 
-function iterate_substrings(data) {}
 
+// dynamic_subset(data, 'Aa0.', 50, '|:,');
 
 
 // TESTING
-function test(test_name, test_func, test_data, expected_result) {
+function test_0(test_name, test_func, test_data, expected_result) {
 
     test_data.pointer = 0;
 
@@ -89,7 +96,7 @@ function test(test_name, test_func, test_data, expected_result) {
 }
 
 
-let data_0 = {
+let data = {
     string: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
     pointer: 0
 }
@@ -99,29 +106,12 @@ let lower_expected = '0000000000000000000000000011111111111111111111111111000000
 let upper_expected = '11111111111111111111111111000000000000000000000000000000000000';
 
 
-test('digit', digit, data_0, digit_expected);
-test('lower', lower, data_0, lower_expected);
-test('upper', upper, data_0, upper_expected);
+test_0('digit', digit, data, digit_expected);
+test_0('lower', lower, data, lower_expected);
+test_0('upper', upper, data, upper_expected);
 
-let data_1 = {
-    string: 'testertestertester',
-    pointer: 0,
-    target: 'test'
-}
 
 let static_subset_expected = '100100100';
 
-test('static_subset', static_subset, data_1, static_subset_expected);
+test_1('static_subset', static_subset, data, static_subset_expected);
 
-let data_2 = {
-    string: '',
-    pointer: 0,
-    characters: 'Aa0',
-    max: 50
-}
-
-let data_2 = {
-    string: '',
-    pointer: 0,
-    delimiter: '/'
-}
