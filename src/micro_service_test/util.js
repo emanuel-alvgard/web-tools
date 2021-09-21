@@ -106,3 +106,9 @@ let data_1 = {
 let string_expected = '100100100';
 
 test('string_static', string_static, data_1, string_expected);
+
+let data_1 = {
+    string: 'testertestertester',
+    pointer: 0,
+    target: '[50](Aa)'
+}
