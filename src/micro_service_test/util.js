@@ -24,7 +24,7 @@ function upper(data) {
     return true;
 }
 
-function string(data) {
+function string_static(data) {
     
     let i = 0;
     let target_len = data.target.length;
@@ -45,6 +45,8 @@ function string(data) {
     }
     return true;
 }
+
+function string_dynamic(data) {}
 
 
 
@@ -103,4 +105,4 @@ let data_1 = {
 
 let string_expected = '100100100';
 
-test('string', string, data_1, string_expected);
+test('string_static', string_static, data_1, string_expected);
