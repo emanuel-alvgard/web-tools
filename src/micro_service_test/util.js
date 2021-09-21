@@ -32,7 +32,7 @@ function symbol(data, symbol) {
 
 
 // STRING
-function static_subset(data, string) {
+function static(data, string) {
     
     let i = 0;
     let target_len = data.target.length;
@@ -55,7 +55,7 @@ function static_subset(data, string) {
 }
 
 
-function dynamic_subset(data) {
+function dynamic(data) {
     
 }
 
