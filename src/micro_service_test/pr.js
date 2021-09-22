@@ -8,7 +8,8 @@ let connection_data = {
 }
 
 let request_data = {
-    string: '',
+    s: '',
+    get string() { return this.s; },
     p: 0,
     get pointer() { return this.p; },
     set pointer(x) { this.p = x; }    
