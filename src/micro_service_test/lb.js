@@ -23,7 +23,6 @@ http_server.listen(port, hostname);
 let auth_key = 'test_key';
 let net = require('net');
 
-
 let index = 0;
 let clients = [];
 let status = [];
