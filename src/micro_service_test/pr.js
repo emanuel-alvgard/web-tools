@@ -2,41 +2,18 @@
 let parsing = require('../parsing.js');
 let net = require('net');
 
-let connection_data = {
-    connected: 0,
-    id: ''
-}
-
-let request_data = {
-    s: '',
-    p: 0,
-
-    get string() { return this.s; },
-    set string(x) { this.s = x; },
-
-    get pointer() { return this.p; },
-    set pointer(x) { this.p = x; }    
-}
-
-let response_data = {
-    string: ''
-}
-
-
-
-
 
 
 // EXTERNAL ACTIONS (called by other)
-function authenticate(con, req) {
+function authenticate(cli, req) {
     
     if (!parsing.static_string(req, 'id')) { return; }
     if (!parsing.symbol(req, ':')) { return; }
     let checkpoint = req.pointer;
     if (!parsing.dynamic_string(req, '0', 10, '|:,')) { return; }
 
-    con.connected = 1;
-    con.id = req.string.substr(checkpoint, req.pointer);
+    cli.connected = 1;
+    cli.id = req.string.substr(checkpoint, req.pointer);
     return;
 }
 
@@ -47,51 +24,104 @@ function disconnect() {}
 
 
 // INTERNAL ACTIONS (called by self)
-function recieve(con, req, res) {
+function recieve(cli, req, res) {
 
     req.pointer = 0;
 
-    if (con.connected === 1) {
+    if (cli.connected === 1) {
 
         let len = req.string.length;
         while (req.pointer < len) {
+            if (!parsing.symbol(req, '|')) { return; }
             if (!parsing.static_string(req, 'action')) { return; }
             if (!parsing.symbol(req, ':')) { return; }
 
+            // ACTIONS
             if (parsing.static_string(req, 'disconnect')) { /* execute disconnect(); */}
         }
         return;
     }
 
+    if (!parsing.symbol(req, '|')) { return; }
     if (!parsing.static_string(req, 'action')) { return; }
     if (!parsing.symbol(req, ':')) { return; }
     if (!parsing.static_string(req, 'authenticate')) { return; }
 
-    authenticate(con, req);
+    authenticate(cli, req);
     return;
 }
 
-function send() {}
 
 
-function connect(cli, con, req, res) {
+function send(cli, data) {
+    if (cli.connected === 1) {
+        cli.socket.write('|id:' + cli.id + data);
+        return;
+    }
+
+    cli.socket.write(data);
+    return;
+
+}
+
+
+function connect(cli, req, res) {
     
-    // client.write('action:authenticate,key:###');
+    send(cli, '|action:authenticate,key:' + con.key);
 
-    cli.on('data', function(data) {
+    cli.socket.on('data', function(data) {
        req.string = data.toString(); 
-       recieve(con, req, res);
+       recieve(cli, req, res);
     });
 }
 
 
 
+function start(address, port) {
+
+    let client = {
+        socket: 0,
+        key: '###',
+        connected: 0,
+        id: ''
+    };
+    
+    // make all 3 into 1 object??
+    let request = {
+        s: '',
+        p: 0,
+    
+        get string() { return this.s; },
+        set string(x) { this.s = x; },
+    
+        get pointer() { return this.p; },
+        set pointer(x) { this.p = x; }    
+    };
+    
+    let response = {
+        string: ''
+    };
 
 
-let options = { port: 3000 };
+    let options = { address: address, port: port };
 
-let client = net.createConnection(options, function() {
-    connect(client, connection_data, request_data, response_data);
-});
+    client.socket = net.createConnection(options, function() {
+        connect(client, request, response);
+    });
+
+    let result = {
+        client: client,
+        request: request,
+        response: response
+    };
+
+    return result;
+}
 
 
+router = start('127.0.0.1', 3000);
+
+send(router.client, '|action:log,data:hello from client!');
+
+
+// SPECIFIC FUNCTIONALITY WITH SENDS.
