@@ -1,3 +1,16 @@
+/* PROTOCOL 
+|action:view,url:/static
+|action:route,url:/static/*{id}[100]
+
+|message:execute,id:02,action:route,data:
+    |action:view,url:/static
+
+    
+|message:authenticate,key:###somekey
+*/
+
+
+
 // page server
 let parsing = require('../parsing.js');
 let net = require('net');
@@ -16,6 +29,7 @@ function authenticate(client) {
     return;
 }
 
+function execute() {}
 
 function disconnect() {}
 
@@ -23,7 +37,7 @@ function disconnect() {}
 
 
 // INTERNAL ACTIONS (called by self)
-function router(cli, req, res) {
+function route(cli, req, res) {
 
     req.pointer = 0;
 
@@ -32,11 +46,11 @@ function router(cli, req, res) {
         let len = req.string.length;
         while (req.pointer < len) {
             if (!parsing.symbol(req, '|')) { return; }
-            if (!parsing.static_string(req, 'action')) { return; }
+            if (!parsing.static_string(req, 'message')) { return; }
             if (!parsing.symbol(req, ':')) { return; }
 
             // ACTIONS
-            if (parsing.static_string(req, 'disconnect')) { /* execute disconnect(); */}
+            if (parsing.static_string(req, 'disconnect')) { /* call disconnect(); */}
         }
         return;
     }
@@ -52,25 +66,22 @@ function router(cli, req, res) {
 
 
 
-function message(cli, data) {
-    if (cli.connected === 1) {
-        cli.socket.write('|id:' + cli.id + data);
+function message(client, action, data) {
+
+    if (client.connected === 1) {
+        client.socket.write('|message:'+ action + ',id:' + client.id + data);
         return;
     }
-
-    cli.socket.write(data);
-    return;
-
 }
 
 
-function connect(cli, req, res) {
+function connect(client) {
     
-    message(cli, '|action:authenticate,key:' + con.key);
+    message(client, '|action:authenticate,key:' + con.key);
 
-    cli.socket.on('data', function(data) {
-       req.string = data.toString(); 
-       router(cli, req, res);
+    client.socket.on('data', function(data) {
+       client.string = data.toString(); 
+       route(client);
     });
 }
 
@@ -107,7 +118,8 @@ function start(address, port) {
         set string(value) { this._string = value; },
 
         // ACTION
-        actions = [],
+        _actions = [],
+        _action_functions = [],
 
         get actions() { return this.actions; },
         set actions(value) { this.actions = value; }
@@ -121,6 +133,7 @@ function start(address, port) {
         connect(client, request, response);
     });
 
+
     return client;
 }
 
@@ -128,14 +141,21 @@ function start(address, port) {
 function stop() {}
 
 
-router = start('127.0.0.1', 3000);
+
+
+
+
+
+
+
+
+page_router = Client.start('127.0.0.1', 3000);
 
 function archive() {}
 
-action_add(router, 'archive', archive);
-action_remove(router, 'archive');
+action(page_router, 'archive', archive);
 
-send(router, '|action:log,data:hello from client!');
+message(router, 'execute', '|action:log,data:hello from client!');
 
 
 // SPECIFIC FUNCTIONALITY WITH SENDS.
