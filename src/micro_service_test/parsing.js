@@ -59,15 +59,25 @@ function static_string(data, string) {
     return true;
 }
 
-
-function dynamic_string(data) {
+// route(function, '*', 'action:get,class:*(-0){,|},other:*(-0){,|}');
+// *id(Aa)[10]{/} // *(a)[100]{|:,}
+function dynamic_string(data, filter, length, delimiters) {
     
+    let i = 0;
+    let data_length = data.string.length;
+    while (i < data_length) {
+        if (data.pointer >= data_length) { 
+            data.pointer -= i; 
+            return false; 
+        }
+        if (delimiters.includes(data.string[i])) {
+             break; 
+        }
+        // check character against each filter character
+    }
+    // if all pass check i against
 }
 
-// example 
-
-
-// dynamic_subset(data, 'Aa0.', 50, '|:,');
 
 
 
@@ -75,6 +85,34 @@ function dynamic_string(data) {
 
 
 
+/*{id}(aA)[10]*---*(A)[2]*
+
+/HelloWorld---YO
+
+print(id) // prints HelloWorld
+
+|message:execute
+|id:#12
+|procedure:get
+
+|action:get
+|class:user
+
+|action:set
+|class:user
+
+route(some_action, '#', '')
+
+
+|message:execute
+|id:#13
+|procedure:get
+|view:/home
+
+static_route(some_view, '.', '/static/.{id}(0)[3]./HELLO');
+dynamic_route();
+
+*/
 
 
 
@@ -138,4 +176,3 @@ test(0, 'upper', upper, data, null, upper_expected);
 
 let static_string_expected = '100000000000000000000000000000000000000000000000000000000000';
 test(1, 'static_string', static_string, data, ['ABC'], static_string_expected);
-
