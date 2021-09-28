@@ -95,7 +95,6 @@ print(id) // prints HelloWorld
 |id:#12
 |procedure:get
 
-|action:get
 |class:user
 
 |action:set
@@ -109,8 +108,40 @@ route(some_action, '#', '')
 |procedure:get
 |view:/home
 
-static_route(some_view, '.', '/static/.{id}(0)[3]./HELLO');
-dynamic_route();
+static_route(some_view, '.', '/static/.{id}(0)[3]./HELLO'); // static order
+dynamic_route(some_); // dynamic order
+
+
+|message:execute
+|id:12
+|procedure:user
+
+|type:user
+|id:1
+|name
+|age
+
+
+|message:execute
+|id:1
+|procedure:get
+
+|type:view
+|url:/static/10
+
+
+function user(data) {
+
+    static_route(data, 'homepage.js', '?', '/home');
+    
+    dynamic_route(data, 'user.js', '?', '|class:user|id:?(0)[3]?|name:?(Aa)[20]?|);
+
+}
+
+function view(data) {
+
+}
+
 
 */
 

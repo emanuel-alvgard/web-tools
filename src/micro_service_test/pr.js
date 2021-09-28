@@ -144,18 +144,20 @@ function stop() {}
 
 
 
+/*
 
+let test = Client.allocate();
 
+Client.procedure(test, 'get', function(data) { _get(data); )});
+Client.procedure(test, 'set', function(data) { _set(data); )});
 
+Client.start(test, '127.0.0.1', 3000, #429asdVDds#);
+Client.log(test);
 
+Client.message(test, 'disconnect');
 
-page_router = Client.start('127.0.0.1', 3000);
+Client.stop(test);
 
-function archive() {}
+Client.free();
+*/
 
-action(page_router, 'archive', archive);
-
-message(router, 'execute', '|action:log,data:hello from client!');
-
-
-// SPECIFIC FUNCTIONALITY WITH SENDS.
