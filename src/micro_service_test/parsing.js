@@ -116,7 +116,7 @@ dynamic_route(some_); // dynamic order
 |id:12
 |procedure:user
 
-|type:user
+|action:get
 |id:1
 |name
 |age
@@ -124,17 +124,17 @@ dynamic_route(some_); // dynamic order
 
 |message:execute
 |id:1
-|procedure:get
+|procedure:view
 
-|type:view
+|action:get
 |url:/static/10
 
 
 function user(data) {
 
-    static_route(data, 'homepage.js', '?', '/home');
+    static_route(data, 'homepage.js', 'get', '/home'); // static order
     
-    dynamic_route(data, 'user.js', '?', '|class:user|id:?(0)[3]?|name:?(Aa)[20]?|);
+    dynamic_route(data, 'user.js', 'get', '|id:.(0)[3].|name:?(Aa)[20]?|); // dynamic order
 
 }
 
