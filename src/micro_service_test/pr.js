@@ -1,12 +1,19 @@
 /* PROTOCOL 
-|action:view,url:/static
-|action:route,url:/static/*{id}[100]
 
-|message:execute,id:02,action:route,data:
-    |action:view,url:/static
+|message:execute
+|router:user
+|action:get
 
-    
-|message:authenticate,key:###somekey
+|id:0
+|name:Manne
+
+
+|message:execute
+|router:view
+|action:get
+
+|url:/static/test
+
 */
 
 
@@ -148,8 +155,8 @@ function stop() {}
 
 let test = Client.allocate();
 
-Client.procedure(test, 'get', function(data) { _get(data); )});
-Client.procedure(test, 'set', function(data) { _set(data); )});
+Client.router(test, 'get', function(data) { _get(data); )});
+Client.router(test, 'set', function(data) { _set(data); )});
 
 Client.start(test, '127.0.0.1', 3000, #429asdVDds#);
 Client.log(test);
