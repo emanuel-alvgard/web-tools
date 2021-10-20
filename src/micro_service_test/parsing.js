@@ -38,10 +38,9 @@ function character_filter(data, filter) {
     let filter_len = filter.length;
     let c = data.string[data.pointer];
     while (i < filter_len) {
-        if (filter[i] === 'A') { if (upper(data)) { data.pointer += 1; return true; }}
-        if (filter[i] === 'a') { if (lower(data)) { data.pointer += 1; return true; }}
-        if (filter[i] === '0') { if (digit(data)) { data.pointer += 1; return true; }}
-        if (filter.includes(c)) { data.pointer += 1; return true; }
+        if (filter[i] === 'A') { if (upper(data)) { return true; }}
+        if (filter[i] === 'a') { if (lower(data)) { return true; }}
+        if (filter[i] === '0') { if (digit(data)) { return true; }}
         i += 1;
     }
     return false;
@@ -106,9 +105,12 @@ function dynamic_string(data, filter, length, delimiters) {
 
 
 // TESTING
+let data;
+
 function array_equals(array_1, array_2) {
     
-    for (let i = 0; i < array_1; i += 1) {
+    let len = array_1.length;
+    for (let i = 0; i < len; i += 1) {
         if (array_1[i] !== array_2[i]) { return false; }
     }
     return true;
@@ -154,7 +156,9 @@ function test(test_type, test_name, test_func, test_data, p, expected_result) {
 }
 
 
-let data = {
+
+// CHARACTER
+data = {
     string: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
     pointer: 0
 }
@@ -178,5 +182,16 @@ test(0, 'lower', lower, data, null, lower_expected);
 test(0, 'upper', upper, data, null, upper_expected);
 test(1, 'character_filter', character_filter, data, ['A0'], character_filter_expected);
 
-// let static_string_expected = '100000000000000000000000000000000000000000000000000000000000';
-// test(1, 'static_string', static_string, data, ['ABC'], static_string_expected);
+
+
+// STRING
+data = {
+    string: 'ABCABCoABC',
+    pointer: 0
+}
+
+let static_string_expected = ['A', 'A', '!o', 'A'];
+let dynamoc_string_expected = ['A'];
+
+test(1, 'static_string', static_string, data, ['ABC'], static_string_expected);
+test(3, 'dynamic_string', dynamic_string, data, ['A', , 'o']) // @ERROR
