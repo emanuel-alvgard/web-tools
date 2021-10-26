@@ -1,13 +1,34 @@
 'use strict';
 
 // CHARACTER
-function digit(data) {
-    let c = data.string.charCodeAt(data.pointer);
-    if (c < 48) { return false; }
-    if (c > 57) { return false; }
-    data.pointer += 1;
+function digit(string, pointer) {
+    let c = string.charCodeAt(pointer);
+    if ((c|0) < 48) { return false; }
+    if ((c|0) > 57) { return false; }
+    pointer = (pointer + 1)|0;
     return true;
 }
+
+let s = { data: "0" };
+let p = { data: 0|0 };
+let i = 0|0;
+while ((i|0) < 10000000) {
+    parse_string.data += "0";
+    i = (i+1)|0;
+}
+let s1 = performance.now();
+i = 0|0;
+while ((i|0) < 10000000) {
+    digit(s, p);
+    i = (i+1)|0;
+}
+let e1 = performance.now();
+console.log(parse_pointer.data);
+console.log(e1 - s1);
+
+
+
+
 
 function lower(data) {
     let c = data.string.charCodeAt(data.pointer);
@@ -16,6 +37,31 @@ function lower(data) {
     data.pointer += 1;
     return true;
 }
+
+let parse_data = { string: "l", pointer: 0 };
+i = 0;
+while (i < 10000000) {
+    parse_data.string += "l";
+    i += 1;
+}
+
+let s2 = performance.now();
+i = 0;
+while (i < 10000000) {
+    lower(parse_data);
+    i += 1;
+}
+let e2 = performance.now();
+console.log(parse_data.pointer);
+console.log(e2 - s2);
+
+
+
+
+
+
+
+
 
 function upper(data) {
     let c = data.string.charCodeAt(data.pointer);
@@ -177,11 +223,12 @@ let lower_expected = [].concat(upper_false, lower_true, digit_false);
 let upper_expected = [].concat(upper_true, lower_false, digit_false);
 let character_filter_expected = [].concat(upper_true, lower_false, digit_true);
 
+/*
 test(0, 'digit', digit, data, null, digit_expected);
 test(0, 'lower', lower, data, null, lower_expected);
 test(0, 'upper', upper, data, null, upper_expected);
 test(1, 'character_filter', character_filter, data, ['A0'], character_filter_expected);
-
+*/
 
 
 // STRING
@@ -193,5 +240,7 @@ data = {
 let static_string_expected = ['A', 'A', '!o', 'A'];
 let dynamoc_string_expected = ['A'];
 
+/*
 test(1, 'static_string', static_string, data, ['ABC'], static_string_expected);
 test(3, 'dynamic_string', dynamic_string, data, ['A', , 'o']) // @ERROR
+*/
