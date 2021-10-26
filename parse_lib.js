@@ -2,39 +2,40 @@
 
 // CHARACTER
 function digit(string, pointer) {
-    let c = string.charCodeAt(pointer);
-    if ((c|0) < 48) { return false; }
-    if ((c|0) > 57) { return false; }
-    pointer = (pointer + 1)|0;
+    let c = string[0].charCodeAt(pointer[0]);
+    if (c < 48) { return false; }
+    if (c > 57) { return false; }
+    pointer[0] += 1;
     return true;
 }
 
-let s = { data: "0" };
-let p = { data: 0|0 };
+let string = ["0"];
+let pointer = [0];
+
 let i = 0|0;
 while ((i|0) < 10000000) {
-    parse_string.data += "0";
+    string[0] += "0";
     i = (i+1)|0;
 }
 let s1 = performance.now();
 i = 0|0;
 while ((i|0) < 10000000) {
-    digit(s, p);
+    digit(string, pointer);
     i = (i+1)|0;
 }
 let e1 = performance.now();
-console.log(parse_pointer.data);
+console.log(pointer[0]);
 console.log(e1 - s1);
 
 
 
 
 
-function lower(data) {
-    let c = data.string.charCodeAt(data.pointer);
+function lower(parse_data) {
+    let c = parse_data.string.charCodeAt(parse_data.pointer);
     if (c < 97) { return false; }
     if (c > 122) { return false; }
-    data.pointer += 1;
+    parse_data.pointer += 1;
     return true;
 }
 
@@ -63,18 +64,18 @@ console.log(e2 - s2);
 
 
 
-function upper(data) {
-    let c = data.string.charCodeAt(data.pointer);
+function upper(parse_data) {
+    let c = parse_data.string.charCodeAt(parse_data.pointer);
     if (c < 65) { return false; }
     if (c > 90) { return false; }
-    data.pointer += 1;
+    parse_data.pointer += 1;
     return true;
 }
 
-function symbol(data, symbol) {
-    let c = data.string.charCodeAt(data.pointer);
+function symbol(parse_data, symbol) {
+    let c = parse_data.string.charCodeAt(parse_data.pointer);
     if ( c !== symbol) { return false; }
-    data.pointer += 1;
+    parse_data.pointer += 1;
     return true;
 }
 
