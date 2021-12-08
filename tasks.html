@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html style="overflow-x:hidden;">
+
+    <head>
+
+        <!-- META -->
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        
+        <!-- CSS -->
+        <style>
+
+            /* UNIVERSAL */
+            #body {
+                margin: 0px;
+                padding: 0px;
+            }
+            #root {
+                display: block;
+                position: absolute;
+                z-index: 0;
+                margin: 0px;
+                padding: 0px;
+                width: 100%;
+                height: 100%;
+            }
+            .element {
+                display: block;
+                position: absolute;
+                margin: 0px;
+                padding: 0px;
+                border-style: none;
+                border-collapse: collapse;
+                border-width: 1px;
+            }
+
+            /* TOP */
+            #top-1 {
+                width: 100%;
+                height: 100px;
+                z-index: 3;
+                background-color: rgb(240, 240, 240);
+                box-shadow: 0px 1px 3px rgb(160, 160, 160);
+            }
+
+            /* SIDE */
+            #side-1 {
+                width: 100px;
+                height: 100%;
+                z-index: 2;
+                background-color: rgb(240, 240, 240);
+                box-shadow: 1px 0px 3px rgb(160, 160, 160);
+            }
+
+            /* MID */
+            #mid-1 {
+                width: 100%;
+                height: 100%;
+                z-index: 1;
+                transform: translate(0px, 100px);
+                background-color: rgb(180, 180, 180);
+            }
+
+
+
+            /* LIST 1 */
+            .list-1 {
+                width: 300px;
+                height: 100%;
+                z-index: 2;
+                border-radius: 3px;
+                background-color: rgb(200, 200, 200);
+                box-shadow: 0px 1px 3px rgb(160, 160, 160);
+            }
+            .list-1-top {
+                width: 300px;
+                height: 75px;
+                z-index: 3;
+                border-radius: 3px;
+                background-color: rgb(220, 220, 220);
+                box-shadow: 0px 1px 3px rgb(180, 180, 180);
+            }
+
+            /* LIST 1-1 */
+            #list-1-1 { transform: translate(110px, 110px); }
+            #list-1-1-top { transform: translate(110px, 110px); }
+            
+            /* LIST 1-2 */
+            #list-1-2 { transform: translate(420px, 110px); }
+            #list-1-2-top { transform: translate(420px, 110px); }
+
+            /* LIST 1-3 */
+            #list-1-3 { transform: translate(730px, 110px); }
+            #list-1-3-top { transform: translate(730px, 110px); }
+
+
+
+            /* LIST 2 */
+            .list-2 {
+                width: 280px;
+                height: 200px;
+                z-index: 3;
+                border-radius: 3px;
+                background-color: rgb(220, 220, 220);
+                box-shadow: 0px 1px 3px rgb(180, 180, 180);
+            }
+            .list-2-top {
+                width: 280px;
+                height: 50px;
+                z-index: 4;
+                border-radius: 3px;
+                background-color: rgb(240, 240, 240);
+                box-shadow: 0px 1px 3px rgb(200, 200, 200);
+            }
+
+            /* LIST 2-1 */
+            #list-2-1 { transform: translate(120px, 195px); }
+            #list-2-1-top { transform: translate(120px, 195px); }
+            
+            /* LIST 2-2 */ 
+            #list-2-2 { transform: translate(430px, 195px); }
+            #list-2-2-top { transform: translate(430px, 195px); }
+            
+            /* LIST 2-3 */
+            #list-2-3 { transform: translate(740px, 195px); }
+            #list-2-3-top { transform: translate(740px, 195px); }
+
+
+
+
+            /* LIST 3 */
+            .list-3 {
+                width: 260px;
+                height: 35px;
+                z-index: 4;
+                border-radius: 3px;
+                background-color: rgb(240, 240, 240);
+                box-shadow: 0px 1px 3px rgb(200, 200, 200);
+            }
+
+            /* LIST 3-1 */
+            #list-3-1 { transform: translate(130px, 255px); }
+
+            /* LIST 3-2 */
+            #list-3-2 { transform: translate(130px, 300px); }
+
+            /* LIST 3-3 */
+            #list-3-3 { transform: translate(130px, 345px); }
+   
+        </style>
+    </head>
+
+    <body id="body">
+        
+        <!-- DOM -->
+        <div id="root">
+
+            <!-- TOP -->
+            <div id="top-1" class="element"></div>
+
+            <!-- SIDE -->
+            <div id="side-1" class="element"></div>
+            <button id="menu-1" class="element"></button>
+            <button id="menu-2" class="element"></button>
+            <button id="menu-3" class="element"></button>
+
+            <!-- MID -->
+            <div id="mid-1" class="element"></div>
+
+            <!-- LIST 1-1 -->
+            <div id="list-1-1" class="element list-1"></div>
+            <div id="list-1-1-top" class="element list-1-top"></div>
+            <div id="list-1-1-color" class="element list-1-color"></div>
+            <div id="list-1-1-time" class="element list-1-time"></div>
+            <div id="list-1-1-title" class="element list-1-title"></div>
+            <div id="list-1-1-add" class="element list-1-add"></div>
+
+            <!-- LIST 1-2 -->
+            <div id="list-1-2" class="element list-1"></div>
+            <div id="list-1-2-top" class="element list-1-top"></div>
+            <div id="list-1-2-color" class="element list-1-color"></div>
+            <div id="list-1-2-time" class="element list-1-time"></div>
+            <div id="list-1-2-title" class="element list-1-title"></div>
+            <div id="list-1-2-add" class="element list-1-add"></div>
+
+            <!-- LIST 1-3 -->
+            <div id="list-1-3" class="element list-1"></div>
+            <div id="list-1-3-top" class="element list-1-top"></div>
+            <div id="list-1-3-color" class="element list-1-color"></div>
+            <div id="list-1-3-time" class="element list-1-time"></div>
+            <div id="list-1-3-title" class="element list-1-title"></div>
+            <div id="list-1-3-add" class="element list-1-add"></div>
+
+            <!-- LIST 2-1 -->
+            <div id="list-2-1" class="element list-2"></div>
+            <div id="list-2-1-top" class="element list-2-top"></div>
+            <div id="list-2-1-color" class="element list-2-color"></div>
+            <div id="list-2-1-time" class="element list-2-time"></div>
+            <div id="list-2-1-title" class="element list-2-title"></div>
+            <div id="list-2-1-add" class="element list-2-add"></div>
+
+            <!-- LIST 2-2 -->
+            <div id="list-2-2" class="element list-2"></div>
+            <div id="list-2-2-top" class="element list-2-top"></div>
+            <div id="list-2-2-color" class="element list-2-color"></div>
+            <div id="list-2-2-time" class="element list-2-time"></div>
+            <div id="list-2-2-title" class="element list-2-title"></div>
+            <div id="list-2-2-add" class="element list-2-add"></div>
+
+            <!-- LIST 2-3 -->
+            <div id="list-2-3" class="element list-2"></div>
+            <div id="list-2-3-top" class="element list-2-top"></div>
+            <div id="list-2-3-color" class="element list-2-color"></div>
+            <div id="list-2-3-time" class="element list-2-time"></div>
+            <div id="list-2-3-title" class="element list-2-title"></div>
+            <div id="list-2-3-add" class="element list-2-add"></div>
+
+            <!-- LIST 3-1 -->
+            <div id="list-3-1" class="element list-3"></div>
+
+            <!-- LIST 3-2 -->
+            <div id="list-3-2" class="element list-3"></div>
+
+            <!-- LIST 3-3 -->
+            <div id="list-3-3" class="element list-3"></div>
+
+        </div>
+
+        <!-- JS -->
+        <script>
+        </script> 
+    
+</body>
+</html>
