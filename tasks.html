@@ -9,6 +9,12 @@
         <!-- CSS -->
         <style>
 
+            /* FONTS */
+            @font-face {
+                font-family: standard;
+                src: url(OverpassMono-Bold.ttf);
+            }
+
             /* UNIVERSAL */
             #body {
                 margin: 0px;
@@ -29,6 +35,7 @@
                 margin: 0px;
                 padding: 0px;
                 border-style: none;
+                border-color: rgb(120, 120 ,120);
                 border-collapse: collapse;
                 border-width: 1px;
             }
@@ -73,16 +80,35 @@
             }
             .list-1-top {
                 width: 300px;
-                height: 75px;
+                height: 50px;
                 z-index: 3;
                 border-radius: 3px;
                 background-color: rgb(220, 220, 220);
                 box-shadow: 0px 1px 3px rgb(180, 180, 180);
             }
+            .list-1-color {
+                width: 10px;
+                height: 10px;
+                z-index: 4;
+                border-style: none;
+                border-width: 0.5px;
+                border-color: rgb(160, 160, 160);
+                border-radius: 5px;
+                background-color: rgb(255, 255, 255);
+            }
+            .list-1-title {
+                z-index: 4;
+                font-size: 16px;
+                font-family: standard;
+                color: rgb(50, 50, 50);
+                background-color: rgba(255, 255, 255, 0);
+            }
 
             /* LIST 1-1 */
             #list-1-1 { transform: translate(110px, 110px); }
             #list-1-1-top { transform: translate(110px, 110px); }
+            #list-1-1-color { transform: translate(117.5px, 117.5px); background-color: rgb(135, 205, 120); }
+            #list-1-1-title { transform: translate(215px, 127px); }
             
             /* LIST 1-2 */
             #list-1-2 { transform: translate(420px, 110px); }
@@ -171,7 +197,7 @@
             <div id="list-1-1-top" class="element list-1-top"></div>
             <div id="list-1-1-color" class="element list-1-color"></div>
             <div id="list-1-1-time" class="element list-1-time"></div>
-            <div id="list-1-1-title" class="element list-1-title"></div>
+            <div id="list-1-1-title" class="element list-1-title">Project 1</div>
             <div id="list-1-1-add" class="element list-1-add"></div>
 
             <!-- LIST 1-2 -->
