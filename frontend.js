@@ -1,8 +1,5 @@
-// 0 = div
-// 1 = h1
 
-
-
+// componenets can have both a horizontal and a vertical layout
 
 
 let current = 0;
@@ -57,6 +54,7 @@ let start = performance.now();
 
 div('id="test"', "", 0);
 a('href="https://test.com"', "this is a link", 1);
+
 for (let i = 0; i < 100; i++) {
     div(null, "yooo", 1);
 }
