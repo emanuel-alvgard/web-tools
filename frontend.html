@@ -17,15 +17,60 @@
 
     <script>
 
-        let sections=[0,1,2,3,4,5,6,7,8];
-        let i=0;
-        while(i<6){
-            let e=document.body.children;
-            e[i].style.width="50px";
-            e[i].style.height="50px";
-            e[i].style.background="rgb(100, 100, 100)";
+        // ALL
+        let e = document.body.children;
+
+        // BODY
+
+        // SECTIONS
+        let s=[0,1,2,3,4,5];
+        let l = s.length;
+        let i = 0;
+        while(i<l){
+            e[s[i]].style.width="50px";
+            e[s[i]].style.height="50px";
+            e[s[i]].style.background="rgb(100, 100, 100)";
             i++;}
-        document.body.style.opacity="1";
+        document.body.style.opacity = "1";
+
+        // COMPONENTS
+
+        let forced_window_mode = 0; // 1/2
+        let window_mode; // 0/1
+
+        let prev_width;
+        let prev_height;
+        let curr_width;
+        let curr_height;
+
+        function main() {
+
+            // WINDOW RESIZE EVENT
+            curr_width = window.innerWidth;
+            curr_height = window.innerHeight;
+
+            if (curr_width !== prev_width) { prev_width = curr_width; }
+            if (curr_height !== prev_height) { prev_height = curr_height; }
+
+            // HORIZONTAL WINDOW MODE
+            if (curr_width > curr_height) {
+                if (window_mode === 1) { console.log("Horizontal"); }
+                window_mode = 0;
+            }
+
+            // VERTICAL WINDOW MODE
+            else {
+                if (window_mode === 0) { console.log("Vertical"); }
+                window_mode = 1;
+            }
+
+
+
+            window.requestAnimationFrame(main);
+        }
+
+        main();
+
     </script>
 </body>
 </html>

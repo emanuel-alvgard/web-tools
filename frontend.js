@@ -1,13 +1,13 @@
 
 // componenets can have both a horizontal and a vertical layout
-
+// generate corresponding JS
 
 let current = 0;
 
 let current_scope = 0;
 let close_stack = [];
 
-let result = [];
+let result = ['<!DOCTYPE><html><head></head><body style="opacity:0">'];
 
 
 
@@ -45,6 +45,7 @@ function build() {
         if (i === 0) { break; }
         i -= 1;
     }
+    result.push("</body></html>");
     return result.join("");
 }
 
