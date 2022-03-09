@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>frontend</title>
+</head>
+<body style="opacity:0">
+
+    <div>hello</div>
+    <div>hello</div>
+    <div>hello</div>
+    <div>hello</div>
+    <div>hello</div>
+    <div>hello</div>
+
+    <script>
+
+        let sections=[0,1,2,3,4,5,6,7,8];
+        let i=0;
+        while (i<6) {
+            let e=document.body.children;
+            e[i].style.width="50px";
+            e[i].style.height="50px";
+            e[i].style.background="rgb(100, 100, 100)";
+            i++;
+        }
+        document.body.style.opacity="1";
+    </script>
+</body>
+</html>
