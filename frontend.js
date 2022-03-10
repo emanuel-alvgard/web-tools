@@ -1,3 +1,6 @@
+// @ADD box type
+// can affect it's own size but not position
+// can affect it's childrens positions and margins but not size
 
 // componenets can have both a horizontal and a vertical layout
 // generate corresponding JS
