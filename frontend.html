@@ -18,26 +18,54 @@
 
     <script>
 
-        // ALL
-        let e = document.body.children;
 
-        // BODY
+        // ELEMENT
+        let elements = {
+            x: [],
+            y: [],
+            lock_x: [],
+            lock_y: [],
+            ratio_x: [],
+            ratio_y: [],
 
-        // BOX
-        let box_children = [];
-        let box_width = [];
-        let box_height = [];
-        let box_dyn_width = [];
-        let box_dyn_height = [];
-        let box_max_w = [];
-        let box_min_w = [];
-        let box_max_h = [];
-        let box_min_h = [];
+            child_count: [],
+            parent: [],
+            width: [],
+            height: [],
+            dyn_width: [],
+            dyn_height: [],
+            max_w: [],
+            max_h: [],
+            min_w: [],
+            min_h: []
+        }
 
-        let b=[0,1,2,3,4,5];
+        function init_elements(current, current_parent, result) {
+
+            let count = 0;
+            let i = 0;
+            while (i < current.length) {
+                if (current[i].children.length > 0) {
+                    
+                    init_elements(current[i].children, result);
+                }
+                lock_x.push(1);
+                lock_y.push(1);
+                ratio_x.push(1.0);
+                ratio_y.push(1.0);
+                result.push(current[i]);
+                i++;
+            }
+        }
+
+        let current_parent = [0];
+        let e = [];
+        init_elements(document.body.children, current_parent, e);
+        console.log(e);
+
         let l = b.length;
         let i = 0;
-        while(i<l){
+        while(i<(l)){
             e[b[i]].style.width="50px";
             e[b[i]].style.height="50px";
             e[b[i]].style.background="rgb(100, 100, 100)";
