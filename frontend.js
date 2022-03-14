@@ -1,6 +1,6 @@
 // @ADD box type
-// can affect it's own size but not position
-// can affect it's childrens positions and margins but not size
+// parent will resize children if max or min is not reached, else it will move/hide it's children
+// when a move happen childrens sizes can also be recalculated based on parents inside margins
 
 // componenets can have both a horizontal and a vertical layout
 // generate corresponding JS
@@ -12,31 +12,31 @@ let close_stack = [];
 
 let result = ['<!DOCTYPE><html><head></head><body style="opacity:0">'];
 
+let buffer = [];
 
 
-
-function element(tag, attributes, content, scope) {
+function element(buffer, tag, attributes, content, scope) {
 
     if (scope <= current_scope && current !== 0) {
         let i = scope;
         while (i <= current_scope) {
-            result.push(close_stack[current - 1]);
+            buffer.push(close_stack[current - 1]);
             close_stack.pop();
             current -= 1;
             i += 1;
         }
     }
-    if (attributes === null) { result.push("<" + tag + ">");}
-    else { result.push("<" + tag + " " + attributes + ">"); }
-    result.push(content);
+    if (attributes === null) { buffer.push("<" + tag + ">");}
+    else { buffer.push("<" + tag + " " + attributes + ">"); }
+    buffer.push(content);
     close_stack.push("</" + tag + ">");
     current_scope = scope;
     current += 1;
 }
 
 
-function div(attributes, content, scope) { element("div", attributes, content, scope); }
-function a(attributes, content, scope) { element("a", attributes, content, scope); }
+function div(buffer, attributes, content, scope) { element(buffer, "div", attributes, content, scope); }
+function a(buffer, attributes, content, scope) { element(buffer, "a", attributes, content, scope); }
 
 
 function build() {
@@ -56,11 +56,11 @@ function build() {
 
 let start = performance.now();
 
-div('id="test"', "", 0);
-a('href="https://test.com"', "this is a link", 1);
+div(buffer, 'id="test"', "", 0);
+a(buffer, 'href="https://test.com"', "this is a link", 1);
 
 for (let i = 0; i < 100; i++) {
-    div(null, "yooo", 1);
+    div(buffer, null, "yooo", 1);
 }
 
 let html = build();

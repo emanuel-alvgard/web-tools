@@ -8,12 +8,13 @@
 </head>
 <body style="opacity:0">
 
-    <div>hello</div>
-    <div>hello</div>
-    <div>hello</div>
-    <div>hello</div>
-    <div>hello</div>
-    <div>hello</div>
+    <div>
+        <div>hello</div>
+        <div>hello</div>
+        <div>hello</div>
+        <div>hello</div>
+        <div>hello</div>
+    </div>
 
     <script>
 
@@ -22,18 +23,28 @@
 
         // BODY
 
-        // SECTIONS
-        let s=[0,1,2,3,4,5];
-        let l = s.length;
+        // BOX
+        let box_children = [];
+        let box_width = [];
+        let box_height = [];
+        let box_dyn_width = [];
+        let box_dyn_height = [];
+        let box_max_w = [];
+        let box_min_w = [];
+        let box_max_h = [];
+        let box_min_h = [];
+
+        let b=[0,1,2,3,4,5];
+        let l = b.length;
         let i = 0;
         while(i<l){
-            e[s[i]].style.width="50px";
-            e[s[i]].style.height="50px";
-            e[s[i]].style.background="rgb(100, 100, 100)";
+            e[b[i]].style.width="50px";
+            e[b[i]].style.height="50px";
+            e[b[i]].style.background="rgb(100, 100, 100)";
             i++;}
         document.body.style.opacity = "1";
 
-        // COMPONENTS
+        
 
         let forced_window_mode = 0; // 1/2
         let window_mode; // 0/1
