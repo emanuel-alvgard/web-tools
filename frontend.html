@@ -8,8 +8,8 @@
 </head>
 <body style="opacity:1">
 
-    <div id="1">
-        <div id="2">hello</div>
+    <div>
+        <div>hello</div>
         <div>hello</div>
         <div>hello</div>
         <div>hello</div>
@@ -18,113 +18,95 @@
 
     <script>
 
-        /*
-        // ELEMENT
+        let body = document.body;
+
+        function init_body(b) {
+            b.style.margin = "0px";
+            b.style.padding = "0px";
+            b.style.left = "0px";
+            b.style.top = "0px";
+            b.style.overflow = "hidden";
+        }
+
+        init_body(body);
+
+
+        function update_body(b) {
+
+            width = window.innerWidth + "";
+            height = window.innerHeight + "";
+
+            // RESIZE EVENT
+            if (b.style.width !== width) { b.style.width = width + "px"; }
+            if (b.style.height !== height) { b.style.height = height + "px"; }
+        }
+
+
         let elements = {
             object: [],
             x: [],
             y: [],
-            lock_x: [],
-            lock_y: [],
-            ratio_x: [],
-            ratio_y: [],
 
-            parent: [],
-            width: [],
-            height: [],
-            dyn_width: [],
-            dyn_height: [],
-            max_w: [],
-            max_h: [],
-            min_w: [],
-            min_h: []
+            w: [],
+            h: [],
+            unit_w: [], // px / %
+            unit_h: [], // px / %
+            r: [],
         }
 
-        function init_elements(current, current_parent, result) {
+        function init_elements(e, result) {
 
             let i = 0;
-            while (i < current.length) {
-                if (current[i].children.length > 0) {
-                    
-                    init_elements(current[i].children, result);
+            while (i < e.length) {
+                if (e[i].children.length > 0) {
+                    init_elements(e[i].children, result);
                 }
-                result.lock_x.push(1);
-                result.lock_y.push(1);
-                result.ratio_x.push(1.0);
-                result.ratio_y.push(1.0);
-                result.object.push(current[i]);
-                i++;
+                result.x.push(0);
+                result.y.push(0);
+                result.w.push(50);
+                result.h.push(50);
+                result.unit_w.push("%");
+                result.unit_h.push("%");
+                result.r.push(0);
+
+                e[i].style.position = "absolute";
+                e[i].style.margin = "0px";
+                e[i].style.padding = "0px";
+                e[i].style.border = "solid";
+                e[i].style.left = "0px";
+                e[i].style.top = "0px";
+                e[i].style.width = "0px";
+                e[i].style.height = "0px";
+                e[i].style.zIndex = "0";
+                e[i].style.overflow = "hidden";
+                result.object.push(e[i]);
+                i += 1;
             }
         }
 
-        let current_parent = [0];
-        let e = [];
-        init_elements(document.body.children, current_parent, e);
-        console.log(e);
+        init_elements(body.children, elements);
 
+        function update_elements(e) {
 
+            let i = 0;
+            let len = e.object.length;
 
+            while (i < len) { e.object[i].style.width = e.w[i] + e.unit_w[i]; i += 1; } i = 0;
+            while (i < len) { e.object[i].style.height = e.h[i] + e.unit_h[i]; i += 1; } i = 0;
+            while (i < len) { e.object[i].style.transform = "translate(" + e.x[i] + "px, " + e.y[i] + "px) " + "rotate(" + e.r[i] + "deg)"; i += 1; } i = 0;
+        }
 
+        console.log(elements);
 
+        function center_x(elements, a, b) { }
+        function center_y() { }
 
-        let l = b.length;
-        let i = 0;
-        while(i<(l)){
-            e[b[i]].style.width="50px";
-            e[b[i]].style.height="50px";
-            e[b[i]].style.background="rgb(100, 100, 100)";
-            i++;}
-        document.body.style.opacity = "1";
-
-        
-        */
-        let forced_window_mode = 0; // 1/2
-        let window_mode; // 0/1
-
-        let prev_width;
-        let prev_height;
-        let curr_width;
-        let curr_height;
-
-        let body = document.body;
-
-        let test_1 = document.getElementById("1");
-        let test_2 = document.getElementById("2");
-
-        test_1.style.background = "rgb(100,100,100)";
-        test_2.style.background = "rgb(50,50,50)";
-
-        test_1.style.display = "absolute";
-        test_2.style.display = "absolute";
+        let layout = []; // contains different layouts
 
         function main() {
 
-            // WINDOW RESIZE EVENT
-            curr_width = window.innerWidth;
-            curr_height = window.innerHeight;
-
-            if (curr_width !== prev_width) { prev_width = curr_width; }
-            if (curr_height !== prev_height) { prev_height = curr_height; }
-
-            // HORIZONTAL WINDOW MODE
-            if (curr_width > curr_height) {
-                if (window_mode === 1) { console.log("Horizontal"); }
-                window_mode = 0;
-            }
-
-            // VERTICAL WINDOW MODE
-            else {
-                if (window_mode === 0) { console.log("Vertical"); }
-                window_mode = 1;
-            }
-
-            body.style.height = curr_height + "px";
-
-            test_1.style.width = "50%";
-            test_2.style.width = "50%";
-
-            test_1.style.height = "50%";
-            test_2.style.height = "50%";
+            update_body(body);
+            update_elements(elements);
 
             window.requestAnimationFrame(main);
         }
