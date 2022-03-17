@@ -46,28 +46,31 @@
             object: [],
             x: [],
             y: [],
-
             w: [],
             h: [],
-            unit_w: [], // px / %
-            unit_h: [], // px / %
             r: [],
+
+            relational: [],
+            left: [],
+            right: [],
+            top: [],
+            bot: []
         }
 
         function init_elements(e, result) {
 
             let i = 0;
             while (i < e.length) {
-                if (e[i].children.length > 0) {
-                    init_elements(e[i].children, result);
-                }
                 result.x.push(0);
                 result.y.push(0);
                 result.w.push(50);
                 result.h.push(50);
-                result.unit_w.push("%");
-                result.unit_h.push("%");
                 result.r.push(0);
+                result.relational.push(0);
+                result.left.push(0);
+                result.right.push(0);
+                result.top.push(0);
+                result.bot.push(0);
 
                 e[i].style.position = "absolute";
                 e[i].style.margin = "0px";
@@ -80,33 +83,57 @@
                 e[i].style.zIndex = "0";
                 e[i].style.overflow = "hidden";
                 result.object.push(e[i]);
+
+                if (e[i].children.length > 0) {
+                    init_elements(e[i].children, result);
+                }
                 i += 1;
             }
         }
 
         init_elements(body.children, elements);
 
-        function update_elements(e) {
+        function render(e) {
 
             let i = 0;
             let len = e.object.length;
 
-            while (i < len) { e.object[i].style.width = e.w[i] + e.unit_w[i]; i += 1; } i = 0;
-            while (i < len) { e.object[i].style.height = e.h[i] + e.unit_h[i]; i += 1; } i = 0;
+            while (i < len) { e.object[i].style.width = e.w[i] + "px"; i += 1; } i = 0;
+            while (i < len) { e.object[i].style.height = e.h[i] + "px"; i += 1; } i = 0;
             while (i < len) { e.object[i].style.transform = "translate(" + e.x[i] + "px, " + e.y[i] + "px) " + "rotate(" + e.r[i] + "deg)"; i += 1; } i = 0;
         }
 
         console.log(elements);
 
-        function center_x(elements, a, b) { }
-        function center_y() { }
+        // NON RELATIONAL DIMENSIONS
+        function center_to_center(e, axis, a, b) {
+            let d = "";
+            if (axis === "x") { d = "w"; }
+            else { d = "h"; }
+            e[axis][a] = (e[axis][b] + (e[d][b] / 2)) - (e[d][a] / 2);
 
-        let layout = []; // contains different layouts
+        }
+
+        // RELATIONAL DIMENSIONS
+        function relation(e, a_side, b_side, a_id, b_id) {}
+
+
+        function update_elements(e) {
+            center_to_center(e, "x", 1, 0);
+            center_to_center(e, "y", 1, 0);
+        }
+
+        let layout_data = []; // contains different elements-objects
+        let layout_functions = []; // contains different update-functions
+
+        elements.w[0] = 500;
+        elements.h[0] = 500;
 
         function main() {
 
             update_body(body);
             update_elements(elements);
+            render(elements);
 
             window.requestAnimationFrame(main);
         }
