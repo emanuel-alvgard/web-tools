@@ -50,11 +50,12 @@
             h: [],
             r: [],
 
-            relational: [],
-            left: [],
-            right: [],
-            top: [],
-            bot: []
+            rel_x: [],
+            rel_y: [],
+            x_1: [],
+            x_2: [],
+            y_1: [],
+            y_2: []
         }
 
         function init_elements(e, result) {
@@ -66,11 +67,12 @@
                 result.w.push(50);
                 result.h.push(50);
                 result.r.push(0);
-                result.relational.push(0);
-                result.left.push(0);
-                result.right.push(0);
-                result.top.push(0);
-                result.bot.push(0);
+                result.rel_x.push(0);
+                result.rel_y.push(0);
+                result.x_1.push(0);
+                result.x_2.push(0);
+                result.y_1.push(0);
+                result.y_2.push(0);
 
                 e[i].style.position = "absolute";
                 e[i].style.margin = "0px";
@@ -115,10 +117,18 @@
         }
 
         // RELATIONAL DIMENSIONS
-        function relation(e, a_side, b_side, a_id, b_id) {}
+        function add_relation(e, a_side, b_side, a_id, b_id) { } // update_elements
+        function update_relations() { }
 
+        function update_elements() {
+            // first update all abstractions (x_1, x_2 etx)
+            // run all update functions
+        }
 
-        function update_elements(e) {
+        // USER DEFINED
+        function init_layout() { }
+
+        function update_layout(e) {
             center_to_center(e, "x", 1, 0);
             center_to_center(e, "y", 1, 0);
         }
@@ -132,7 +142,7 @@
         function main() {
 
             update_body(body);
-            update_elements(elements);
+            update_layout(elements);
             render(elements);
 
             window.requestAnimationFrame(main);
