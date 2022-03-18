@@ -18,6 +18,7 @@
 
     <script>
 
+        // SPATIAL ENGINE
         let body = document.body;
 
         function init_body(b) {
@@ -25,7 +26,7 @@
             b.style.padding = "0px";
             b.style.left = "0px";
             b.style.top = "0px";
-            b.style.overflow = "hidden";
+            //b.style.overflow = "hidden";
         }
 
         init_body(body);
@@ -33,8 +34,8 @@
 
         function update_body(b) {
 
-            width = window.innerWidth + "";
-            height = window.innerHeight + "";
+            width = document.documentElement.clientWidth + "";
+            height = document.documentElement.clientHeight + "";
 
             // RESIZE EVENT
             if (b.style.width !== width) { b.style.width = width + "px"; }
@@ -44,45 +45,45 @@
 
         let elements = {
             object: [],
-            x: [],
-            y: [],
-            dim_x: [],
-            dim_y: [],
-            rot_z: [],
+            x0: [], // position
+            x1: [], // dimension
+            x2: [], // rotation
+            y0: [],
+            y1: [],
+            y2: [],
+            z0: [],
+            z1: [],
+            z2: [],
 
             rel_x0: [], // to which element -1 if none
             rel_x1: [],
             rel_y0: [],
             rel_y1: [],
-            x0: [],
-            x1: [],
-            y0: [],
-            y1: []
         }
 
         function init_elements(e, result) {
 
             let i = 0;
             while (i < e.length) {
-                result.x.push(0);
-                result.y.push(0);
-                result.dim_x.push(50);
-                result.dim_y.push(50);
-                result.rot_z.push(0);
+                result.x0.push(0.0);
+                result.x1.push(0.0);
+                result.x2.push(0.0);
+                result.y0.push(0.0);
+                result.y1.push(0.0);
+                result.y2.push(0.0);
+                result.z0.push(0.0);
+                result.z1.push(0.0);
+                result.z2.push(0.0);
 
                 result.rel_x0.push(-1);
                 result.rel_x1.push(-1);
                 result.rel_y0.push(-1);
                 result.rel_y1.push(-1);
-                result.x0.push(0);
-                result.x1.push(0);
-                result.y0.push(0);
-                result.y1.push(0);
 
                 e[i].style.position = "absolute";
                 e[i].style.margin = "0px";
                 e[i].style.padding = "0px";
-                e[i].style.border = "solid";
+                e[i].style.border = "none";
                 e[i].style.left = "0px";
                 e[i].style.top = "0px";
                 e[i].style.width = "0px";
@@ -105,56 +106,42 @@
             let i = 0;
             let len = e.object.length;
 
-            while (i < len) { e.object[i].style.width = e.dim_x[i] + "px"; i += 1; } i = 0;
-            while (i < len) { e.object[i].style.height = e.dim_y[i] + "px"; i += 1; } i = 0;
-            while (i < len) { e.object[i].style.transform = "translate(" + e.x[i] + "px, " + e.y[i] + "px) " + "rotate(" + e.rot_z[i] + "deg)"; i += 1; } i = 0;
+            while (i < len) { e.object[i].style.width = e.x1[i] + "px"; i += 1; } i = 0;
+            while (i < len) { e.object[i].style.height = e.y1[i] + "px"; i += 1; } i = 0;
+            while (i < len) { e.object[i].style.transform = "translate(" + e.x0[i] + "px, " + e.y0[i] + "px) " + "rotate(" + e.z2[i] + "deg)"; i += 1; } i = 0;
         }
 
         console.log(elements);
 
-        // @NOT
-        // NON RELATIONAL DIMENSIONS
-        function center_to_center(e, axis, a, b) {
-            e[axis][a] = (e[axis][b] + (e["dim_"+axis][b] / 2)) - (e["dim_"+axis][a] / 2);
-        }
 
-        // RELATIONAL DIMENSIONS
-        function add_relation(e, a_side, b_side, a_id, b_id, distance) { } // update_elements
-        function update_relations() { }
+        // RELATION
+        function add_relation(e, a_side, b_side, a_id, b_id, distance) {
+             
+
+        } // update_elements
+        function update_relations(e) { }
 
         function update_elements(e) {
-            let len = e.length;
-            let i = 0;
-            while (i < len) {
-                if (e.rel_x0[i] !== -1 || e.rel_x1[i] !== -1) {
-                    e.x[i] = e.x0[i];
-                    e.dim_x[i] = e.x1[i] - e.x0[i];
-                }
-                if (e.rel_y0[i] !== -1 || e.rel_y1[i] !== -1) {
-                    e.y[i] = e.y0[i];
-                    e.dim_y[i] = e.y1[i] - e.y0[i];
-                }
-            }
+
+            e.x1[0] = document.documentElement.clientWidth;
+            e.y1[0] = document.documentElement.clientHeight;
+
             update_relations();
         }
 
         // USER DEFINED
-        function init_layout() { }
+        function init_layout() {}
 
-        function update_layout(e) {
-            center_to_center(e, "x", 1, 0);
-            center_to_center(e, "y", 1, 0);
-        }
+        function update_layout(e) {}
 
         let layout_data = []; // contains different elements-objects
         let layout_functions = []; // contains different update-functions
 
-        elements.dim_x[0] = 500;
-        elements.dim_y[0] = 500;
 
         function main() {
 
             update_body(body);
+            update_elements(elements);
             update_layout(elements);
             render(elements);
 
