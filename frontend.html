@@ -46,16 +46,18 @@
             object: [],
             x: [],
             y: [],
-            w: [],
-            h: [],
-            r: [],
+            dim_x: [],
+            dim_y: [],
+            rot_z: [],
 
-            rel_x: [],
-            rel_y: [],
-            x_1: [],
-            x_2: [],
-            y_1: [],
-            y_2: []
+            rel_x0: [], // to which element -1 if none
+            rel_x1: [],
+            rel_y0: [],
+            rel_y1: [],
+            x0: [],
+            x1: [],
+            y0: [],
+            y1: []
         }
 
         function init_elements(e, result) {
@@ -64,15 +66,18 @@
             while (i < e.length) {
                 result.x.push(0);
                 result.y.push(0);
-                result.w.push(50);
-                result.h.push(50);
-                result.r.push(0);
-                result.rel_x.push(0);
-                result.rel_y.push(0);
-                result.x_1.push(0);
-                result.x_2.push(0);
-                result.y_1.push(0);
-                result.y_2.push(0);
+                result.dim_x.push(50);
+                result.dim_y.push(50);
+                result.rot_z.push(0);
+
+                result.rel_x0.push(-1);
+                result.rel_x1.push(-1);
+                result.rel_y0.push(-1);
+                result.rel_y1.push(-1);
+                result.x0.push(0);
+                result.x1.push(0);
+                result.y0.push(0);
+                result.y1.push(0);
 
                 e[i].style.position = "absolute";
                 e[i].style.margin = "0px";
@@ -100,29 +105,37 @@
             let i = 0;
             let len = e.object.length;
 
-            while (i < len) { e.object[i].style.width = e.w[i] + "px"; i += 1; } i = 0;
-            while (i < len) { e.object[i].style.height = e.h[i] + "px"; i += 1; } i = 0;
-            while (i < len) { e.object[i].style.transform = "translate(" + e.x[i] + "px, " + e.y[i] + "px) " + "rotate(" + e.r[i] + "deg)"; i += 1; } i = 0;
+            while (i < len) { e.object[i].style.width = e.dim_x[i] + "px"; i += 1; } i = 0;
+            while (i < len) { e.object[i].style.height = e.dim_y[i] + "px"; i += 1; } i = 0;
+            while (i < len) { e.object[i].style.transform = "translate(" + e.x[i] + "px, " + e.y[i] + "px) " + "rotate(" + e.rot_z[i] + "deg)"; i += 1; } i = 0;
         }
 
         console.log(elements);
 
+        // @NOT
         // NON RELATIONAL DIMENSIONS
         function center_to_center(e, axis, a, b) {
-            let d = "";
-            if (axis === "x") { d = "w"; }
-            else { d = "h"; }
-            e[axis][a] = (e[axis][b] + (e[d][b] / 2)) - (e[d][a] / 2);
-
+            e[axis][a] = (e[axis][b] + (e["dim_"+axis][b] / 2)) - (e["dim_"+axis][a] / 2);
         }
 
         // RELATIONAL DIMENSIONS
-        function add_relation(e, a_side, b_side, a_id, b_id) { } // update_elements
+        function add_relation(e, a_side, b_side, a_id, b_id, distance) { } // update_elements
         function update_relations() { }
 
-        function update_elements() {
-            // first update all abstractions (x_1, x_2 etx)
-            // run all update functions
+        function update_elements(e) {
+            let len = e.length;
+            let i = 0;
+            while (i < len) {
+                if (e.rel_x0[i] !== -1 || e.rel_x1[i] !== -1) {
+                    e.x[i] = e.x0[i];
+                    e.dim_x[i] = e.x1[i] - e.x0[i];
+                }
+                if (e.rel_y0[i] !== -1 || e.rel_y1[i] !== -1) {
+                    e.y[i] = e.y0[i];
+                    e.dim_y[i] = e.y1[i] - e.y0[i];
+                }
+            }
+            update_relations();
         }
 
         // USER DEFINED
@@ -136,8 +149,8 @@
         let layout_data = []; // contains different elements-objects
         let layout_functions = []; // contains different update-functions
 
-        elements.w[0] = 500;
-        elements.h[0] = 500;
+        elements.dim_x[0] = 500;
+        elements.dim_y[0] = 500;
 
         function main() {
 
