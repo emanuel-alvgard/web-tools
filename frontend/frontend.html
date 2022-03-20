@@ -75,15 +75,15 @@
                 result.z1.push(0.0);
                 result.z2.push(0.0);
 
-                result.rel_x0.push(-1);
-                result.rel_x1.push(-1);
-                result.rel_y0.push(-1);
-                result.rel_y1.push(-1);
+                result.rel_x0.push([-1, "", 0]);
+                result.rel_x1.push([-1, "", 0]);
+                result.rel_y0.push([-1, "", 0]);
+                result.rel_y1.push([-1, "", 0]);
 
                 e[i].style.position = "absolute";
                 e[i].style.margin = "0px";
                 e[i].style.padding = "0px";
-                e[i].style.border = "none";
+                e[i].style.border = "solid";
                 e[i].style.left = "0px";
                 e[i].style.top = "0px";
                 e[i].style.width = "0px";
@@ -115,11 +115,27 @@
 
 
         // RELATION
-        function add_relation(e, a_side, b_side, a_id, b_id, distance) {
-             
+
+        // add_relation(elements, "x0", 1, "x0", 0);
+
+        function add_relation(e, a_property, a_id, b_property, b_id, offset) {
+            e["rel_" + a_property][a_id] = [b_id, b_property, offset];
 
         } // update_elements
-        function update_relations(e) { }
+        function remove_relation() { }
+
+
+        function update_relations(e) {
+
+            let len = e.rel_x0.length;
+            let i = 0;
+            while (i < len) {
+                if (e.rel_x0[i] === -1) { i += 1; continue; }
+                // set current element x0 to relatives property value
+                i += 1;
+            }
+
+        }
 
         function update_elements(e) {
 
@@ -136,6 +152,8 @@
 
         let layout_data = []; // contains different elements-objects
         let layout_functions = []; // contains different update-functions
+
+        add_relation(elements, "x0", 1, "x0", 0, 500);
 
 
         function main() {
