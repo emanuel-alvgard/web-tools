@@ -18,6 +18,16 @@
 
     <script>
 
+        const x0 = 0; // position
+        const x1 = 1; // dimension
+        const x2 = 2; // rotation
+        const y0 = 3;
+        const y1 = 4;
+        const y2 = 5;
+        const z1 = 6;
+        const z2 = 7;
+        const z3 = 8;
+
         // SPATIAL ENGINE
         let body = document.body;
 
@@ -45,22 +55,16 @@
 
         let elements = {
             object: [],
-            x0: [], // position
-            x1: [], // dimension
-            x2: [], // rotation
-            y0: [],
-            y1: [],
-            y2: [],
-            z0: [],
-            z1: [],
-            z2: [],
+            spatial: [[], [], [], [], [], [], [], [], []],
 
-            rel_x0: [], // to which element -1 if none
-            rel_x1: [],
-            rel_y0: [],
-            rel_y1: [],
+            // RELATION
+            rel_a_id: [], // to which element -1 if none
+            rel_a_pro: [],
+            rel_b_id: [],
+            rel_b_: [],
         }
 
+        // @NOT
         function init_elements(e, result) {
 
             let i = 0;
@@ -118,6 +122,7 @@
 
         // add_relation(elements, "x0", 1, "x0", 0);
 
+        // @NOT
         function add_relation(e, a_property, a_id, b_property, b_id, offset) {
             e["rel_" + a_property][a_id] = [b_id, b_property, offset];
 
