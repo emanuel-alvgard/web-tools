@@ -18,6 +18,70 @@
 
     <script>
 
+        // QUEUE STRUCTURE
+        // @DONE
+        function queue_create(size) {
+
+            let queue = {
+                data: null,
+                start: 0,
+                end: 0,
+                count: 0
+            }
+
+            let data = new Array(size);
+            let i = 0;
+            while (i < size) {
+                data[i] = null;
+                i += 1;
+            }
+
+            queue.data = data;
+
+            return queue;
+        }
+
+        // @DONE
+        function queue_add(subject, target) {
+
+            let len = target.data.length;
+            let start = target.start;
+            let end = target.end;
+            let count = target.count;
+
+            if (end === start && count !== 0) { return false; }
+
+            target.data[end] = subject;
+            target.count += 1;
+            end += 1;
+
+            if (end === len) { target.end = 0; }
+            else { target.end = end; }
+
+            return true;
+        }
+
+        // @DONE
+        function queue_remove(target) {
+
+            let len = target.data.length;
+            let start = target.start;
+            let end = target.end;
+            let count = target.count;
+
+            if (start === end && count === 0) { return false; }
+
+            let result = target.data[start];
+            target.data[start] = null;
+            target.count -= 1;
+            start += 1;
+
+            if (start === len) { target.start = 0; }
+            else { target.start = start; }
+
+            return result;
+        }
+
         const x0 = 0; // position
         const x1 = 1; // dimension
         const x2 = 2; // rotation
@@ -55,58 +119,73 @@
 
         let elements = {
             object: [],
-            spatial: [[], [], [], [], [], [], [], [], []],
+            property: [[], [], [], [], [], [], [], [], []],
 
             // RELATION
-            rel_free: [],
-            rel_subject_id: [], // 
-            rel_subject_property: [],
+            rel_free: null,
 
+            rel_subject_id: [],
+            rel_subject_property: [],
             rel_target_id: [],
             rel_target_property: [],
             rel_offset: []
         }
 
-        // @NOT
-        function init_elements(e, result) {
 
+        // @DONE
+        function DOM_elements(e, result) {
             let i = 0;
             while (i < e.length) {
-                result.spatial[x0].push(0.0); // position
-                result.spatial[x1].push(0.0); // dimension
-                result.spatial[x2].push(0.0); // rotation
-                result.spatial[y0].push(0.0);
-                result.spatial[y1].push(0.0);
-                result.spatial[y2].push(0.0);
-                result.spatial[z0].push(0.0);
-                result.spatial[z1].push(0.0);
-                result.spatial[z2].push(0.0);
+              
+                result.object.push(e[i]);
 
-                result.rel_free.push(i);
+                if (e[i].children.length > 0) {
+                    DOM_elements(e[i].children, result);
+                }
+                i += 1;
+            }
+            return;
+        }
+
+        // @DONE
+        function init_elements(body_children, result) {
+
+            DOM_elements(body_children, result);
+            result.object.pop();
+            result.rel_free = queue_create(result.object.length);
+
+            let i = 0;
+            while (i < result.object.length) {
+                result.property[x0].push(0.0); // position
+                result.property[x1].push(0.0); // dimension
+                result.property[x2].push(0.0); // rotation
+                result.property[y0].push(0.0);
+                result.property[y1].push(0.0);
+                result.property[y2].push(0.0);
+                result.property[z0].push(0.0);
+                result.property[z1].push(0.0);
+                result.property[z2].push(0.0);
+
+                queue_add(i, result.rel_free);
                 result.rel_subject_id.push(-1);
                 result.rel_subject_property.push(-1);
-
                 result.rel_target_id.push(-1);
                 result.rel_target_property.push(-1);
                 result.rel_offset.push(0);
 
-                e[i].style.position = "absolute";
-                e[i].style.margin = "0px";
-                e[i].style.padding = "0px";
-                e[i].style.border = "solid";
-                e[i].style.left = "0px";
-                e[i].style.top = "0px";
-                e[i].style.width = "0px";
-                e[i].style.height = "0px";
-                e[i].style.zIndex = "0";
-                e[i].style.overflow = "hidden";
-                result.object.push(e[i]);
-
-                if (e[i].children.length > 0) {
-                    init_elements(e[i].children, result);
-                }
+                result.object[i].style.position = "absolute";
+                result.object[i].style.margin = "0px";
+                result.object[i].style.padding = "0px";
+                result.object[i].style.border = "solid";
+                result.object[i].style.left = "0px";
+                result.object[i].style.top = "0px";
+                result.object[i].style.width = "0px";
+                result.object[i].style.height = "0px";
+                result.object[i].style.zIndex = "0";
+                result.object[i].style.overflow = "hidden";
                 i += 1;
             }
+
         }
 
         init_elements(body.children, elements);
@@ -118,21 +197,21 @@
 
             // @ADD simple diffing algorithm later
 
-            while (i < len) { e.object[i].style.width = e.spatial[x1][i] + "px"; i += 1; } i = 0;
-            while (i < len) { e.object[i].style.height = e.spatial[y1][i] + "px"; i += 1; } i = 0;
-            while (i < len) { e.object[i].style.transform = "translate(" + e.spatial[x0][i] + "px, " + e.spatial[y0][i] + "px) " + "rotate(" + e.spatial[z2][i] + "deg)"; i += 1; } i = 0;
+            while (i < len) { e.object[i].style.width = e.property[x1][i] + "px"; i += 1; } i = 0;
+            while (i < len) { e.object[i].style.height = e.property[y1][i] + "px"; i += 1; } i = 0;
+            while (i < len) { e.object[i].style.transform = "translate(" + e.property[x0][i] + "px, " + e.property[y0][i] + "px) " + "rotate(" + e.property[z2][i] + "deg)"; i += 1; } i = 0;
         }
 
         console.log(elements);
 
 
         // RELATION
-        // @NOT
+        // @HERE
         function add_relation(e, subject_property, subject_id, target_property, target_id, offset) {
 
-            e.rel_subject_id[
+            // Make use of the queue structure
+ 
             e.rel_subject_property[subject_id] = subject_property;
-
             e.rel_target_id[subject_id] = target_id;
             e.rel_target_property[subject_id] = target_property;
             e.rel_offset[subject_id] = offset;
@@ -153,15 +232,15 @@
             let i = 0;
             while (i < len) {
                 if (e.rel_target_id[i] === -1) { i += 1; continue; }
-                e.spatial[e.rel_subject_property[i]][i] = e.spatial[e.rel_target_property[i]][e.rel_target_id[i]] + e.rel_offset[i];
+                e.property[e.rel_subject_property[i]][i] = e.property[e.rel_target_property[i]][e.rel_target_id[i]] + e.rel_offset[i];
                 i += 1;
             }
         }
 
         function update_elements(e) {
 
-            e.spatial[x1][0] = document.documentElement.clientWidth;
-            e.spatial[y1][0] = document.documentElement.clientHeight;
+            e.property[x1][0] = document.documentElement.clientWidth;
+            e.property[y1][0] = document.documentElement.clientHeight;
 
             update_relations(e);
         }
