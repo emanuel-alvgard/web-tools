@@ -207,7 +207,7 @@
 
         // RELATION
         // @HERE
-        function add_relation(e, subject_property, subject_id, target_property, target_id, offset) {
+        function relation(e, subject_property, subject_id, target_property, target_id, offset) {
 
             let i = queue_remove(e.rel_free);
             if (i === -1) { return; }
@@ -221,8 +221,19 @@
 
         // @TEST
         elements.object[0].style.border = "none";
-        add_relation(elements, x1, 1, x1, 0, -100);
-        let test = add_relation(elements, x0, 1, x0, 0, 100);
+
+        // HEADER
+        let header_height = 100;
+
+        // add this to a layout function
+        relation(elements, x0, 1, x0, 0, 0);
+        relation(elements, x1, 1, x1, 0, 0);
+        relation(elements, y0, 1, y0, 0, 0);
+        relation(elements, y1, 1, y0, 0, 100);
+
+        // MENU
+        relation(elements, x0, 2, x0, 1, 25);
+        relation(elements, y0, 2, y0, 1, (header_height / 2));
 
         function remove_relation(e, index) { 
 
@@ -246,6 +257,9 @@
                 e.rel_offset[i];
                 i += 1;
             }
+
+            // removes all relations here
+
         }
 
         function update_elements(e) {
