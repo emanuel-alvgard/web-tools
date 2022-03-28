@@ -49,7 +49,7 @@
             let end = target.end;
             let count = target.count;
 
-            if (end === start && count !== 0) { return false; }
+            if (end === start && count !== 0) { return -1; }
 
             target.data[end] = subject;
             target.count += 1;
@@ -58,7 +58,7 @@
             if (end === len) { target.end = 0; }
             else { target.end = end; }
 
-            return true;
+            return 1;
         }
 
         // @DONE
@@ -69,7 +69,7 @@
             let end = target.end;
             let count = target.count;
 
-            if (start === end && count === 0) { return false; }
+            if (start === end && count === 0) { return -1; }
 
             let result = target.data[start];
             target.data[start] = null;
@@ -197,8 +197,8 @@
 
             // @ADD simple diffing algorithm later
 
-            while (i < len) { e.object[i].style.width = e.property[x1][i] + "px"; i += 1; } i = 0;
-            while (i < len) { e.object[i].style.height = e.property[y1][i] + "px"; i += 1; } i = 0;
+            while (i < len) { e.object[i].style.width = (e.property[x1][i] - e.property[x0][i]) + "px"; i += 1; } i = 0;
+            while (i < len) { e.object[i].style.height = (e.property[y1][i]- e.property[y0][i]) + "px"; i += 1; } i = 0;
             while (i < len) { e.object[i].style.transform = "translate(" + e.property[x0][i] + "px, " + e.property[y0][i] + "px) " + "rotate(" + e.property[z2][i] + "deg)"; i += 1; } i = 0;
         }
 
@@ -209,30 +209,41 @@
         // @HERE
         function add_relation(e, subject_property, subject_id, target_property, target_id, offset) {
 
-            // Make use of the queue structure
- 
-            e.rel_subject_property[subject_id] = subject_property;
-            e.rel_target_id[subject_id] = target_id;
-            e.rel_target_property[subject_id] = target_property;
-            e.rel_offset[subject_id] = offset;
-
+            let i = queue_remove(e.rel_free);
+            if (i === -1) { return; }
+            e.rel_offset[i] = offset;
+            e.rel_subject_property[i] = subject_property;
+            e.rel_subject_id[i] = subject_id;
+            e.rel_target_property[i] = target_property;
+            e.rel_target_id[i] = target_id;
+            return i;
         }
 
         // @TEST
         elements.object[0].style.border = "none";
-        //add_relation(elements, x1, 1, x1, 0, -100);
-        add_relation(elements, x0, 1, x0, 0, 100);
+        add_relation(elements, x1, 1, x1, 0, -100);
+        let test = add_relation(elements, x0, 1, x0, 0, 100);
 
-        function remove_relation() { }
+        function remove_relation(e, index) { 
+
+            e.rel_offset[index] = 0;
+            e.rel_subject_property[index] = -1;
+            e.rel_subject_id[index] = -1;
+            e.rel_target_property[index] = -1;
+            e.rel_target_id[index] = -1;
+            queue_add(index, e.rel_free);
+        }
 
         // @NOT
         function update_relations(e) {
 
-            let len = e.rel_target_id.length;
+            let len = e.rel_subject_id.length;
             let i = 0;
             while (i < len) {
-                if (e.rel_target_id[i] === -1) { i += 1; continue; }
-                e.property[e.rel_subject_property[i]][i] = e.property[e.rel_target_property[i]][e.rel_target_id[i]] + e.rel_offset[i];
+                if (e.rel_subject_id[i] === -1) { i += 1; continue; }
+                e.property[e.rel_subject_property[i]][e.rel_subject_id[i]] = 
+                e.property[e.rel_target_property[i]][e.rel_target_id[i]] + 
+                e.rel_offset[i];
                 i += 1;
             }
         }
