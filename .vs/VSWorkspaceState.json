@@ -1,8 +1,9 @@
 {
   "ExpandedNodes": [
     "",
-    "\\frontend"
+    "\\frontend",
+    "\\server"
   ],
-  "SelectedNode": "\\frontend\\frontend.html",
+  "SelectedNode": "\\server\\structure_lib.js",
   "PreviewInSolutionExplorer": false
 }
