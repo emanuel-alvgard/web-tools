@@ -18,70 +18,6 @@
 
     <script>
 
-        // QUEUE STRUCTURE
-        // @DONE
-        function queue_create(size) {
-
-            let queue = {
-                data: null,
-                start: 0,
-                end: 0,
-                count: 0
-            }
-
-            let data = new Array(size);
-            let i = 0;
-            while (i < size) {
-                data[i] = null;
-                i += 1;
-            }
-
-            queue.data = data;
-
-            return queue;
-        }
-
-        // @DONE
-        function queue_add(subject, target) {
-
-            let len = target.data.length;
-            let start = target.start;
-            let end = target.end;
-            let count = target.count;
-
-            if (end === start && count !== 0) { return -1; }
-
-            target.data[end] = subject;
-            target.count += 1;
-            end += 1;
-
-            if (end === len) { target.end = 0; }
-            else { target.end = end; }
-
-            return 1;
-        }
-
-        // @DONE
-        function queue_remove(target) {
-
-            let len = target.data.length;
-            let start = target.start;
-            let end = target.end;
-            let count = target.count;
-
-            if (start === end && count === 0) { return -1; }
-
-            let result = target.data[start];
-            target.data[start] = null;
-            target.count -= 1;
-            start += 1;
-
-            if (start === len) { target.start = 0; }
-            else { target.start = start; }
-
-            return result;
-        }
-
         // PROPERTIES
         const x0 = 0; // position
         const x1 = 1; // dimension
@@ -97,11 +33,10 @@
 
         let elements = {
             object: [],
-            property: [[], [], [], [], [], [], [], [], []],
+            property: [], // 2D array
 
-            // RELATION
+            // RELATION 2D arrays
             rel_free: null,
-
             rel_subject_id: [],
             rel_subject_property: [],
             rel_target_id: [],
@@ -154,24 +89,36 @@
             result.object.pop();
             result.rel_free = queue_create(result.object.length);
 
-            let i = 0;
-            while (i < result.object.length) {
-                result.property[x0].push(0.0); // position
-                result.property[x1].push(0.0); // dimension
-                result.property[x2].push(0.0); // rotation
-                result.property[y0].push(0.0);
-                result.property[y1].push(0.0);
-                result.property[y2].push(0.0);
-                result.property[z0].push(0.0);
-                result.property[z1].push(0.0);
-                result.property[z2].push(0.0);
+            let len = result.object.length;
+            result.property.push(new Float32Array(len));
+            result.property.push(new Float32Array(len));
+            result.property.push(new Float32Array(len));
+            result.property.push(new Float32Array(len));
+            result.property.push(new Float32Array(len));
+            result.property.push(new Float32Array(len));
+            result.property.push(new Float32Array(len));
+            result.property.push(new Float32Array(len));
+            result.property.push(new Float32Array(len));
 
-                queue_add(i, result.rel_free);
-                result.rel_subject_id.push(-1);
-                result.rel_subject_property.push(-1);
-                result.rel_target_id.push(-1);
-                result.rel_target_property.push(-1);
-                result.rel_offset.push(0);
+            result.rel_free.push(new Int8Array(len));
+            
+            let i = 0;
+            while (i < len) {
+
+                result.rel_subject_id.push(new Int32Array(result.property.length));
+                result.rel_subject_id.fill(-1);
+
+                result.rel_subject_property.push(new Int8Array(result.property.length));
+                result.rel_subject_property.fill(-1);
+
+                result.rel_target_id.push(new Int32Array(result.property.length));
+                result.rel_target_id.fill(-1);
+
+                result.rel_target_property.push(new Int8Array(result.property.length));
+                result.rel_target_property.fill(-1);
+
+                result.rel_offset.push(new Int32Array(result.property.length));
+                result.rel_offset.fill(-1);
 
                 result.object[i].style.position = "absolute";
                 result.object[i].style.margin = "0px";
@@ -209,9 +156,8 @@
         // @DONE
         function add_relation(e, subject_property, subject_id, target_property, target_id, offset) {
 
-            let i = queue_remove(e.rel_free);
-            if (i === -1) { return; }
-            e.rel_offset[i] = offset;
+            if (e.rel_free[subject_id] >= e.subject_property[subject_id].length) { return -1; }
+            // @HERE
             e.rel_subject_property[i] = subject_property;
             e.rel_subject_id[i] = subject_id;
             e.rel_target_property[i] = target_property;
@@ -270,17 +216,17 @@
 
             e.object[0].style.border = "none";
 
-            // HEADER
-            let header_height = 100;
+            // BOX 1
+            add_relation(e, x0, 1, x0, 0, 300);
+            add_relation(e, x1, 1, x1, 0, -300);
+            add_relation(e, y0, 1, y0, 0, 300);
+            add_relation(e, y1, 1, y1, 0, -300);
 
-            add_relation(e, x0, 1, x0, 0, 0);
-            add_relation(e, x1, 1, x1, 0, 0);
-            add_relation(e, y0, 1, y0, 0, 0);
-            add_relation(e, y1, 1, y0, 0, header_height);
-
-            // MENU
-            add_relation(e, x0, 2, x0, 1, 25);
-            add_relation(e, y0, 2, y0, 1, (header_height / 2));
+            // BOX 2
+            add_relation(e, x0, 2, x0, 1, 100);
+            add_relation(e, x1, 2, x0, 2, 100);
+            add_relation(e, y0, 2, y0, 1, 100);
+            add_relation(e, y1, 2, y1, 1, -100);
         });
 
         function update_layout(e, l) {
