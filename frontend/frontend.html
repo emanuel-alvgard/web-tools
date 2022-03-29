@@ -37,7 +37,6 @@
 
             // RELATION 2D arrays
             rel_free: null,
-            rel_subject_id: [],
             rel_subject_property: [],
             rel_target_id: [],
             rel_target_property: [],
@@ -87,7 +86,6 @@
 
             DOM_elements(body_children, result);
             result.object.pop();
-            result.rel_free = queue_create(result.object.length);
 
             let len = result.object.length;
             result.property.push(new Float32Array(len));
@@ -100,25 +98,21 @@
             result.property.push(new Float32Array(len));
             result.property.push(new Float32Array(len));
 
-            result.rel_free.push(new Int8Array(len));
+            result.rel_free = new Int8Array(len);
             
             let i = 0;
             while (i < len) {
 
-                result.rel_subject_id.push(new Int32Array(result.property.length));
-                result.rel_subject_id.fill(-1);
-
                 result.rel_subject_property.push(new Int8Array(result.property.length));
-                result.rel_subject_property.fill(-1);
+                result.rel_subject_property[i].fill(-1);
 
                 result.rel_target_id.push(new Int32Array(result.property.length));
-                result.rel_target_id.fill(-1);
+                result.rel_target_id[i].fill(-1);
 
                 result.rel_target_property.push(new Int8Array(result.property.length));
-                result.rel_target_property.fill(-1);
+                result.rel_target_property[i].fill(-1);
 
                 result.rel_offset.push(new Int32Array(result.property.length));
-                result.rel_offset.fill(-1);
 
                 result.object[i].style.position = "absolute";
                 result.object[i].style.margin = "0px";
@@ -156,18 +150,19 @@
         // @DONE
         function add_relation(e, subject_property, subject_id, target_property, target_id, offset) {
 
-            if (e.rel_free[subject_id] >= e.subject_property[subject_id].length) { return -1; }
-            // @HERE
-            e.rel_subject_property[i] = subject_property;
-            e.rel_subject_id[i] = subject_id;
-            e.rel_target_property[i] = target_property;
-            e.rel_target_id[i] = target_id;
+            if (e.rel_free[subject_id] >= e.rel_subject_property[subject_id].length) { return -1; }
+            let i = e.rel_free[subject_id];
+            e.rel_subject_property[subject_id][i] = subject_property;
+            e.rel_target_property[subject_id][i] = target_property;
+            e.rel_target_id[subject_id][i] = target_id;
+            e.rel_free[subject_id] += 1;
             return i;
         }
 
         function enable_relation() { }
         function disable_relation() { }
 
+        // @NOT
         function remove_relation(e, index) {
 
             e.rel_offset[index] = 0;
@@ -175,29 +170,32 @@
             e.rel_subject_id[index] = -1;
             e.rel_target_property[index] = -1;
             e.rel_target_id[index] = -1;
-            queue_add(index, e.rel_free);
         }
 
         // @DONE
         function update_relations(e) {
 
-            let len = e.rel_subject_id.length;
+            let len_1 = e.rel_subject_property.length;
             let i = 0;
-            while (i < len) {
-                if (e.rel_subject_id[i] === -1) { i += 1; continue; }
+            while (i < len_1) {
+                let len_2 = e.rel_subject_property[i].length;
+                let j = 0;
+                while (j < len_2) {
+                    if (e.rel_subject_property[i][j] === -1) { break; }
+                    
+                    // UPDATE
+                    e.property[e.rel_subject_property[i][j]][i] =
+                    e.property[e.rel_target_property[i][j]][i] + 
+                    e.rel_offset[j][i];
 
-                // UPDATE
-                e.property[e.rel_subject_property[i]][e.rel_subject_id[i]] =
-                e.property[e.rel_target_property[i]][e.rel_target_id[i]] + 
-                e.rel_offset[i];
-
-                // REMOVE
-                e.rel_offset[i] = 0;
-                e.rel_subject_property[i] = -1;
-                e.rel_subject_id[i] = -1;
-                e.rel_target_property[i] = -1;
-                e.rel_target_id[i] = -1;
-                queue_add(i, e.rel_free);
+                    // REMOVE
+                    e.rel_subject_property[i][j] = -1;
+                    e.rel_target_property[i][j] = -1;
+                    e.rel_target_id[i][j] = -1;
+                    e.rel_offset[i][j] = 0;
+                    j += 1;
+                }
+                e.rel_free[i] = 0;
                 i += 1;
             }
         }
