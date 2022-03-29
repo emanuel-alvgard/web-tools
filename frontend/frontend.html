@@ -82,6 +82,7 @@
             return result;
         }
 
+        // PROPERTIES
         const x0 = 0; // position
         const x1 = 1; // dimension
         const x2 = 2; // rotation
@@ -92,8 +93,23 @@
         const z1 = 7;
         const z2 = 8;
 
-        // SPATIAL ENGINE
         let body = document.body;
+
+        let elements = {
+            object: [],
+            property: [[], [], [], [], [], [], [], [], []],
+
+            // RELATION
+            rel_free: null,
+
+            rel_subject_id: [],
+            rel_subject_property: [],
+            rel_target_id: [],
+            rel_target_property: [],
+            rel_offset: []
+        }
+
+        let layouts = [];
 
         function init_body(b) {
             b.style.margin = "0px";
@@ -115,22 +131,6 @@
             if (b.style.width !== width) { b.style.width = width + "px"; }
             if (b.style.height !== height) { b.style.height = height + "px"; }
         }
-
-
-        let elements = {
-            object: [],
-            property: [[], [], [], [], [], [], [], [], []],
-
-            // RELATION
-            rel_free: null,
-
-            rel_subject_id: [],
-            rel_subject_property: [],
-            rel_target_id: [],
-            rel_target_property: [],
-            rel_offset: []
-        }
-
 
         // @DONE
         function DOM_elements(e, result) {
@@ -206,7 +206,7 @@
 
 
         // RELATION
-        // @HERE
+        // @DONE
         function add_relation(e, subject_property, subject_id, target_property, target_id, offset) {
 
             let i = queue_remove(e.rel_free);
@@ -232,7 +232,7 @@
             queue_add(index, e.rel_free);
         }
 
-        // @NOT
+        // @DONE
         function update_relations(e) {
 
             let len = e.rel_subject_id.length;
@@ -264,18 +264,15 @@
             update_relations(e);
         }
 
-        let layouts = [];
-
         layouts.push(function (e) {
 
-            // start with checking dimensions of root element, if not appropriate return
+            if (e.property[x1][0] > 2000) { return; }
 
             e.object[0].style.border = "none";
 
             // HEADER
             let header_height = 100;
 
-            // add this to a layout function
             add_relation(e, x0, 1, x0, 0, 0);
             add_relation(e, x1, 1, x1, 0, 0);
             add_relation(e, y0, 1, y0, 0, 0);
