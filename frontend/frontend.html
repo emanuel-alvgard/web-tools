@@ -155,7 +155,7 @@
 
 
         // RELATION
-        // @DONE
+        // @CHANGE only one relation / element / property
         function relation(e, subject_property, subject_id, target_property, target_id, offset) {
 
             if (e.rel_free[subject_id] >= e.rel_active[subject_id].length) { return -1; }
@@ -180,7 +180,7 @@
         function curve_quad(samples) {}
         function curve_cube(samples) {}
 
-        // @NOT
+        // @CHANGE only one relation / element / property
         function animation(e, property, id, start, end, speed, curve, delta) {
             if (e.anim_free[id] >= e.anim_active[id].length) { return -1; }
             let i = e.anim_free[id];
@@ -191,7 +191,6 @@
             e.anim_curve[id][i] = curve;
             e.anim_active[id][i] = 1;
             e.anim_free[i] += 1;
-
         }
 
         function update_animations() {}
