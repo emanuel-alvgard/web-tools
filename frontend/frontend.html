@@ -129,6 +129,7 @@
 
         }
 
+
         init_elements(body.children, elements);
 
         function render(e) {
@@ -143,7 +144,6 @@
             while (i < len) { e.object[i].style.transform = "translate(" + e.property[x0][i] + "px, " + e.property[y0][i] + "px) " + "rotate(" + e.property[z2][i] + "deg)"; i += 1; } i = 0;
         }
 
-        console.log(elements);
 
 
         // RELATION
@@ -155,10 +155,11 @@
             e.rel_subject_property[subject_id][i] = subject_property;
             e.rel_target_property[subject_id][i] = target_property;
             e.rel_target_id[subject_id][i] = target_id;
+            e.rel_offset[subject_id][i] = offset;
             e.rel_free[subject_id] += 1;
             return i;
         }
-
+        
         function enable_relation() { }
         function disable_relation() { }
 
@@ -172,12 +173,14 @@
             e.rel_target_id[index] = -1;
         }
 
+        
         // @DONE
         function update_relations(e) {
 
             let len_1 = e.rel_subject_property.length;
             let i = 0;
             while (i < len_1) {
+
                 let len_2 = e.rel_subject_property[i].length;
                 let j = 0;
                 while (j < len_2) {
@@ -185,8 +188,8 @@
                     
                     // UPDATE
                     e.property[e.rel_subject_property[i][j]][i] =
-                    e.property[e.rel_target_property[i][j]][i] + 
-                    e.rel_offset[j][i];
+                        e.property[e.rel_target_property[i][j]][e.rel_target_id[i][j]] +
+                        e.rel_offset[i][j];
 
                     // REMOVE
                     e.rel_subject_property[i][j] = -1;
@@ -248,7 +251,7 @@
         }
 
         main();
-
+    
     </script>
 </body>
 </html>
