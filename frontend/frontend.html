@@ -49,6 +49,7 @@
             anim_property: [],
             anim_start: [],
             anim_end: [],
+            anim_speed: [],
             anim_curve: [],
             anim_progress: [],
             anim_sample: [],
@@ -157,7 +158,7 @@
         // @DONE
         function relation(e, subject_property, subject_id, target_property, target_id, offset) {
 
-            if (e.rel_free[subject_id] >= e.rel_subject_property[subject_id].length) { return -1; }
+            if (e.rel_free[subject_id] >= e.rel_active[subject_id].length) { return -1; }
             let i = e.rel_free[subject_id];
             e.rel_subject_property[subject_id][i] = subject_property;
             e.rel_target_property[subject_id][i] = target_property;
@@ -175,20 +176,36 @@
 
 
         // ANIMATION
-        // add_animation(elements, property, id, start, end, speed, curve, delta);
+        function curve_line(samples) {}
+        function curve_quad(samples) {}
+        function curve_cube(samples) {}
 
+        // @NOT
+        function animation(e, property, id, start, end, speed, curve, delta) {
+            if (e.anim_free[id] >= e.anim_active[id].length) { return -1; }
+            let i = e.anim_free[id];
+            e.anim_property[id][i] = property;
+            e.anim_start[id][i] = start;
+            e.anim_end[id][i] = end;
+            e.anim_speed[id][i] = speed;
+            e.anim_curve[id][i] = curve;
+            e.anim_active[id][i] = 1;
+            e.anim_free[i] += 1;
 
+        }
+
+        function update_animations() {}
 
 
         
         // @DONE
         function update_relations(e) {
 
-            let len_1 = e.rel_subject_property.length;
+            let len_1 = e.rel_active.length;
             let i = 0;
             while (i < len_1) {
 
-                let len_2 = e.rel_subject_property[i].length;
+                let len_2 = e.rel_active[i].length;
                 let j = 0;
                 while (j < len_2) {
                     if (e.rel_active[i][j] === 0) { break; }
