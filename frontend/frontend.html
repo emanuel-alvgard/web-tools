@@ -33,14 +33,25 @@
 
         let elements = {
             object: [],
-            property: [], // 2D array
+            property: [],
 
-            // RELATION 2D arrays
+            // RELATION
             rel_free: null,
+            rel_active: [],
             rel_subject_property: [],
             rel_target_id: [],
             rel_target_property: [],
-            rel_offset: []
+            rel_offset: [],
+
+            // ANIMATION
+            anim_free: null,
+            anim_active: [],
+            anim_property: [],
+            anim_start: [],
+            anim_end: [],
+            anim_curve: [],
+            anim_progress: [],
+            anim_sample: [],
         }
 
         let layouts = [];
@@ -103,15 +114,11 @@
             let i = 0;
             while (i < len) {
 
+                // RELATION
+                result.rel_active.push(new Int8Array(result.property.length));
                 result.rel_subject_property.push(new Int8Array(result.property.length));
-                result.rel_subject_property[i].fill(-1);
-
                 result.rel_target_id.push(new Int32Array(result.property.length));
-                result.rel_target_id[i].fill(-1);
-
                 result.rel_target_property.push(new Int8Array(result.property.length));
-                result.rel_target_property[i].fill(-1);
-
                 result.rel_offset.push(new Int32Array(result.property.length));
 
                 result.object[i].style.position = "absolute";
@@ -148,7 +155,7 @@
 
         // RELATION
         // @DONE
-        function add_relation(e, subject_property, subject_id, target_property, target_id, offset) {
+        function relation(e, subject_property, subject_id, target_property, target_id, offset) {
 
             if (e.rel_free[subject_id] >= e.rel_subject_property[subject_id].length) { return -1; }
             let i = e.rel_free[subject_id];
@@ -156,22 +163,22 @@
             e.rel_target_property[subject_id][i] = target_property;
             e.rel_target_id[subject_id][i] = target_id;
             e.rel_offset[subject_id][i] = offset;
+            e.rel_active[subject_id][i] = 1;
             e.rel_free[subject_id] += 1;
             return i;
         }
         
-        function enable_relation() { }
-        function disable_relation() { }
+        // @DONE
+        function activate_relation(e, relation, id) { e.rel_active[id][relation] = 1 }
+        function deactivate_relation(e, relation, id) { e.rel_active[id][relation] = 0 }
 
-        // @NOT
-        function remove_relation(e, index) {
 
-            e.rel_offset[index] = 0;
-            e.rel_subject_property[index] = -1;
-            e.rel_subject_id[index] = -1;
-            e.rel_target_property[index] = -1;
-            e.rel_target_id[index] = -1;
-        }
+
+        // ANIMATION
+        // add_animation(elements, property, id, start, end, speed, curve, delta);
+
+
+
 
         
         // @DONE
@@ -184,7 +191,7 @@
                 let len_2 = e.rel_subject_property[i].length;
                 let j = 0;
                 while (j < len_2) {
-                    if (e.rel_subject_property[i][j] === -1) { break; }
+                    if (e.rel_active[i][j] === 0) { break; }
                     
                     // UPDATE
                     e.property[e.rel_subject_property[i][j]][i] =
@@ -192,10 +199,11 @@
                         e.rel_offset[i][j];
 
                     // REMOVE
-                    e.rel_subject_property[i][j] = -1;
-                    e.rel_target_property[i][j] = -1;
-                    e.rel_target_id[i][j] = -1;
+                    e.rel_subject_property[i][j] = 0;
+                    e.rel_target_property[i][j] = 0;
+                    e.rel_target_id[i][j] = 0;
                     e.rel_offset[i][j] = 0;
+                    e.rel_active[i][j] = 0;
                     j += 1;
                 }
                 e.rel_free[i] = 0;
@@ -218,16 +226,16 @@
             e.object[0].style.border = "none";
 
             // BOX 1
-            add_relation(e, x0, 1, x0, 0, 300);
-            add_relation(e, x1, 1, x1, 0, -300);
-            add_relation(e, y0, 1, y0, 0, 300);
-            add_relation(e, y1, 1, y1, 0, -300);
+            relation(e, x0, 1, x0, 0, 300);
+            relation(e, x1, 1, x1, 0, -300);
+            relation(e, y0, 1, y0, 0, 300);
+            relation(e, y1, 1, y1, 0, -300);
 
             // BOX 2
-            add_relation(e, x0, 2, x0, 1, 100);
-            add_relation(e, x1, 2, x0, 2, 100);
-            add_relation(e, y0, 2, y0, 1, 100);
-            add_relation(e, y1, 2, y1, 1, -100);
+            relation(e, x0, 2, x0, 1, 100);
+            relation(e, x1, 2, x0, 2, 100);
+            relation(e, y0, 2, y0, 1, 100);
+            relation(e, y1, 2, y1, 1, -100);
         });
 
         function update_layout(e, l) {
