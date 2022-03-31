@@ -127,6 +127,13 @@
                 result.rel_target_property.push(new Int8Array(result.property.length));
                 result.rel_offset.push(new Int32Array(result.property.length));
 
+                // ANIMATION //@HERE
+                result.anim_active.push(new Int8Array(result.property.length));
+                result.anim_property.push(new Int8Array(result.property.length));
+                result.anim_start.push(new Float32Array(result.property.length));
+                result.anim_end.push(new Float32Array(result.property.length));
+                result.anim_time.push(new Float64Array(result.property.length));
+
                 result.object[i].style.position = "absolute";
                 result.object[i].style.margin = "0px";
                 result.object[i].style.padding = "0px";
@@ -182,7 +189,7 @@
         function curve_cube(samples) {}
 
         // @NOT
-        function add_animation(e, property, id, start, end, time, curve, delta) {
+        function add_animation(e, property, id, start, end, time, curve) {
             if (e.anim_active[id][property] === 1) { return -1; }
             e.anim_property[id][property] = property;
             e.anim_start[id][property] = start;
@@ -210,7 +217,10 @@
             if (e.anim_timer[i][j] >= e.anim_time[i][j] || e.anim_progress[i][j] >= (e.anim_start[i][j] - e.anim_end[i][j])) { 
                 if (end < start) { e.property[j][i] = (e.anim_end[i][j] * -1); }
                 else { e.property[j][i] = e.anim_end[i][j]; }
-                // remove animation and reset all anim properties
+                e.anim_progress[i][j] = 0;
+                e.anim_timer[i][j] = 0;
+                e.anim_sample[i][j] = 0;
+                e.anim_active[i][j] = 0;
                 return;
             }
 
@@ -228,12 +238,6 @@
             e.property[e.rel_property[i][j]][i] =
                 e.property[e.rel_target_property[i][j]][e.rel_target_id[i][j]] +
                 e.rel_offset[i][j];
-
-            // REMOVE
-            e.rel_property[i][j] = 0;
-            e.rel_target_property[i][j] = 0;
-            e.rel_target_id[i][j] = 0;
-            e.rel_offset[i][j] = 0;
             e.rel_active[i][j] = 0;
             return;
         }
@@ -246,7 +250,7 @@
                 let j = 0;
                 while (j < e.property.length) {
                     update_relation(e, i, j);
-                    //update_animation(e, i, j, b.delta);
+                    update_animation(e, i, j, b.delta);
                     j += 1;
                 }
                 i += 1;
@@ -278,6 +282,9 @@
             add_relation(e, x1, 2, x1, 1, -100);
             add_relation(e, y0, 2, y0, 1, 100);
             add_relation(e, y1, 2, y1, 1, -100);
+
+            // BOX 3
+            add_animation(e, x0, 3, 0, 500, 5000, null);
         });
 
         function update_layout(l, e) {
