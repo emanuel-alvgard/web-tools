@@ -29,7 +29,11 @@
         const z1 = 7;
         const z2 = 8;
 
-        let body = document.body;
+        let body = {
+            object: document.body,
+            time: performance.now(),
+            delta: 0
+        }
 
         let elements = {
             object: [],
@@ -47,20 +51,21 @@
             anim_property: [],
             anim_start: [],
             anim_end: [],
-            anim_speed: [],
+            anim_time: [],
             anim_curve: [],
             anim_progress: [],
+            anim_timer: [],
             anim_sample: [],
         }
 
         let layouts = [];
 
         function init_body(b) {
-            b.style.margin = "0px";
-            b.style.padding = "0px";
-            b.style.left = "0px";
-            b.style.top = "0px";
-            b.style.overflow = "hidden";
+            b.object.style.margin = "0px";
+            b.object.style.padding = "0px";
+            b.object.style.left = "0px";
+            b.object.style.top = "0px";
+            b.object.style.overflow = "hidden";
         }
 
         init_body(body);
@@ -68,12 +73,16 @@
 
         function update_body(b) {
 
+            let time = performance.now();
+            b.delta = time - b.time;
+            b.time = time;
+
             width = document.documentElement.clientWidth + "";
             height = document.documentElement.clientHeight + "";
 
             // RESIZE EVENT
-            if (b.style.width !== width) { b.style.width = width + "px"; }
-            if (b.style.height !== height) { b.style.height = height + "px"; }
+            if (b.object.style.width !== width) { b.object.style.width = width + "px"; }
+            if (b.object.style.height !== height) { b.object.style.height = height + "px"; }
         }
 
         // @DONE
@@ -134,7 +143,7 @@
         }
 
 
-        init_elements(body.children, elements);
+        init_elements(body.object.children, elements);
 
         function render(e) {
 
@@ -165,10 +174,6 @@
         
         function remove_relation(e, relation, id) {}
 
-        // @DONE
-        function activate_relation(e, relation, id) { e.rel_active[id][relation] = 1 }
-        function deactivate_relation(e, relation, id) { e.rel_active[id][relation] = 0 }
-
 
 
         // ANIMATION
@@ -177,57 +182,83 @@
         function curve_cube(samples) {}
 
         // @NOT
-        function add_animation(e, property, id, start, end, speed, curve, delta) {
+        function add_animation(e, property, id, start, end, time, curve, delta) {
             if (e.anim_active[id][property] === 1) { return -1; }
             e.anim_property[id][property] = property;
             e.anim_start[id][property] = start;
             e.anim_end[id][property] = end;
-            e.anim_speed[id][property] = speed;
+            e.anim_time[id][property] = time;
             e.anim_curve[id][property] = curve;
             e.anim_active[id][property] = 1;
             return 0;
         }
         function remove_animation(e, relation, id) {}
-        
-        function update_animations() {}
 
-
+        function activate_animation() {}
+        function deactivate_animation() {}
         
+        function update_animation(e, i, j, delta) {
+            
+            if (e.anim_active[i][j] === 0) { return; }
+            let start = e.anim_start[i][j];
+            let end = e.anim_end[i][j];
+            
+            // INVERT
+            if (end < start) { start *= -1; end *= -1; }
+
+            // ANIMATION DONE
+            if (e.anim_timer[i][j] >= e.anim_time[i][j] || e.anim_progress[i][j] >= (e.anim_start[i][j] - e.anim_end[i][j])) { 
+                if (end < start) { e.property[j][i] = (e.anim_end[i][j] * -1); }
+                else { e.property[j][i] = e.anim_end[i][j]; }
+                // remove animation and reset all anim properties
+                return;
+            }
+
+            // CALCULATE
+            e.anim_timer[i][j] += delta;
+            
+            // if (property - start) >= (distance / curve.length) * curve[sample]  sample += 1
+        }
+
+        function update_relation(e, i, j) {
+
+            if (e.rel_active[i][j] === 0) { return; }
+
+            // UPDATE
+            e.property[e.rel_property[i][j]][i] =
+                e.property[e.rel_target_property[i][j]][e.rel_target_id[i][j]] +
+                e.rel_offset[i][j];
+
+            // REMOVE
+            e.rel_property[i][j] = 0;
+            e.rel_target_property[i][j] = 0;
+            e.rel_target_id[i][j] = 0;
+            e.rel_offset[i][j] = 0;
+            e.rel_active[i][j] = 0;
+            return;
+        }
+
         // @DONE
-        function update_relations(e) {
+        function update_systems(e, b) {
 
-            let len_1 = e.rel_active.length;
             let i = 0;
-            while (i < len_1) {
-
-                let len_2 = e.rel_active[i].length;
+            while (i < e.property[0].length) {
                 let j = 0;
-                while (j < len_2) {
-                    if (e.rel_active[i][j] === 0) { j += 1; continue; }
-                    
-                    // UPDATE
-                    e.property[e.rel_property[i][j]][i] =
-                        e.property[e.rel_target_property[i][j]][e.rel_target_id[i][j]] +
-                        e.rel_offset[i][j];
-
-                    // REMOVE
-                    e.rel_property[i][j] = 0;
-                    e.rel_target_property[i][j] = 0;
-                    e.rel_target_id[i][j] = 0;
-                    e.rel_offset[i][j] = 0;
-                    e.rel_active[i][j] = 0;
+                while (j < e.property.length) {
+                    update_relation(e, i, j);
+                    //update_animation(e, i, j, b.delta);
                     j += 1;
                 }
                 i += 1;
             }
         }
 
-        function update_elements(e) {
+        function update_elements(e, b) {
 
             e.property[x1][0] = document.documentElement.clientWidth;
             e.property[y1][0] = document.documentElement.clientHeight;
 
-            update_relations(e);
+            update_systems(e, b);
         }
 
         layouts.push(function (e) {
@@ -249,7 +280,7 @@
             add_relation(e, y1, 2, y1, 1, -100);
         });
 
-        function update_layout(e, l) {
+        function update_layout(l, e) {
 
             let len = l.length;
             let i = 0;
@@ -261,11 +292,10 @@
 
         function main() {
 
+            update_layout(layouts, elements);
             update_body(body);
-            update_layout(elements, layouts);
-            update_elements(elements);
+            update_elements(elements, body);
             render(elements);
-
             window.requestAnimationFrame(main);
         }
 
