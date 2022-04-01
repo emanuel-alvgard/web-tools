@@ -127,12 +127,17 @@
                 result.rel_target_property.push(new Int8Array(result.property.length));
                 result.rel_offset.push(new Int32Array(result.property.length));
 
-                // ANIMATION //@HERE
+                // ANIMATION
                 result.anim_active.push(new Int8Array(result.property.length));
                 result.anim_property.push(new Int8Array(result.property.length));
                 result.anim_start.push(new Float32Array(result.property.length));
                 result.anim_end.push(new Float32Array(result.property.length));
                 result.anim_time.push(new Float64Array(result.property.length));
+                result.anim_curve.push([]);
+                result.anim_curve[i].fill([]);
+                result.anim_progress.push(new Float32Array(result.property.length));
+                result.anim_timer.push(new Float64Array(result.property.length));
+                result.anim_sample.push(new Int32Array(result.property.length));
 
                 result.object[i].style.position = "absolute";
                 result.object[i].style.margin = "0px";
@@ -226,7 +231,9 @@
 
             // CALCULATE
             e.anim_timer[i][j] += delta;
-            
+            let progress = ((e.anim_end[i][j] - e.anim_start[i][j]) / e.anim_time[i][j]) * delta;
+            e.anim_progress[i][j] += progress;
+            e.property[j][i] += progress;
             // if (property - start) >= (distance / curve.length) * curve[sample]  sample += 1
         }
 
