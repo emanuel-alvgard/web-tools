@@ -1,9 +1,9 @@
 {
   "ExpandedNodes": [
     "",
-    "\\frontend",
-    "\\server"
+    "\\server",
+    "\\src"
   ],
-  "SelectedNode": "\\frontend\\frontend.html",
+  "SelectedNode": "\\src\\tasks.html",
   "PreviewInSolutionExplorer": false
 }
