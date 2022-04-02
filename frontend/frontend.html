@@ -157,6 +157,8 @@
 
         init_elements(body.object.children, elements);
 
+        console.log(elements);
+
         function render(e) {
 
             let i = 0;
@@ -196,6 +198,7 @@
         // @NOT
         function add_animation(e, property, id, start, end, time, curve) {
             if (e.anim_active[id][property] === 1) { return -1; }
+            e.property[property][id] = start;
             e.anim_property[id][property] = property;
             e.anim_start[id][property] = start;
             e.anim_end[id][property] = end;
@@ -214,12 +217,14 @@
             if (e.anim_active[i][j] === 0) { return; }
             let start = e.anim_start[i][j];
             let end = e.anim_end[i][j];
-            
+
             // INVERT
-            if (end < start) { start *= -1; end *= -1; }
+            if (end < start) { start = e.anim_end[i][j]; end = e.anim_start[i][j]; }
+            let distance = end - start;
 
             // ANIMATION DONE
-            if (e.anim_timer[i][j] >= e.anim_time[i][j] || e.anim_progress[i][j] >= (e.anim_start[i][j] - e.anim_end[i][j])) { 
+            if (e.anim_timer[i][j] >= e.anim_time[i][j] || e.anim_progress[i][j] >= distance) { 
+                // @HERE
                 if (end < start) { e.property[j][i] = (e.anim_end[i][j] * -1); }
                 else { e.property[j][i] = e.anim_end[i][j]; }
                 e.anim_progress[i][j] = 0;
@@ -231,7 +236,7 @@
 
             // CALCULATE
             e.anim_timer[i][j] += delta;
-            let progress = ((e.anim_end[i][j] - e.anim_start[i][j]) / e.anim_time[i][j]) * delta;
+            let progress = (distance / e.anim_time[i][j]) * delta;
             e.anim_progress[i][j] += progress;
             e.property[j][i] += progress;
             // if (property - start) >= (distance / curve.length) * curve[sample]  sample += 1
@@ -291,7 +296,7 @@
             add_relation(e, y1, 2, y1, 1, -100);
 
             // BOX 3
-            add_animation(e, x0, 3, 0, 500, 5000, null);
+            add_animation(e, x0, 3, 500, 0, 5000, null);
         });
 
         function update_layout(l, e) {
