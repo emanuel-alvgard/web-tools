@@ -21,12 +21,12 @@
         // @TODO
         // change e to t (type)
         // add delay parameter to animation
-        // split relation into link and lock
-        // rename animation to animate? add mode paramater (START, STOP, CANCEL)
-        // rename layout to view?
+        // rename animation´add mode paramater (RUN, STOP, CANCEL)
+        // relation and connection should have min and max
 
+        // init function = type definition
 
-        // PROPERTIES
+        // SPATIAL PROPERTIES
         const x0 = 0; // position
         const x1 = 1; // dimension
         const x2 = 2; // rotation
@@ -37,21 +37,26 @@
         const z1 = 7;
         const z2 = 8;
 
+        let object = []; // find out where this should be
+
+        let web_gl = {} // Web GL
+        let dom = {} // Document Object Model
+
         let body = {
             object: document.body,
             time: performance.now(),
             delta: 0
         }
 
-        let elements = {
-            object: [],
-            property: [],
+        let view = {
+            e: [], // events
+            p: [], // properties
 
             // RELATION
             rel_active: [],
-            rel_property: [],
-            rel_target_id: [],
-            rel_target_property: [],
+            rel_prop_1: [],
+            rel_id_2: [],
+            rel_prop_2: [],
             rel_offset: [],
 
             // ANIMATION
@@ -68,6 +73,8 @@
 
         let layouts = [];
 
+
+        // DOM RENDER TARGET
         function init_body(b) {
             b.object.style.margin = "0px";
             b.object.style.padding = "0px";
@@ -94,7 +101,7 @@
         }
 
         // @DONE
-        function DOM_elements(e, result) {
+        function init_DOM(e, result) {
             let i = 0;
             while (i < e.length) {
               
@@ -108,8 +115,9 @@
             return 0;
         }
 
-        // @DONE
-        function init_elements(body_children, result) {
+        // ELEMENT TYPE
+        // @NOT
+        function init_element(size, result) {
 
             DOM_elements(body_children, result);
             result.object.pop();
@@ -167,7 +175,7 @@
 
         console.log(elements);
 
-        function render(e) {
+        function DOM_render(e) {
 
             let i = 0;
             let len = e.object.length;
@@ -181,9 +189,9 @@
 
 
 
-        // RELATION
-        // @DONE
-        function add_relation(e, property, id, target_property, target_id, offset) {
+        // CONNECTION
+        // @NOT
+        function con(t1, i1, p1, t2, i2, p2, offset, min, max) { // this both creates and updates the relation when called.
 
             if (e.rel_active[id][property] === 1) { return -1; }
             e.rel_property[id][property] = property;
@@ -194,17 +202,18 @@
             return 0;
         }
         
-        function remove_relation(e, relation, id) {}
 
+
+        // RELATION
 
 
         // ANIMATION
-        function curve_line(samples) {}
-        function curve_quad(samples) {}
-        function curve_cube(samples) {}
+        function curve_line(samples) {} // LINEAR
+        function curve_quad(samples) {} // QUADRATIC
+        function curve_cube(samples) {} // CUBIC
 
         // @NOT
-        function add_animation(e, property, id, start, end, time, curve) {
+        function anim(e, property, id, start, end, time, delay, curve) {
             if (e.anim_active[id][property] === 1) { return -1; }
             e.property[property][id] = start;
             e.anim_property[id][property] = property;
@@ -215,10 +224,6 @@
             e.anim_active[id][property] = 1;
             return 0;
         }
-        function remove_animation(e, relation, id) {}
-
-        function activate_animation() {}
-        function deactivate_animation() {}
         
         function update_animation(e, i, j, delta) {
             
@@ -270,7 +275,7 @@
                 let j = 0;
                 while (j < e.property.length) {
                     update_relation(e, i, j);
-                    update_animation(e, i, j, b.delta);
+                    //update_animation(e, i, j, b.delta);
                     j += 1;
                 }
                 i += 1;
@@ -287,6 +292,10 @@
 
         let views = []; //??? store persistent layout data
 
+
+
+
+        // CREATING TEMPORAL ENTITIES
         layouts.push(function (e) {
 
             if (e.property[x1][0] > 2000) { return; }
@@ -294,18 +303,18 @@
             e.object[0].style.border = "none";
 
             // BOX 1
-            add_relation(e, x0, 1, x0, 0, 300);
-            add_relation(e, x1, 1, x1, 0, -300);
-            add_relation(e, y0, 1, y0, 0, 300);
-            add_relation(e, y1, 1, y1, 0, -300);
+            con(e, x0, 1, x0, 0, 300);
+            con(e, x1, 1, x1, 0, -300);
+            con(e, y0, 1, y0, 0, 300);
+            con(e, y1, 1, y1, 0, -300);
 
             // BOX 2
-            add_relation(e, x1, 2, x0, 2, 200);
-            add_relation(e, y0, 2, y0, 1, 100);
-            add_relation(e, y1, 2, y1, 1, -100);
+            con(e, x1, 2, x0, 2, 200);
+            con(e, y0, 2, y0, 1, 100);
+            con(e, y1, 2, y1, 1, -100);
 
             // BOX 3
-            add_animation(e, x0, 2, 300, 1000, 3000, null);
+            //anim(e, x0, 2, 300, 1000, 3000, 0, null);
         });
 
         function update_layouts(l, e) {
