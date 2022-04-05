@@ -26,16 +26,20 @@
 
         // init function = type definition
 
-        // SPATIAL PROPERTIES
-        const x0 = 0; // position
-        const x1 = 1; // dimension
-        const x2 = 2; // rotation
-        const y0 = 3;
-        const y1 = 4;
-        const y2 = 5;
-        const z0 = 6;
-        const z1 = 7;
-        const z2 = 8;
+        // VIEW TYPE
+        const view = {
+            x0: 0, // position
+            x1: 1, // dimension
+            x2: 2, // rotation
+            y0: 3,
+            y1: 4,
+            y2: 5,
+            z0: 6,
+            z1: 7,
+            z2: 8
+        }
+
+        const 
 
         // VISUAL PROPERTIES
         const color; // etc.
@@ -51,7 +55,8 @@
             delta: 0
         }
 
-        let view = {
+        // This structure is used for all defined types
+        let type = {
             e: [], // events
             p: [], // properties
 
@@ -76,8 +81,6 @@
             anim_timer: [],
             anim_sample: [],
         }
-
-        let layouts = [];
 
 
         // DOM RENDER TARGET
