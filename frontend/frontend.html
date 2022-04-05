@@ -18,6 +18,10 @@
 
     <script>
 
+        // @GOALS
+        // generic way to call connection, relation and animation through passing of array indicies
+        // 
+
         // @TODO
         // change e to t (type)
         // add delay parameter to animation
@@ -58,25 +62,11 @@
         // This structure is used for all defined types
         let type = {
             e: [], // events
-            p: [], // properties
-
-            // CONNECTION
-            rel_active: [],
-            rel_prop_1: [],
-            rel_id_2: [],
-            rel_prop_2: [],
-            rel_offset: [],
-
-            // REALTION
-
+            p: [], // properties current frame
+            prev: [], // properties previous frame
 
             // ANIMATION
-            anim_active: [],
-            anim_property: [],
-            anim_start: [],
-            anim_end: [],
-            anim_time: [],
-            anim_curve: [],
+            anim_running: [],
             anim_progress: [],
             anim_timer: [],
             anim_sample: [],
