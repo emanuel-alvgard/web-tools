@@ -12,6 +12,9 @@
 
     <script>
 
+        let delta = 0;
+        let time = performance.now();
+
         let elements = [document.getElementsByClassName("b-hero-page-content")[0]];
 
         let x = [0];
@@ -52,6 +55,7 @@
         let e_time_current = 5;
         let e_time_left = 6;
 
+        let playing = 0;
         let time_max = 180000;
         let time_current = 0;
         let time_left = 0;
@@ -63,7 +67,9 @@
         // INIT
 
         // e_play_button
-
+        background_color[1] = [200, 200, 200, 1];
+        width[1] = 100;
+        height[1] = 100;
 
         // e_progress_bar
         background_color[2] = [200, 200, 200, 1];
@@ -111,6 +117,12 @@
             mouse_pos = event.clientX;
         });
 
+        elements[1].addEventListener("mousedown", function (event) {
+            if (playing === 1) { playing = 0; }
+            else { playing = 1; }
+        });
+
+
         elements[2].addEventListener("mousedown", function (event) {
             click = 1;
         });
@@ -130,6 +142,10 @@
 
         function update_player() {
 
+            // e_play_button
+            x[1] = (width[0] * 0.5) - (width[1] * 0.5);
+            y[1] = (height[0] * 0.5) - (height[1] * 0.5);
+
             // e_progress_bar
             width[2] = (width[0] - x[2]) - 50;
             y[2] = height[0] - (height[2] / 2);
@@ -143,12 +159,15 @@
             else if (width[3] < 0) { width[3] = 0; }
 
             // e_playhead
-            x[4] = (x[3] + width[3]) - (width[4] / 2);
-            y[4] = height[0] - (height[4] / 2);
+            x[4] = (x[3] + width[3]) - (width[4] * 0.5);
+            y[4] = height[0] - (height[4] * 0.5);
 
             // e_time_current
-            time_current = time_max * (width[3] / width[2]);
-
+            if (playing === 1) { time_current += delta; }
+            if (time_current > time_max) { time_current = time_max; }
+            if (click === 1 || drag === 1) {
+                time_current = time_max * (width[3] / width[2]);
+            }
             background_color[5] = [200, 200, 200, 0];
             height[5] = elements[e_time_current].clientHeight;
             x[5] = 50;
@@ -174,6 +193,10 @@
 
 
         function update() {
+
+            let new_time = performance.now();
+            delta = new_time - time;
+            time = new_time;
 
             // @TEST
             elements[0].style.width = (document.documentElement.clientWidth - 100) + "px";
