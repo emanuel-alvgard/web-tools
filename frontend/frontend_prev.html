@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>frontend</title>
+</head>
+<body style="opacity:1">
+
+    <div>
+        <div>hello</div>
+        <div>hello</div>
+        <div>hello</div>
+        <div>hello</div>
+        <div>hello</div>
+    </div>
+
+    <script>
+
+        // USEFUL VIEW ABSTRACTIONS
+        // feed (takes an array of views as input)
+
+        // @GOALS
+        // generic way to call connection, relation and animation through passing of array indicies
+        // 
+
+        // @TODO
+        // change e to t (type)
+        // add delay parameter to animation
+        // rename animation´add mode paramater (RUN, STOP, CANCEL)
+        // relation and connection should have min and max
+
+        // init function = type definition
+
+        // VIEW TYPE
+        const view = {
+            x0: 0, // position
+            x1: 1, // dimension
+            x2: 2, // rotation
+            y0: 3,
+            y1: 4,
+            y2: 5,
+            z0: 6,
+            z1: 7,
+            z2: 8
+        }
+
+        const 
+
+        // VISUAL PROPERTIES
+        const color; // etc.
+
+        let object = []; // find out where this should be
+
+        let web_gl = {} // Web GL
+        let dom = {} // Document Object Model
+
+        let body = {
+            object: document.body,
+            time: performance.now(),
+            delta: 0
+        }
+
+        // This structure is used for all defined types
+        let type = {
+            e: [], // events
+            p: [], // properties current frame
+            prev: [], // properties previous frame
+
+            // ANIMATION
+            anim_running: [],
+            anim_progress: [],
+            anim_timer: [],
+            anim_sample: [],
+        }
+
+
+        // DOM RENDER TARGET
+        function init_body(b) {
+            b.object.style.margin = "0px";
+            b.object.style.padding = "0px";
+            b.object.style.left = "0px";
+            b.object.style.top = "0px";
+            b.object.style.overflow = "hidden";
+        }
+
+        init_body(body);
+
+
+        function update_body(b) {
+
+            let time = performance.now();
+            b.delta = time - b.time;
+            b.time = time;
+
+            width = document.documentElement.clientWidth + "";
+            height = document.documentElement.clientHeight + "";
+
+            // RESIZE EVENT
+            if (b.object.style.width !== width) { b.object.style.width = width + "px"; }
+            if (b.object.style.height !== height) { b.object.style.height = height + "px"; }
+        }
+
+        // @DONE
+        function init_DOM(e, result) {
+            let i = 0;
+            while (i < e.length) {
+              
+                result.object.push(e[i]);
+
+                if (e[i].children.length > 0) {
+                    DOM_elements(e[i].children, result);
+                }
+                i += 1;
+            }
+            return 0;
+        }
+
+        // ELEMENT TYPE
+        // @NOT
+        function init_element(size, result) {
+
+            DOM_elements(body_children, result);
+            result.object.pop();
+
+            let len = result.object.length;
+            result.property.push(new Float32Array(len));
+            result.property.push(new Float32Array(len));
+            result.property.push(new Float32Array(len));
+            result.property.push(new Float32Array(len));
+            result.property.push(new Float32Array(len));
+            result.property.push(new Float32Array(len));
+            result.property.push(new Float32Array(len));
+            result.property.push(new Float32Array(len));
+            result.property.push(new Float32Array(len));
+            
+            let i = 0;
+            while (i < len) {
+
+                // RELATION
+                result.rel_active.push(new Int8Array(result.property.length));
+                result.rel_property.push(new Int8Array(result.property.length));
+                result.rel_target_id.push(new Int32Array(result.property.length));
+                result.rel_target_property.push(new Int8Array(result.property.length));
+                result.rel_offset.push(new Int32Array(result.property.length));
+
+                // ANIMATION
+                result.anim_active.push(new Int8Array(result.property.length));
+                result.anim_property.push(new Int8Array(result.property.length));
+                result.anim_start.push(new Float32Array(result.property.length));
+                result.anim_end.push(new Float32Array(result.property.length));
+                result.anim_time.push(new Float64Array(result.property.length));
+                result.anim_curve.push([]);
+                result.anim_curve[i].fill([]);
+                result.anim_progress.push(new Float32Array(result.property.length));
+                result.anim_timer.push(new Float64Array(result.property.length));
+                result.anim_sample.push(new Int32Array(result.property.length));
+
+                result.object[i].style.position = "absolute";
+                result.object[i].style.margin = "0px";
+                result.object[i].style.padding = "0px";
+                result.object[i].style.border = "solid";
+                result.object[i].style.left = "0px";
+                result.object[i].style.top = "0px";
+                result.object[i].style.width = "0px";
+                result.object[i].style.height = "0px";
+                result.object[i].style.zIndex = "0";
+                result.object[i].style.overflow = "hidden";
+                i += 1;
+            }
+
+        }
+
+
+        init_elements(body.object.children, elements);
+
+        console.log(elements);
+
+        function DOM_render(e) {
+
+            let i = 0;
+            let len = e.object.length;
+
+            // @ADD simple diffing algorithm later
+
+            while (i < len) { e.object[i].style.width = (e.property[x1][i] - e.property[x0][i]) + "px"; i += 1; } i = 0;
+            while (i < len) { e.object[i].style.height = (e.property[y1][i]- e.property[y0][i]) + "px"; i += 1; } i = 0;
+            while (i < len) { e.object[i].style.transform = "translate(" + e.property[x0][i] + "px, " + e.property[y0][i] + "px) " + "rotate(" + e.property[z2][i] + "deg)"; i += 1; } i = 0;
+        }
+
+
+
+        // CONNECTION
+        // @NOT
+        function con(t1, i1, p1, t2, i2, p2, offset, min, max) { // this both creates and updates the relation when called.
+
+            if (e.rel_active[id][property] === 1) { return -1; }
+            e.rel_property[id][property] = property;
+            e.rel_target_property[id][property] = target_property;
+            e.rel_target_id[id][property] = target_id;
+            e.rel_offset[id][property] = offset;
+            e.rel_active[id][property] = 1;
+            return 0;
+        }
+        
+
+
+        // RELATION
+
+
+        // ANIMATION
+        function curve_line(samples) {} // LINEAR
+        function curve_quad(samples) {} // QUADRATIC
+        function curve_cube(samples) {} // CUBIC
+
+        // @NOT
+        function anim(e, property, id, start, end, time, delay, curve) {
+            if (e.anim_active[id][property] === 1) { return -1; }
+            e.property[property][id] = start;
+            e.anim_property[id][property] = property;
+            e.anim_start[id][property] = start;
+            e.anim_end[id][property] = end;
+            e.anim_time[id][property] = time;
+            e.anim_curve[id][property] = curve;
+            e.anim_active[id][property] = 1;
+            return 0;
+        }
+        
+        function update_animation(e, i, j, delta) {
+            
+            if (e.anim_active[i][j] === 0) { return; }
+            let inverted = 0;
+            let start = e.anim_start[i][j];
+            let end = e.anim_end[i][j];
+
+            // INVERT
+            if (end < start) { start = e.anim_end[i][j]; end = e.anim_start[i][j]; inverted = 1; }
+            let distance = end - start;
+
+            // ANIMATION DONE
+            if (e.anim_timer[i][j] >= e.anim_time[i][j] || e.anim_progress[i][j] >= distance) { 
+                e.property[j][i] = e.anim_end[i][j];
+                e.anim_progress[i][j] = 0;
+                e.anim_timer[i][j] = 0;
+                e.anim_sample[i][j] = 0;
+                e.anim_active[i][j] = 0;
+                return;
+            }
+
+            // CALCULATE
+            e.anim_timer[i][j] += delta;
+            let progress = (distance / e.anim_time[i][j]) * delta;
+            e.anim_progress[i][j] += progress;
+            if (inverted === 1) { e.property[j][i] -= progress; }
+            else { e.property[j][i] += progress; }
+            // if (property - start) >= (distance / curve.length) * curve[sample]  sample += 1
+        }
+
+        function update_relation(e, i, j) {
+
+            if (e.rel_active[i][j] === 0) { return; }
+
+            // UPDATE
+            e.property[e.rel_property[i][j]][i] =
+                e.property[e.rel_target_property[i][j]][e.rel_target_id[i][j]] +
+                e.rel_offset[i][j];
+            e.rel_active[i][j] = 0;
+            return;
+        }
+
+        // @DONE
+        function update_systems(e, b) {
+
+            let i = 0;
+            while (i < e.property[0].length) {
+                let j = 0;
+                while (j < e.property.length) {
+                    update_relation(e, i, j);
+                    //update_animation(e, i, j, b.delta);
+                    j += 1;
+                }
+                i += 1;
+            }
+        }
+
+        function update_elements(e, b) {
+
+            e.property[x1][0] = document.documentElement.clientWidth;
+            e.property[y1][0] = document.documentElement.clientHeight;
+
+            update_systems(e, b);
+        }
+
+        let views = []; //??? store persistent layout data
+
+
+
+
+        // CREATING TEMPORAL ENTITIES
+        layouts.push(function (e) {
+
+            if (e.property[x1][0] > 2000) { return; }
+
+            e.object[0].style.border = "none";
+
+            // BOX 1
+            con(e, x0, 1, x0, 0, 300);
+            con(e, x1, 1, x1, 0, -300);
+            con(e, y0, 1, y0, 0, 300);
+            con(e, y1, 1, y1, 0, -300);
+
+            // BOX 2
+            con(e, x1, 2, x0, 2, 200);
+            con(e, y0, 2, y0, 1, 100);
+            con(e, y1, 2, y1, 1, -100);
+
+            // BOX 3
+            //anim(e, x0, 2, 300, 1000, 3000, 0, null);
+        });
+
+        function update_layouts(l, e) {
+
+            let len = l.length;
+            let i = 0;
+            while (i < len) {
+                l[i](e);
+                i += 1;
+            }
+        }
+
+        function main() {
+
+            update_layouts(layouts, elements);
+            update_body(body);
+            update_elements(elements, body);
+            render(elements);
+            window.requestAnimationFrame(main);
+        }
+
+        main();
+    
+    </script>
+</body>
+</html>
