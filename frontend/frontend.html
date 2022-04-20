@@ -18,56 +18,44 @@
 
     <script>
 
+        let time = performance.now();
+        let delta = 0;
 
-
-        function update_body(b) {
-
-            let time = performance.now();
-            b.delta = time - b.time;
-            b.time = time;
-
-            width = document.documentElement.clientWidth + "";
-            height = document.documentElement.clientHeight + "";
-
-            // RESIZE EVENT
-            if (b.object.style.width !== width) { b.object.style.width = width + "px"; }
-            if (b.object.style.height !== height) { b.object.style.height = height + "px"; }
-        }
 
         // @DONE
-        function init_DOM(e, result) {
-            let i = 0;
-            while (i < e.length) {
-              
-                result.object.push(e[i]);
-
-                if (e[i].children.length > 0) {
-                    DOM_elements(e[i].children, result);
-                }
-                i += 1;
+        function init_dom() {
+            
+            let dom = { 
+                b: document.body,
+                e: [] 
             }
-            return 0;
+
+            let p = document.body.children[0];
+            let c = p.children;
+            dom.e.push(p);
+            
+            for (let i = 0; i < c.length; i++) {
+                dom.e.push(c[i]);
+            }
+            for (let i = 0; i < dom.e.length; i++) {
+                dom.e[i].style.position = "absolute";
+                dom.e[i].style.margin = "0px";
+                dom.e[i].style.padding = "0px";
+                dom.e[i].style.border = "solid";
+                dom.e[i].style.left = "0px";
+                dom.e[i].style.top = "0px";
+                dom.e[i].style.width = "0px";
+                dom.e[i].style.height = "0px";
+                dom.e[i].style.zIndex = "0";
+                dom.e[i].style.overflow = "hidden";
+            }
+            return dom;
         }
-
-
-        /*
-         * DOM_elements(body_children, result);
-            result.object.pop();
-            result.object[i].style.position = "absolute";
-            result.object[i].style.margin = "0px";
-            result.object[i].style.padding = "0px";
-            result.object[i].style.border = "solid";
-            result.object[i].style.left = "0px";
-            result.object[i].style.top = "0px";
-            result.object[i].style.width = "0px";
-            result.object[i].style.height = "0px";
-            result.object[i].style.zIndex = "0";
-            result.object[i].style.overflow = "hidden";
-        */
-
 
         // VIEW TYPE
         const view = {
+
+            // STATES 0 - 99
             x0: 0, // position
             x1: 1, // dimension
             x2: 2, // rotation
@@ -76,16 +64,20 @@
             y2: 5,
             z0: 6,
             z1: 7,
-            z2: 8
+            z2: 8,
+
+            // EVENTS 100 - 199
+            mouse_down: 100,
+            mouse_up: 101
         }
 
-        // @NOT
-        function init_views(size, result) {
+        // @DONE
+        function init_views(size) {
 
-            let view = {
-                e: [], // event
+            let views = {
                 s: [], // state current frame
                 p: [], // state previous frame
+                e: [], // event
 
                 // ANIMATION
                 ar: [], // RUNNING
@@ -95,86 +87,84 @@
             }
 
             // STATE
-            view.s.push(new Float32Array(size)); // x0
-            view.s.push(new Float32Array(size)); // x1
-            view.s.push(new Float32Array(size)); // x2
-            view.s.push(new Float32Array(size)); // y0
-            view.s.push(new Float32Array(size)); // y1
-            view.s.push(new Float32Array(size)); // y2
-            view.s.push(new Float32Array(size)); // z0
-            view.s.push(new Float32Array(size)); // z1
-            view.s.push(new Float32Array(size)); // z2
+            views.s.push(new Float32Array(size)); // x0
+            views.s.push(new Float32Array(size)); // x1
+            views.s.push(new Float32Array(size)); // x2
+            views.s.push(new Float32Array(size)); // y0
+            views.s.push(new Float32Array(size)); // y1
+            views.s.push(new Float32Array(size)); // y2
+            views.s.push(new Float32Array(size)); // z0
+            views.s.push(new Float32Array(size)); // z1
+            views.s.push(new Float32Array(size)); // z2
 
             // PREVIOUS
-            view.p.push(new Float32Array(size)); // x0
-            view.p.push(new Float32Array(size)); // x1
-            view.p.push(new Float32Array(size)); // x2
-            view.p.push(new Float32Array(size)); // y0
-            view.p.push(new Float32Array(size)); // y1
-            view.p.push(new Float32Array(size)); // y2
-            view.p.push(new Float32Array(size)); // z0
-            view.p.push(new Float32Array(size)); // z1
-            view.p.push(new Float32Array(size)); // z2
+            views.p.push(new Float32Array(size)); // x0
+            views.p.push(new Float32Array(size)); // x1
+            views.p.push(new Float32Array(size)); // x2
+            views.p.push(new Float32Array(size)); // y0
+            views.p.push(new Float32Array(size)); // y1
+            views.p.push(new Float32Array(size)); // y2
+            views.p.push(new Float32Array(size)); // z0
+            views.p.push(new Float32Array(size)); // z1
+            views.p.push(new Float32Array(size)); // z2
             
-            let i = 0;
-            while (i < size) {
-
-                // ANIMATION
-                type.ar.push(new Int8Array(type.s.length));
-                type.ap.push(new Float32Array(type.s.length));
-                type.at.push(new Float64Array(type.s.length));
-                type.as.push(new Int32Array(type.s.length));
-                i += 1;
+            // ANIMATION
+            for (let i = 0; i < size; i++) {
+                views.ar.push(new Int8Array(views.s.length));
+                views.ap.push(new Float32Array(views.s.length));
+                views.at.push(new Float64Array(views.s.length));
+                views.as.push(new Int32Array(views.s.length));
             }
-
-            Object.assign(result, type);
-
+            return views;
         }
 
 
-        init_elements(body.object.children, elements);
-
-        console.log(elements);
 
         function update_dom(dom, views) {
 
+            let dbb = document.documentElement.getBoundingClientRect();
+            let bbb = dom.b.getBoundingClientRect();
+            width = dbb.width;
+            height = dbb.height;
+
+            // RESIZE EVENT
+            if (bbb.width !== width) { bbb.width = width; }
+            if (bbb.height !== height) { bbb.height = height; }
+
             let i = 0;
-            let len = e.object.length;
+            let len = dom.e.length;
 
             // @ADD simple diffing algorithm later
 
-            while (i < len) { e.object[i].style.width = (e.property[x1][i] - e.property[x0][i]) + "px"; i += 1; } i = 0;
-            while (i < len) { e.object[i].style.height = (e.property[y1][i]- e.property[y0][i]) + "px"; i += 1; } i = 0;
-            while (i < len) { e.object[i].style.transform = "translate(" + e.property[x0][i] + "px, " + e.property[y0][i] + "px) " + "rotate(" + e.property[z2][i] + "deg)"; i += 1; } i = 0;
+            while (i < len) { dom.e[i].style.width = (views.s[view.x1][i] - views.s[view.x0][i]) + "px"; i += 1; } i = 0;
+            while (i < len) { dom.e[i].style.height = (views.s[view.y1][i]- views.s[view.y0][i]) + "px"; i += 1; } i = 0;
+            while (i < len) { dom.e[i].style.transform = "translate(" + views.s[view.x0][i] + "px, " + views.s[view.y0][i] + "px) " + "rotate(" + views.s[view.z2][i] + "deg)"; i += 1; } i = 0;
 
             // clear dom events
 
         }
 
 
+        function update_views(views) {
 
-       
+            //views.s[view.x1][0] = 
 
-        function update_elements(e, b) {
-
-            e.property[x1][0] = document.documentElement.clientWidth;
-            e.property[y1][0] = document.documentElement.clientHeight;
-
-            update_systems(e, b);
         }
 
-        let views = []; //??? store persistent layout data
+       
+        let dom = init_dom();
+        let views = init_views(6);
 
-
-
-
+        console.log(dom);
 
         function main() {
 
-            update_layouts(layouts, elements);
-            update_body(body);
-            update_elements(elements, body);
-            render(elements);
+            let new_time = performance.now();
+            delta = new_time - time;
+            time = new_time;
+
+            update_dom(dom, views);
+
             window.requestAnimationFrame(main);
         }
 
