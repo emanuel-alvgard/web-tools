@@ -26,9 +26,20 @@
         function init_dom() {
             
             let dom = { 
+                load: 1,
+                
+                width: document.documentElement.clientWidth,
+                height: document.documentElement.clientHeight,
+                
                 b: document.body,
                 e: [] 
             }
+
+            dom.b.style.margin = "0px";
+            dom.b.style.padding = "0px";
+            dom.b.style.left = "0px";
+            dom.b.style.top = "0px";
+            dom.b.style.overflow = "hidden";
 
             let p = document.body.children[0];
             let c = p.children;
@@ -49,6 +60,7 @@
                 dom.e[i].style.zIndex = "0";
                 dom.e[i].style.overflow = "hidden";
             }
+
             return dom;
         }
 
@@ -72,7 +84,7 @@
         }
 
         // @DONE
-        function init_views(size) {
+        function init_views(size, render_target) {
 
             let views = {
                 s: [], // state current frame
@@ -115,21 +127,46 @@
                 views.at.push(new Float64Array(views.s.length));
                 views.as.push(new Int32Array(views.s.length));
             }
+
+            views.s[view.x1][0] = render_target.width;
+            views.p[view.x1][0] = render_target.width;
+            views.s[view.y1][0] = render_target.height;
+            views.p[view.y1][0] = render_target.height;
+
             return views;
         }
 
+        // @DONE
+        function lock(views, sp, s, tp, t, offset, min, max) {
 
+            views.s[sp][s] = views.s[tp][t] + offset;
+            if (min !== null && views.s[sp][s] < min) { views.s[sp][s] = min; }
+            else if (max !== null && views.s[sp][s] > max) { views.s[sp][s] = max; }
+            return;
+        }
+
+        // @DONE
+        function link(views, sp, s, tp, t, mult, min, max) {
+
+            if (views.s[tp][t] < views.p[tp][t]) { views.s[sp][s] -= ((views.p[tp][t] - views.s[tp][t]) * mult); }
+            else if (views.s[tp][t] > views.p[tp][t]) { views.s[sp][s] += ((views.s[tp][t] - views.p[tp][t]) * mult); }
+
+            if (min !== null && views.s[sp][s] < min) { views.s[sp][s] = min; }
+            else if (max !== null && views.s[sp][s] > max) { views.s[sp][s] = max; }
+            return;
+        }
+        
+        function anim() {}
 
         function update_dom(dom, views) {
 
-            let dbb = document.documentElement.getBoundingClientRect();
-            let bbb = dom.b.getBoundingClientRect();
-            width = dbb.width;
-            height = dbb.height;
+            dom.width = document.documentElement.clientWidth;
+            dom.height = document.documentElement.clientHeight;
 
             // RESIZE EVENT
-            if (bbb.width !== width) { bbb.width = width; }
-            if (bbb.height !== height) { bbb.height = height; }
+            let b = dom.b.getBoundingClientRect();
+            if (b.width !== dom.width) {  b.width = dom.width; }
+            if (b.height !== dom.height) { b.height = dom.height; }
 
             let i = 0;
             let len = dom.e.length;
@@ -140,22 +177,42 @@
             while (i < len) { dom.e[i].style.height = (views.s[view.y1][i]- views.s[view.y0][i]) + "px"; i += 1; } i = 0;
             while (i < len) { dom.e[i].style.transform = "translate(" + views.s[view.x0][i] + "px, " + views.s[view.y0][i] + "px) " + "rotate(" + views.s[view.z2][i] + "deg)"; i += 1; } i = 0;
 
-            // clear dom events
+
+            // CLEAR EVENTS
+            dom.load = 0;
 
         }
 
 
-        function update_views(views) {
+        function update_views(views, render_target) {
 
-            //views.s[view.x1][0] = 
+            views.s[view.x1][0] = render_target.width;
+            views.s[view.y1][0] = render_target.height;
 
+            // LOAD
+            if (render_target.load === 1) {
+                views.s[view.x1][1] = 500;
+            }
+
+            // LAYOUT
+            lock(views, view.x0, 1, view.x0, 0, 300, null, null);
+            lock(views, view.y0, 1, view.y0, 0, 300, null, null);
+            link(views, view.x1, 1, view.x1, 0, 0.1, 400, 520);
+            lock(views, view.y1, 1, view.y1, 0, -300, null, null);
+
+            // SAVE STATE
+            for (let i = 0; i < views.s.length; i++) {
+                for (let j = 0; j < views.s[i].length; j++) { 
+                    if (views.s[i][j] !== views.p[i][j]) { views.p[i][j] = views.s[i][j]; }
+                }
+            }
+
+            // CLEAR EVENTS
         }
 
        
         let dom = init_dom();
-        let views = init_views(6);
-
-        console.log(dom);
+        let views = init_views(6, dom);
 
         function main() {
 
@@ -163,6 +220,7 @@
             delta = new_time - time;
             time = new_time;
 
+            update_views(views, dom);
             update_dom(dom, views);
 
             window.requestAnimationFrame(main);
