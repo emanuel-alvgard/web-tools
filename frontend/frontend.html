@@ -124,7 +124,7 @@
             for (let i = 0; i < size; i++) {
                 views.ar.push(new Int8Array(views.s.length));
                 views.ap.push(new Float32Array(views.s.length));
-                views.at.push(new Float64Array(views.s.length));
+                views.at.push(new Float32Array(views.s.length));
                 views.as.push(new Int32Array(views.s.length));
             }
 
@@ -156,7 +156,49 @@
             return;
         }
         
-        function anim() {}
+        function anim(views, sp, s, start, end, time, delay, curve) {
+
+            if (views.ar[s] === 0) {
+                views.ar[s] = 1;
+                views.ap[s] = 0.0;
+                views.at[s] = 0.0;
+                views.as[s] = 0;
+            } // setup new animation
+
+            //console.log(views.s[sp][s]);
+
+            
+            let inv = 0;
+            let st = start;
+            let en = end;
+            if (end < start) { st = end; en = start; inv = 1; }
+            let di = en - st;
+
+            //console.log(st);
+            //console.log(en);
+            //console.log(di);
+
+            
+            // DONE
+            if (views.at[s] >= time || views.ap[s] >= di) { 
+                views.s[sp][s] = end; 
+                views.ar[s] = 0;
+            }
+
+            //console.log(delta);
+            // CALCULATE
+            views.at[s] += delta;
+            //console.log(views.at[s]);
+            
+            let pr = (di / views.at[s]) * delta;            
+            //console.log(pr);
+            /*
+            views.ap[s] += pr;
+            if (inv === 1) { views.s[sp][s] -= pr; }
+            else { views.s[sp][s] += pr; }
+            // if (property - start) >= (distance / curve.length) * curve[sample]  sample += 1
+            */
+        }
 
         function update_dom(dom, views) {
 
@@ -191,14 +233,15 @@
 
             // LOAD
             if (render_target.load === 1) {
-                views.s[view.x1][1] = 500;
+                views.s[view.x0][1] = 300;
             }
 
             // LAYOUT
-            lock(views, view.x0, 1, view.x0, 0, 300, null, null);
             lock(views, view.y0, 1, view.y0, 0, 300, null, null);
-            link(views, view.x1, 1, view.x1, 0, 0.1, 400, 520);
+            lock(views, view.x1, 1, view.x0, 1, 300, null, null);
             lock(views, view.y1, 1, view.y1, 0, -300, null, null);
+
+            anim(views, view.x0, 1, 300, 600, 1.0, null, null);
 
             // SAVE STATE
             for (let i = 0; i < views.s.length; i++) {
