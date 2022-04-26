@@ -87,8 +87,9 @@
         function init_views(size, render_target) {
 
             let views = {
-                s: [], // state current frame
-                p: [], // state previous frame
+                s: [], //state
+                c: [], // current frame
+                p: [], // previous frame
                 e: [], // event
 
                 // ANIMATION
@@ -96,18 +97,22 @@
                 ap: [], // PROGRESS
                 at: [], // TIMER
                 as: [], // SAMPLE
+                ad: [], // DONE
             }
 
             // STATE
-            views.s.push(new Float32Array(size)); // x0
-            views.s.push(new Float32Array(size)); // x1
-            views.s.push(new Float32Array(size)); // x2
-            views.s.push(new Float32Array(size)); // y0
-            views.s.push(new Float32Array(size)); // y1
-            views.s.push(new Float32Array(size)); // y2
-            views.s.push(new Float32Array(size)); // z0
-            views.s.push(new Float32Array(size)); // z1
-            views.s.push(new Float32Array(size)); // z2
+            views.s.push(new Int8Array(size));
+
+            // CURRENT
+            views.c.push(new Float32Array(size)); // x0
+            views.c.push(new Float32Array(size)); // x1
+            views.c.push(new Float32Array(size)); // x2
+            views.c.push(new Float32Array(size)); // y0
+            views.c.push(new Float32Array(size)); // y1
+            views.c.push(new Float32Array(size)); // y2
+            views.c.push(new Float32Array(size)); // z0
+            views.c.push(new Float32Array(size)); // z1
+            views.c.push(new Float32Array(size)); // z2
 
             // PREVIOUS
             views.p.push(new Float32Array(size)); // x0
@@ -121,16 +126,15 @@
             views.p.push(new Float32Array(size)); // z2
             
             // ANIMATION
-            for (let i = 0; i < size; i++) {
-                views.ar.push(new Int8Array(views.s.length));
-                views.ap.push(new Float32Array(views.s.length));
-                views.at.push(new Float32Array(views.s.length));
-                views.as.push(new Int32Array(views.s.length));
-            }
+            views.ar.push(new Int8Array(size));
+            views.ap.push(new Float32Array(size));
+            views.at.push(new Float64Array(size));
+            views.as.push(new Int32Array(size));
+            views.ad.push(new Int8Array(size));
 
-            views.s[view.x1][0] = render_target.width;
+            views.c[view.x1][0] = render_target.width;
             views.p[view.x1][0] = render_target.width;
-            views.s[view.y1][0] = render_target.height;
+            views.c[view.y1][0] = render_target.height;
             views.p[view.y1][0] = render_target.height;
 
             return views;
@@ -139,65 +143,56 @@
         // @DONE
         function lock(views, sp, s, tp, t, offset, min, max) {
 
-            views.s[sp][s] = views.s[tp][t] + offset;
-            if (min !== null && views.s[sp][s] < min) { views.s[sp][s] = min; }
-            else if (max !== null && views.s[sp][s] > max) { views.s[sp][s] = max; }
+            views.c[sp][s] = views.c[tp][t] + offset;
+            if (min !== null && views.c[sp][s] < min) { views.c[sp][s] = min; }
+            else if (max !== null && views.c[sp][s] > max) { views.c[sp][s] = max; }
             return;
         }
 
         // @DONE
         function link(views, sp, s, tp, t, mult, min, max) {
 
-            if (views.s[tp][t] < views.p[tp][t]) { views.s[sp][s] -= ((views.p[tp][t] - views.s[tp][t]) * mult); }
-            else if (views.s[tp][t] > views.p[tp][t]) { views.s[sp][s] += ((views.s[tp][t] - views.p[tp][t]) * mult); }
+            if (views.c[tp][t] < views.p[tp][t]) { views.c[sp][s] -= ((views.p[tp][t] - views.c[tp][t]) * mult); }
+            else if (views.c[tp][t] > views.p[tp][t]) { views.c[sp][s] += ((views.c[tp][t] - views.p[tp][t]) * mult); }
 
-            if (min !== null && views.s[sp][s] < min) { views.s[sp][s] = min; }
-            else if (max !== null && views.s[sp][s] > max) { views.s[sp][s] = max; }
+            if (min !== null && views.c[sp][s] < min) { views.c[sp][s] = min; }
+            else if (max !== null && views.c[sp][s] > max) { views.c[sp][s] = max; }
             return;
         }
         
         function anim(views, sp, s, start, end, time, delay, curve) {
 
-            if (views.ar[s] === 0) {
-                views.ar[s] = 1;
-                views.ap[s] = 0.0;
-                views.at[s] = 0.0;
-                views.as[s] = 0;
+            if (views.ar[sp][s] === 0) {
+                views.ad[sp][s] = 0;
+                views.ar[sp][s] = 1;
+                views.ap[sp][s] = 0.0;
+                views.at[sp][s] = 0 - delay;
+                views.as[sp][s] = 0;
+                views.c[sp][s] = start;
             } // setup new animation
 
-            //console.log(views.s[sp][s]);
-
-            
+            // INVERT
             let inv = 0;
             let st = start;
             let en = end;
             if (end < start) { st = end; en = start; inv = 1; }
             let di = en - st;
 
-            //console.log(st);
-            //console.log(en);
-            //console.log(di);
-
-            
             // DONE
-            if (views.at[s] >= time || views.ap[s] >= di) { 
-                views.s[sp][s] = end; 
-                views.ar[s] = 0;
+            if (views.at[sp][s] >= time || views.ap[sp][s] >= di) { 
+                views.c[sp][s] = end;
+                views.ar[sp][s] = 0;
+                views.ad[sp][s] = 1;
             }
 
-            //console.log(delta);
             // CALCULATE
-            views.at[s] += delta;
-            //console.log(views.at[s]);
-            
-            let pr = (di / views.at[s]) * delta;            
-            //console.log(pr);
-            /*
-            views.ap[s] += pr;
-            if (inv === 1) { views.s[sp][s] -= pr; }
-            else { views.s[sp][s] += pr; }
+            views.at[sp][s] += delta;
+            if (views.at[sp][s] < 0) { return; }
+            let pr = (di / time) * delta;
+            views.ap[sp][s] += pr;
+            if (inv === 1) { views.c[sp][s] -= pr; }
+            else { views.c[sp][s] += pr; }
             // if (property - start) >= (distance / curve.length) * curve[sample]  sample += 1
-            */
         }
 
         function update_dom(dom, views) {
@@ -215,9 +210,9 @@
 
             // @ADD simple diffing algorithm later
 
-            while (i < len) { dom.e[i].style.width = (views.s[view.x1][i] - views.s[view.x0][i]) + "px"; i += 1; } i = 0;
-            while (i < len) { dom.e[i].style.height = (views.s[view.y1][i]- views.s[view.y0][i]) + "px"; i += 1; } i = 0;
-            while (i < len) { dom.e[i].style.transform = "translate(" + views.s[view.x0][i] + "px, " + views.s[view.y0][i] + "px) " + "rotate(" + views.s[view.z2][i] + "deg)"; i += 1; } i = 0;
+            while (i < len) { dom.e[i].style.width = (views.c[view.x1][i] - views.c[view.x0][i]) + "px"; i += 1; } i = 0;
+            while (i < len) { dom.e[i].style.height = (views.c[view.y1][i]- views.c[view.y0][i]) + "px"; i += 1; } i = 0;
+            while (i < len) { dom.e[i].style.transform = "translate(" + views.c[view.x0][i] + "px, " + views.c[view.y0][i] + "px) " + "rotate(" + views.c[view.z2][i] + "deg)"; i += 1; } i = 0;
 
 
             // CLEAR EVENTS
@@ -228,12 +223,16 @@
 
         function update_views(views, render_target) {
 
-            views.s[view.x1][0] = render_target.width;
-            views.s[view.y1][0] = render_target.height;
+            views.c[view.x1][0] = render_target.width;
+            views.c[view.y1][0] = render_target.height;
+
+            // STATE
+            if (views.s[view.x0][1] === 0 && views.ad[view.x0][1] === 1) { views.s[view.x0][1] = 1; }
+            else if (views.s[view.x0][1] === 1 && views.ad[view.x0][1] === 1) { views.s[view.x0][1] = 0; }
 
             // LOAD
             if (render_target.load === 1) {
-                views.s[view.x0][1] = 300;
+                views.c[view.x0][1] = 300;
             }
 
             // LAYOUT
@@ -241,12 +240,15 @@
             lock(views, view.x1, 1, view.x0, 1, 300, null, null);
             lock(views, view.y1, 1, view.y1, 0, -300, null, null);
 
-            anim(views, view.x0, 1, 300, 600, 1.0, null, null);
+            // ANIMATION
+            if (views.s[view.x0][1] === 0) { anim(views, view.x0, 1, 300, 600, 1000, 500, null); }
+            else if (views.s[view.x0][1] === 1) { anim(views, view.x0, 1, 600, 300, 1000, 500, null); }
+
 
             // SAVE STATE
-            for (let i = 0; i < views.s.length; i++) {
-                for (let j = 0; j < views.s[i].length; j++) { 
-                    if (views.s[i][j] !== views.p[i][j]) { views.p[i][j] = views.s[i][j]; }
+            for (let i = 0; i < views.c.length; i++) {
+                for (let j = 0; j < views.c[i].length; j++) { 
+                    if (views.c[i][j] !== views.p[i][j]) { views.p[i][j] = views.c[i][j]; }
                 }
             }
 
