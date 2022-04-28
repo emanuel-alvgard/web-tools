@@ -159,6 +159,18 @@
             else if (max !== null && views.c[sp][s] > max) { views.c[sp][s] = max; }
             return;
         }
+
+        function lerp(p0, p1, i) {
+            let result = ((p1 - p0) * i) + p0; 
+            if (result < 0) { return 0; }
+            else { return result; }
+        }
+        function quad(p0, p1, p2, i) {
+            let l0 = lerp(p0, p1, i);
+            let l1 = lerp(p1, p2, i);
+            return lerp(l0, l1, i);
+        }
+        function cube() {}
         
         function anim(views, sp, s, start, end, time, delay, curve) {
 
@@ -167,38 +179,33 @@
                 views.ar[sp][s] = 1;
                 views.ap[sp][s] = 0.0;
                 views.at[sp][s] = 0 - delay;
-                views.as[sp][s] = 0;
                 views.c[sp][s] = start;
-            } // setup new animation
+            } 
 
             // INVERT
-            let inv = 0;
+            let dir = 1;
             let st = start;
             let en = end;
-            if (end < start) { st = end; en = start; inv = 1; }
+            if (end < start) { st = end; en = start; dir = -1; }
             let di = en - st;
+
+            // CALCULATE
+            views.at[sp][s] += delta;
+            if (views.at[sp][s] < 0) { return; }
+            let cr = 0;
+            if (curve.length === 2) { cr = lerp(curve[0], curve[1], views.at[sp][s] / time); } 
+            else if (curve.length === 3) { cr = quad(curve[0], curve[1], curve[2], views.at[sp][s] / time); } // @NOT
+            else if (curve.length === 4) { cr = cube(curve[0], curve[1], curve[2], curve[3], views.at[sp][s] / time); }
+            console.log(cr);
+            let pr = ((di / time) * delta) * cr;
+            views.ap[sp][s] += pr;
+            views.c[sp][s] += (pr * dir);
 
             // DONE
             if (views.ap[sp][s] >= di) { 
                 views.c[sp][s] = end;
                 views.ar[sp][s] = 0;
                 views.ad[sp][s] = 1;
-            }
-
-            // CALCULATE
-            views.at[sp][s] += delta;
-            if (views.at[sp][s] < 0) { return; }
-            let pr = ((di / time) * delta) * curve[views.as[sp][s]];
-            views.ap[sp][s] += pr;
-            if (inv === 1) { 
-                views.c[sp][s] -= pr; 
-                // @NOT @HERE
-                if ((views.c[sp][s] - start) <= (di / curve.length) * (curve.length - (views.as[sp][s] + 1))) { views.as[sp][s] += 1; }
-            }
-            else { 
-                views.c[sp][s] += pr; 
-                if ((views.c[sp][s] - start) >= (di / curve.length) * (views.as[sp][s] + 1)) { views.as[sp][s] += 1; }
-
             }
         }
 
@@ -247,9 +254,18 @@
             lock(views, view.x1, 1, view.x0, 1, 300, null, null);
             lock(views, view.y1, 1, view.y1, 0, -300, null, null);
 
+            lock(views, view.x1, 2, view.x1, 0, 0, null, null);
+            lock(views, view.y1, 2, view.y0, 0, 100, null, null);
+
+            
+
             // ANIMATION
-            if (views.s[view.x0][1] === 0) { anim(views, view.x0, 1, 300, 600, 1000, 500, [1.5, 0.5]); }
-            else if (views.s[view.x0][1] === 1) { anim(views, view.x0, 1, 600, 300, 1000, 500, [0.5, 0.5]); }
+            let curve_line = [0.0, 2.0];
+            let curve_quad = [0.0, 3.0, 0.0];
+            let curve_cube = [0.0, 2.0, 0.0, 2.0];
+
+            if (views.s[view.x0][1] === 0) { anim(views, view.x0, 1, 300, 600, 500, 500, curve_quad); }
+            else if (views.s[view.x0][1] === 1) { anim(views, view.x0, 1, 600, 300, 500, 500, curve_quad); }
 
             // SAVE STATE
             for (let i = 0; i < views.c.length; i++) {
@@ -257,10 +273,8 @@
                     if (views.c[i][j] !== views.p[i][j]) { views.p[i][j] = views.c[i][j]; }
                 }
             }
-
             // CLEAR EVENTS
         }
-
        
         let dom = init_dom();
         let views = init_views(6, dom);
