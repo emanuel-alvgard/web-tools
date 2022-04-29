@@ -18,6 +18,10 @@
 
     <script>
 
+        // @TODO
+        // define text type
+        // add opacity and background color to views
+
         let time = performance.now();
         let delta = 0;
 
@@ -52,7 +56,7 @@
                 dom.e[i].style.position = "absolute";
                 dom.e[i].style.margin = "0px";
                 dom.e[i].style.padding = "0px";
-                dom.e[i].style.border = "solid";
+                dom.e[i].style.border = "none";
                 dom.e[i].style.left = "0px";
                 dom.e[i].style.top = "0px";
                 dom.e[i].style.width = "0px";
@@ -116,16 +120,6 @@
                 views.s.push(new Int8Array(size));
                 views.c.push(new Float32Array(size));
                 views.p.push(new Float32Array(size));
-                views.lop.push(new Int8Array(size));
-                views.lop[i].fill(-1);
-                views.lot.push(new Int16Array(size));
-                views.lot[i].fill(-1);
-                views.loo.push(new Float32Array(size));
-                views.loo[i].fill(-1);
-                views.lomi.push(new Float32Array(size));
-                views.lomi[i].fill(-1);
-                views.loma.push(new Float32Array(size));
-                views.loma[i].fill(-1);
                 views.ar.push(new Int8Array(size));
                 views.ap.push(new Float32Array(size));
                 views.at.push(new Float64Array(size));
@@ -144,25 +138,10 @@
         // @DONE
         function lock(views, sp, s, tp, t, offset, min, max) {
 
-            views.lop[sp][s] = tp;
-            views.lot[sp][s] = t;
-            views.loo[sp][s] = offset;
-            views.lomi[sp][s] = min;
-            views.loma[sp][s] = max;
-        }
-
-        //
-        function update_locks(views) {
-            for (let i = 0; i < views.lot.length; i++) {
-                for (let j = 0; j < views.lot[i].length; j++) {
-                    if (views.lot[i][j] === -1) { continue; }
-                    
-                    views.c[i][j] = views.c[views.lop[i][j]][views.lot[i][j]] + views.loo[i][j];
-                    if (views.lomi[i][j] !== -1 && views.c[i][j] < views.lomi[i][j]) { views.c[i][j] = views.lomi[i][j]; }
-                    else if (views.loma[i][j] !== -1 && views.c[i][j] > views.loma[i][j]) { views.c[i][j] = views.loma[i][j]; }
-                    views.lot[i][j] = -1;
-                }
-            }
+            views.c[sp][s] = views.c[tp][t] + offset;
+            if (min !== null && views.c[sp][s] < min) { views.c[sp][s] = min; }
+            else if (max !== null && views.c[sp][s] > max) { views.c[sp][s] = max; }
+            return;
         }
 
         // @DONE
@@ -267,6 +246,10 @@
             views.c[view.x1][0] = render_target.width;
             views.c[view.y1][0] = render_target.height;
 
+            let curve_line = [0.0, 2.0];
+            let curve_quad = [0.0, 3.0, 0.0];
+            let curve_cube = [2.0, 0.0, 2.0, 0.0];
+
             // STATE
             if (views.s[view.x0][1] === 0 && views.ad[view.x0][1] === 1) { views.s[view.x0][1] = 1; }
             else if (views.s[view.x0][1] === 1 && views.ad[view.x0][1] === 1) { views.s[view.x0][1] = 0; }
@@ -275,15 +258,14 @@
             if (render_target.load === 1) {
                 views.c[view.x0][1] = 300;
                 render_target.e[1].style.borderStyle = "none";
-                render_target.e[1].style.borderRadius = "10px";
+                render_target.e[1].style.borderRadius = "15px";
                 render_target.e[1].style.boxShadow = "0px 0.5px 7px rgb(175, 175, 175)";
 
                 render_target.e[3].style.borderStyle = "none";
-                render_target.e[3].style.borderRadius = "0px 0px 10px 10px";
+                render_target.e[3].style.borderRadius = "0px 0px 15px 15px";
                 render_target.e[3].style.backgroundColor = "rgb(100, 100, 100)";
 
                 render_target.e[2].style.borderStyle = "none";
-                render_target.e[2].style.borderRadius = "10px";
                 render_target.e[2].style.boxShadow = "0px 0.5px 7px rgb(175, 175, 175)";
             }
 
@@ -292,7 +274,10 @@
             lock(views, view.x1, 1, view.x0, 1, 300, null, null);
             lock(views, view.y1, 1, view.y1, 0, -300, null, null);
 
-            lock(views, view.x0, 3, view.y0, 1, 0, null, null);
+            if (views.s[view.x0][1] === 0) { anim(views, view.x0, 1, 300, 900, 500, 500, curve_quad); }
+            else if (views.s[view.x0][1] === 1) { anim(views, view.x0, 1, 900, 300, 500, 500, curve_quad); }
+
+            lock(views, view.x0, 3, view.x0, 1, 0, null, null);
             lock(views, view.x1, 3, view.x1, 1, 0, null, null);
             lock(views, view.y1, 3, view.y1, 1, 0, null, null);
             let a = (views.c[view.y1][1] - views.c[view.y0][1]) / 2;
@@ -301,18 +286,7 @@
             lock(views, view.x1, 2, view.x1, 0, 0, null, null);
             lock(views, view.y1, 2, view.y0, 0, 100, null, null);
 
-            
 
-            // ANIMATION
-            let curve_line = [0.0, 2.0];
-            let curve_quad = [0.0, 3.0, 0.0];
-            let curve_cube = [2.0, 0.0, 2.0, 0.0];
-
-            if (views.s[view.x0][1] === 0) { anim(views, view.x0, 1, 300, 900, 50, 500, curve_quad); }
-            else if (views.s[view.x0][1] === 1) { anim(views, view.x0, 1, 900, 300, 50, 500, curve_quad); }
-
-            // UPDATE
-            update_locks(views);
 
             // SAVE STATE
             for (let i = 0; i < views.c.length; i++) {
