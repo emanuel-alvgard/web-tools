@@ -4,19 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="preload" href="https://fonts.gstatic.com/s/oswald/v47/TK3iWkUHHAIjg752Fj8Ghe4.woff2" as="font" type="font/woff2" crossorigin>
     <title>frontend</title>
 </head>
-<body style="opacity:1">
+<body>
 
     <div>
-        <div>hello</div>
-        <div>hello</div>
-        <div>hello</div>
-        <div>hello</div>
-        <div>hello</div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
     </div>
 
     <script>
+    
+        // create FontFace objcet with pre loaded fonts
 
         // @TODO
         // define text type
@@ -35,6 +38,7 @@
                 width: document.documentElement.clientWidth,
                 height: document.documentElement.clientHeight,
                 
+                h: document.head,
                 b: document.body,
                 e: [] 
             }
@@ -267,6 +271,9 @@
 
                 render_target.e[2].style.borderStyle = "none";
                 render_target.e[2].style.boxShadow = "0px 0.5px 7px rgb(175, 175, 175)";
+                render_target.e[2].style.fontFamily = "font";
+                render_target.e[2].textContent = "Hello!";
+
             }
 
             // LAYOUT
@@ -274,8 +281,8 @@
             lock(views, view.x1, 1, view.x0, 1, 300, null, null);
             lock(views, view.y1, 1, view.y1, 0, -300, null, null);
 
-            if (views.s[view.x0][1] === 0) { anim(views, view.x0, 1, 300, 900, 500, 500, curve_quad); }
-            else if (views.s[view.x0][1] === 1) { anim(views, view.x0, 1, 900, 300, 500, 500, curve_quad); }
+            //if (views.s[view.x0][1] === 0) { anim(views, view.x0, 1, 300, 900, 500, 500, curve_quad); }
+            //else if (views.s[view.x0][1] === 1) { anim(views, view.x0, 1, 900, 300, 500, 500, curve_quad); }
 
             lock(views, view.x0, 3, view.x0, 1, 0, null, null);
             lock(views, view.x1, 3, view.x1, 1, 0, null, null);
