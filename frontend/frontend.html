@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="preload" href="https://fonts.gstatic.com/s/oswald/v47/TK3iWkUHHAIjg752Fj8Ghe4.woff2" as="font" type="font/woff2" crossorigin>
     <title>frontend</title>
 </head>
 <body>
@@ -18,8 +17,25 @@
     </div>
 
     <script>
+
+        "https://fonts.gstatic.com/s/robotomono/v21/L0xuDF4xlVMF-BfR8bXMIhJHg45mwgGEFl0_Of2_ROW4.woff2"
     
-        // create FontFace objcet with pre loaded fonts
+        let fonts = {
+            target: 2,
+            loaded: 0,
+        }
+
+        let roboto_400 = new FontFace("roboto_400", "url(https://fonts.gstatic.com/s/roboto/v29/KFOmCnqEu92Fr1Mu4mxK.woff2)");
+        let roboto_mono_700 = new FontFace("roboto_mono_700", "url(https://fonts.gstatic.com/s/robotomono/v21/L0xuDF4xlVMF-BfR8bXMIhJHg45mwgGEFl0_Of2_ROW4.woff2)");
+
+        async function font(f, r) {
+            await f.load();
+            document.fonts.add(f);
+            r.loaded += 1;
+        }
+
+        font(roboto_400, fonts);
+        font(roboto_mono_700, fonts);
 
         // @TODO
         // define text type
@@ -139,6 +155,20 @@
             return views;
         }
 
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
         // @DONE
         function lock(views, sp, s, tp, t, offset, min, max) {
 
@@ -233,6 +263,7 @@
             let len = dom.e.length;
 
             // @ADD simple diffing algorithm later
+            // @ADD if a view contains text it's width and height = "auto"
 
             while (i < len) { dom.e[i].style.width = (views.c[view.x1][i] - views.c[view.x0][i]) + "px"; i += 1; } i = 0;
             while (i < len) { dom.e[i].style.height = (views.c[view.y1][i]- views.c[view.y0][i]) + "px"; i += 1; } i = 0;
@@ -271,7 +302,7 @@
 
                 render_target.e[2].style.borderStyle = "none";
                 render_target.e[2].style.boxShadow = "0px 0.5px 7px rgb(175, 175, 175)";
-                render_target.e[2].style.fontFamily = "font";
+                render_target.e[2].style.fontFamily = "roboto_mono_700";
                 render_target.e[2].textContent = "Hello!";
 
             }
@@ -281,8 +312,8 @@
             lock(views, view.x1, 1, view.x0, 1, 300, null, null);
             lock(views, view.y1, 1, view.y1, 0, -300, null, null);
 
-            //if (views.s[view.x0][1] === 0) { anim(views, view.x0, 1, 300, 900, 500, 500, curve_quad); }
-            //else if (views.s[view.x0][1] === 1) { anim(views, view.x0, 1, 900, 300, 500, 500, curve_quad); }
+            if (views.s[view.x0][1] === 0) { anim(views, view.x0, 1, 300, 900, 500, 500, curve_quad); }
+            else if (views.s[view.x0][1] === 1) { anim(views, view.x0, 1, 900, 300, 500, 500, curve_quad); }
 
             lock(views, view.x0, 3, view.x0, 1, 0, null, null);
             lock(views, view.x1, 3, view.x1, 1, 0, null, null);
@@ -312,9 +343,11 @@
             let new_time = performance.now();
             delta = new_time - time;
             time = new_time;
-
-            update_views(views, dom);
-            update_dom(dom, views);
+            
+            if (fonts.loaded === fonts.target) {
+                update_views(views, dom);
+                update_dom(dom, views);
+            }
 
             window.requestAnimationFrame(main);
         }
