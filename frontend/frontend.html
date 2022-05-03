@@ -37,8 +37,9 @@
         font(libre_bodoni_700, fonts);
 
         // @TODO
-        // define text type
-        // add opacity and background color to views
+        // create_view() (directly creates a virtual element.)
+        // delete_view() (directly deletes a virtual element)
+        //update_views() executes like this: animate, link, lock. Then the update_dom() does the rest.
 
         let time = performance.now();
         let delta = 0;
@@ -104,7 +105,7 @@
         let z3 = 0;
 
         // VISUAL
-        let opacity;
+        let opacity; 
         let color;
         let text;
         let border;
@@ -112,6 +113,8 @@
         let blur;
         let contrast;
         let grayscale;
+        let brightness;
+        let sepia;
 
         let text_color;
         let text_font;
@@ -123,14 +126,22 @@
         // @ADD more filters
 
 
-        // @DONE
+        // @HERE
         function init_views(size, render_target) {
 
             let views = {
-                s: [], //state
-                c: [], // current frame
-                p: [], // previous frame
-                e: [], // event
+                
+                state: 0, // view state
+
+                // FLOAT
+                f32_s: [], // property state
+                f32_c: [], // property current frame
+                f32_p: [], // property previous frame
+
+                // INT
+                i32_s: [],
+                i32_c: [],
+                i32_p: [],
 
                 // LOCK
                 lop: [], // PROPERTY
@@ -142,12 +153,14 @@
                 // LINK
                 lit: [],
 
-                // ANIMATION
+                // Animate
                 ar: [], // RUNNING
                 ap: [], // PROGRESS
                 at: [], // TIMER
                 as: [], // SAMPLE
                 ad: [], // DONE
+
+                // STRING
             }
 
             // SPATIAL
@@ -228,7 +241,7 @@
             return lerp(q0, q1, i);
         }
         
-        // @DONE
+        // @DONE // refactor into update function??
         function anim(views, sp, s, start, end, time, delay, curve) {
 
             if (views.ar[sp][s] === 0) {
