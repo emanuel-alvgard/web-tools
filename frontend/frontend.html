@@ -87,24 +87,41 @@
             return dom;
         }
 
-        // VIEW TYPE
-        const view = {
+        // SPATIAL
+        let x0 = 0; // position
+        let x1 = 1; // dimension
+        let x2 = 2; // rotation
+        let x3 = 3; // scale
 
-            // STATES 0 - 99
-            x0: 0, // position
-            x1: 1, // dimension
-            x2: 2, // rotation
-            y0: 3,
-            y1: 4,
-            y2: 5,
-            z0: 6,
-            z1: 7,
-            z2: 8,
+        let y0 = 3;
+        let y1 = 4;
+        let y2 = 5;
+        let y3 = 7;
 
-            // EVENTS 100 - 199
-            mouse_down: 100,
-            mouse_up: 101
-        }
+        let z0 = 6;
+        let z1 = 7;
+        let z2 = 8;
+        let z3 = 0;
+
+        // VISUAL
+        let opacity;
+        let color;
+        let text;
+        let border;
+        let shadow;
+        let blur;
+        let contrast;
+        let grayscale;
+
+        let text_color;
+        let text_font;
+        let text_size;
+        
+        let border_color;
+        let border_size;
+
+        // @ADD more filters
+
 
         // @DONE
         function init_views(size, render_target) {
@@ -146,10 +163,10 @@
                 views.ad.push(new Int8Array(size));
             }
 
-            views.c[view.x1][0] = render_target.width;
-            views.p[view.x1][0] = render_target.width;
-            views.c[view.y1][0] = render_target.height;
-            views.p[view.y1][0] = render_target.height;
+            views.c[x1][0] = render_target.width;
+            views.p[x1][0] = render_target.width;
+            views.c[y1][0] = render_target.height;
+            views.p[y1][0] = render_target.height;
 
             return views;
         }
@@ -264,9 +281,13 @@
             // @ADD simple diffing algorithm later
             // @ADD if a view contains text it's width and height = "auto"
 
-            while (i < len) { dom.e[i].style.width = (views.c[view.x1][i] - views.c[view.x0][i]) + "px"; i += 1; } i = 0;
-            while (i < len) { dom.e[i].style.height = (views.c[view.y1][i]- views.c[view.y0][i]) + "px"; i += 1; } i = 0;
-            while (i < len) { dom.e[i].style.transform = "translate(" + views.c[view.x0][i] + "px, " + views.c[view.y0][i] + "px) " + "rotate(" + views.c[view.z2][i] + "deg)"; i += 1; } i = 0;
+            while (i < len) { 
+                //if ()
+                dom.e[i].style.width = (views.c[x1][i] - views.c[x0][i]) + "px"; 
+                i += 1; 
+            } i = 0;
+            while (i < len) { dom.e[i].style.height = (views.c[y1][i]- views.c[y0][i]) + "px"; i += 1; } i = 0;
+            while (i < len) { dom.e[i].style.transform = "translate(" + views.c[x0][i] + "px, " + views.c[y0][i] + "px) " + "rotate(" + views.c[z2][i] + "deg)"; i += 1; } i = 0;
 
 
             // CLEAR EVENTS
@@ -277,20 +298,20 @@
 
         function update_views(views, render_target) {
 
-            views.c[view.x1][0] = render_target.width;
-            views.c[view.y1][0] = render_target.height;
+            views.c[x1][0] = render_target.width;
+            views.c[y1][0] = render_target.height;
 
             let curve_line = [0.0, 2.0];
             let curve_quad = [0.0, 3.0, 0.0];
             let curve_cube = [2.0, 0.0, 2.0, 0.0];
 
             // STATE
-            if (views.s[view.x0][1] === 0 && views.ad[view.x0][1] === 1) { views.s[view.x0][1] = 1; }
-            else if (views.s[view.x0][1] === 1 && views.ad[view.x0][1] === 1) { views.s[view.x0][1] = 0; }
+            if (views.s[x0][1] === 0 && views.ad[x0][1] === 1) { views.s[x0][1] = 1; }
+            else if (views.s[x0][1] === 1 && views.ad[x0][1] === 1) { views.s[x0][1] = 0; }
 
             // LOAD
             if (render_target.load === 1) {
-                views.c[view.x0][1] = 300;
+                views.c[x0][1] = 300;
                 render_target.e[1].style.borderStyle = "none";
                 render_target.e[1].style.borderRadius = "15px";
                 render_target.e[1].style.boxShadow = "0px 0.5px 7px rgb(175, 175, 175)";
@@ -299,6 +320,7 @@
                 render_target.e[3].style.borderRadius = "0px 0px 15px 15px";
                 render_target.e[3].style.backgroundColor = "rgb(100, 100, 100)";
 
+                render_target.e[2].style.backgroundColor = "rgb(200, 200, 200)";
                 render_target.e[2].style.borderStyle = "none";
                 render_target.e[2].style.boxShadow = "0px 0.5px 7px rgb(175, 175, 175)";
                 render_target.e[2].style.fontFamily = "libre_bodoni_700";
@@ -309,21 +331,21 @@
             }
 
             // LAYOUT
-            lock(views, view.y0, 1, view.y0, 0, 300, null, null);
-            lock(views, view.x1, 1, view.x0, 1, 300, null, null);
-            lock(views, view.y1, 1, view.y1, 0, -300, null, null);
+            lock(views, y0, 1, y0, 0, 300, null, null);
+            lock(views, x1, 1, x0, 1, 300, null, null);
+            lock(views, y1, 1, y1, 0, -300, null, null);
 
-            //if (views.s[view.x0][1] === 0) { anim(views, view.x0, 1, 300, 900, 500, 500, curve_quad); }
-            //else if (views.s[view.x0][1] === 1) { anim(views, view.x0, 1, 900, 300, 500, 500, curve_quad); }
+            //if (views.s[x0][1] === 0) { anim(views, x0, 1, 300, 900, 500, 500, curve_quad); }
+            //else if (views.s[x0][1] === 1) { anim(views, x0, 1, 900, 300, 500, 500, curve_quad); }
 
-            lock(views, view.x0, 3, view.x0, 1, 0, null, null);
-            lock(views, view.x1, 3, view.x1, 1, 0, null, null);
-            lock(views, view.y1, 3, view.y1, 1, 0, null, null);
-            let a = (views.c[view.y1][1] - views.c[view.y0][1]) / 2;
-            lock(views, view.y0, 3, view.y0, 1, a, null, null);
+            lock(views, x0, 3, x0, 1, 0, null, null);
+            lock(views, x1, 3, x1, 1, 0, null, null);
+            lock(views, y1, 3, y1, 1, 0, null, null);
+            let a = (views.c[y1][1] - views.c[y0][1]) / 2;
+            lock(views, y0, 3, y0, 1, a, null, null);
 
-            lock(views, view.x1, 2, view.x1, 0, 0, null, null);
-            lock(views, view.y1, 2, view.y0, 0, 100, null, null);
+            lock(views, x1, 2, x1, 0, 0, null, null);
+            lock(views, y1, 2, y0, 0, 100, null, null);
 
 
 
