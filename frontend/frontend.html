@@ -88,43 +88,59 @@
             return dom;
         }
 
-        // SPATIAL
-        let x0 = 0; // position
-        let x1 = 1; // dimension
-        let x2 = 2; // rotation
-        let x3 = 3; // scale
+        // FLOAT 0 - 99
+        let _x0 = 0; // position
+        let _x1 = 1; // dimension
+        let _x2 = 2; // rotation
+        let _x3 = 3; // scale
 
-        let y0 = 3;
-        let y1 = 4;
-        let y2 = 5;
-        let y3 = 7;
+        let _y0 = 4;
+        let _y1 = 5;
+        let _y2 = 6;
+        let _y3 = 7;
 
-        let z0 = 6;
-        let z1 = 7;
-        let z2 = 8;
-        let z3 = 0;
+        let _z0 = 8;
+        let _z1 = 9;
+        let _z2 = 10;
+        let _z3 = 11;
 
-        // VISUAL
-        let opacity; 
-        let color;
-        let text;
-        let border;
-        let shadow;
-        let blur;
-        let contrast;
-        let grayscale;
-        let brightness;
-        let sepia;
+        let _opacity;
+        let _blur;
+        let _contrast;
+        let _saturation;
+        let _grayscale;
+        let _brightness;
+        let _sepia;
 
-        let text_color;
-        let text_font;
-        let text_size;
+        // INT 100 - 199 
+        let _red;
+        let _green;
+        let _blue;
+
+        let _text_red;
+        let _text_green;
+        let _text_blue;
+        let _text_size;
         
-        let border_color;
-        let border_size;
+        let _border_red;
+        let _border_green;
+        let _border_blue;
+        let _border_size;
+        let _border_radius;
 
-        // @ADD more filters
+        let _shadow_red;
+        let _shadow_green;
+        let _shadow_blue;
+        let _shadow_size;
+        let _shadow_radius;
 
+        // STRING
+        let _text;
+        let _text_font;
+        let _border_x0;
+        let _border_x1;
+        let _border_y0;
+        let _border_y1;
 
         // @HERE
         function init_views(size, render_target) {
@@ -143,17 +159,17 @@
                 i32_c: [],
                 i32_p: [],
 
-                // LOCK
+                // LOCK NUMBER
                 lop: [], // PROPERTY
                 lot: [], // TARGET
                 loo: [], // OFFESET
                 lomi: [], // MIN
                 loma: [], // MAX
 
-                // LINK
+                // LINK NUMBER
                 lit: [],
 
-                // Animate
+                // ANIMATE NUMBER
                 ar: [], // RUNNING
                 ap: [], // PROGRESS
                 at: [], // TIMER
@@ -184,14 +200,38 @@
             return views;
         }
 
+        // FLOAT
+        function x0(v) { return views.f32_c[_x0][v]; }
+        function x1(v) { return views.f32_c[_x1][v]; }
+        function x2(v) { return views.f32_c[_x2][v]; }
+        function x3(v) { return views.f32_c[_x3][v]; }
 
+        function y0(v) { return views.f32_c[_y0][v]; }
+        function y1(v) { return views.f32_c[_y1][v]; }
+        function y2(v) { return views.f32_c[_y2][v]; }
+        function y3(v) { return views.f32_c[_y3][v]; }
+
+        function z0(v) { return views.f32_c[_y0][v]; }
+        function z1(v) { return views.f32_c[_y1][v]; }
+        function z2(v) { return views.f32_c[_y2][v]; }
+        function z3(v) { return views.f32_c[_y3][v]; }
+        
+        // INT
+        function 
         
 
 
 
+        // lock()
+        // r_lock()
+        // link()
+        // r_link()
+        // anim()
+        // r_anim()
 
-
-
+        // update_anims()
+        // update_links()
+        // update_locks()
 
 
 
