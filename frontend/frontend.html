@@ -88,59 +88,58 @@
             return dom;
         }
 
-        // FLOAT 0 - 99
-        let _x0 = 0; // position
-        let _x1 = 1; // dimension
-        let _x2 = 2; // rotation
-        let _x3 = 3; // scale
+        // FLOAT
+        let x0 = 0; // position
+        let x1 = 1; // dimension
+        let x2 = 2; // rotation
+        let x3 = 3; // scale
 
-        let _y0 = 4;
-        let _y1 = 5;
-        let _y2 = 6;
-        let _y3 = 7;
+        let y0 = 4;
+        let y1 = 5;
+        let y2 = 6;
+        let y3 = 7;
 
-        let _z0 = 8;
-        let _z1 = 9;
-        let _z2 = 10;
-        let _z3 = 11;
+        let z0 = 8;
+        let z1 = 9;
+        let z2 = 10;
+        let z3 = 11;
 
-        let _opacity;
-        let _blur;
-        let _contrast;
-        let _saturation;
-        let _grayscale;
-        let _brightness;
-        let _sepia;
+        let opacity = 12;
+        let blur = 13;
+        let contrast = 14;
+        let saturation = 15;
+        let grayscale = 16;
+        let brightness = 17;
+        let sepia = 18;
 
-        // INT 100 - 199 
-        let _red;
-        let _green;
-        let _blue;
+        let red = 19;
+        let green = 20;
+        let blue;
 
-        let _text_red;
-        let _text_green;
-        let _text_blue;
-        let _text_size;
+        let text_red;
+        let text_green;
+        let text_blue;
+        let text_size;
         
-        let _border_red;
-        let _border_green;
-        let _border_blue;
-        let _border_size;
-        let _border_radius;
+        let border_red;
+        let border_green;
+        let border_blue;
+        let border_size;
+        let border_radius;
 
-        let _shadow_red;
-        let _shadow_green;
-        let _shadow_blue;
-        let _shadow_size;
-        let _shadow_radius;
+        let shadow_red;
+        let shadow_green;
+        let shadow_blue;
+        let shadow_size;
+        let shadow_radius;
 
         // STRING
-        let _text;
-        let _text_font;
-        let _border_x0;
-        let _border_x1;
-        let _border_y0;
-        let _border_y1;
+        let text;
+        let text_font;
+        let border_x0;
+        let border_x1;
+        let border_y0;
+        let border_y1;
 
         // @HERE
         function init_views(size, render_target) {
@@ -150,14 +149,9 @@
                 state: 0, // view state
 
                 // FLOAT
-                f32_s: [], // property state
-                f32_c: [], // property current frame
-                f32_p: [], // property previous frame
-
-                // INT
-                i32_s: [],
-                i32_c: [],
-                i32_p: [],
+                s: [], // property state
+                c: [], // property current frame
+                p: [], // property previous frame
 
                 // LOCK NUMBER
                 lop: [], // PROPERTY
@@ -180,7 +174,7 @@
             }
 
             // SPATIAL
-            for (let i = 0; i < 9; i++) {
+            for (let i = 0; i < 12; i++) {
                 
                 views.s.push(new Int8Array(size));
                 views.c.push(new Float32Array(size));
@@ -200,25 +194,37 @@
             return views;
         }
 
-        // FLOAT
-        function x0(v) { return views.f32_c[_x0][v]; }
-        function x1(v) { return views.f32_c[_x1][v]; }
-        function x2(v) { return views.f32_c[_x2][v]; }
-        function x3(v) { return views.f32_c[_x3][v]; }
+        // GET
+        function x0_(i) { return views.c[x0][i]; }
+        function x1_(i) { return views.c[x1][i]; }
+        function x2_(i) { return views.c[x2][i]; }
+        function x3_(i) { return views.c[x3][i]; }
 
-        function y0(v) { return views.f32_c[_y0][v]; }
-        function y1(v) { return views.f32_c[_y1][v]; }
-        function y2(v) { return views.f32_c[_y2][v]; }
-        function y3(v) { return views.f32_c[_y3][v]; }
+        function y0_(i) { return views.c[y0][i]; }
+        function y1_(i) { return views.c[y1][i]; }
+        function y2_(i) { return views.c[y2][i]; }
+        function y3_(i) { return views.c[y3][i]; }
 
-        function z0(v) { return views.f32_c[_y0][v]; }
-        function z1(v) { return views.f32_c[_y1][v]; }
-        function z2(v) { return views.f32_c[_y2][v]; }
-        function z3(v) { return views.f32_c[_y3][v]; }
+        function z0_(i) { return views.c[y0][i]; }
+        function z1_(i) { return views.c[y1][i]; }
+        function z2_(i) { return views.c[y2][i]; }
+        function z3_(i) { return views.c[y3][i]; }
         
-        // INT
-        function 
-        
+        // SET
+        function _x0(i, v) { views.c[x0][i] = v; }
+        function _x1(i, v) { views.c[x1][i] = v; }
+        function _x2(i, v) { views.c[x2][i] = v; }
+        function _x3(i, v) { views.c[x3][i] = v; }
+
+        function _y0(i, v) { views.c[y0][i] = v; }
+        function _y1(i, v) { views.c[y1][i] = v; }
+        function _y2(i, v) { views.c[y2][i] = v; }
+        function _y3(i, v) { views.c[y3][i] = v; }
+
+        function _z0(i, v) { views.c[z0][i] = v; }
+        function _z1(i, v) { views.c[z1][i] = v; }
+        function _z2(i, v) { views.c[z2][i] = v; }
+        function _z3(i, v) { views.c[z3][i] = v; }
 
 
 
@@ -332,10 +338,10 @@
             let len = dom.e.length;
 
             // @ADD simple diffing algorithm later
-            // @ADD if a view contains text it's width and height = "auto"
+            // @ADD if a view contains text it's width and height = "auto"?
+            // @ADD rounding of properties that are integers in the DOM
 
             while (i < len) { 
-                //if ()
                 dom.e[i].style.width = (views.c[x1][i] - views.c[x0][i]) + "px"; 
                 i += 1; 
             } i = 0;
@@ -388,18 +394,17 @@
             lock(views, x1, 1, x0, 1, 300, null, null);
             lock(views, y1, 1, y1, 0, -300, null, null);
 
-            //if (views.s[x0][1] === 0) { anim(views, x0, 1, 300, 900, 500, 500, curve_quad); }
-            //else if (views.s[x0][1] === 1) { anim(views, x0, 1, 900, 300, 500, 500, curve_quad); }
+            if (views.s[x0][1] === 0) { anim(views, x0, 1, 300, 900, 500, 500, curve_quad); }
+            else if (views.s[x0][1] === 1) { anim(views, x0, 1, 900, 300, 500, 500, curve_quad); }
 
             lock(views, x0, 3, x0, 1, 0, null, null);
             lock(views, x1, 3, x1, 1, 0, null, null);
             lock(views, y1, 3, y1, 1, 0, null, null);
-            let a = (views.c[y1][1] - views.c[y0][1]) / 2;
+            let a = (y1_(1) - y0_(1)) / 2;
             lock(views, y0, 3, y0, 1, a, null, null);
 
             lock(views, x1, 2, x1, 0, 0, null, null);
             lock(views, y1, 2, y0, 0, 100, null, null);
-
 
 
             // SAVE STATE
