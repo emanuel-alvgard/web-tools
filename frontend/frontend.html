@@ -104,47 +104,47 @@
         let z2 = 10;
         let z3 = 11;
 
-        let opacity = 12;
+        let opac = 12;
         let blur = 13;
-        let contrast = 14;
-        let saturation = 15;
-        let grayscale = 16;
-        let brightness = 17;
-        let sepia = 18;
+        let cont = 14;
+        let satu = 15;
+        let gray = 16;
+        let brig = 17;
+        let sepi = 18;
 
         let red = 19;
         let green = 20;
-        let blue;
+        let blue = 21;
 
-        let text_red;
-        let text_green;
-        let text_blue;
-        let text_size;
+        let t_red = 22;
+        let t_green = 23;
+        let t_blue = 24;
+        let t_size = 25;
         
-        let border_red;
-        let border_green;
-        let border_blue;
-        let border_size;
-        let border_radius;
+        let b_red = 26;
+        let b_green = 27;
+        let b_blue = 28;
+        let b_size = 29;
+        let b_radius = 30;
 
-        let shadow_red;
-        let shadow_green;
-        let shadow_blue;
-        let shadow_size;
-        let shadow_radius;
+        let s_red = 31;
+        let s_green = 32;
+        let s_blue = 33;
+        let s_size = 34;
+        let s_radius = 35;
 
         // STRING
-        let text;
-        let text_font;
-        let border_x0;
-        let border_x1;
-        let border_y0;
-        let border_y1;
+        let text = 36;
+        let t_font = 37;
+        let b_x0 = 38;
+        let b_x1 = 39;
+        let b_y0 = 40;
+        let b_y1 = 41;
 
         // @HERE
-        function init_views(size, render_target) {
+        function init_views(size, rt) {
 
-            let views = {
+            let v = {
                 
                 state: 0, // view state
 
@@ -176,55 +176,137 @@
             // SPATIAL
             for (let i = 0; i < 12; i++) {
                 
-                views.s.push(new Int8Array(size));
-                views.c.push(new Float32Array(size));
-                views.p.push(new Float32Array(size));
-                views.ar.push(new Int8Array(size));
-                views.ap.push(new Float32Array(size));
-                views.at.push(new Float64Array(size));
-                views.as.push(new Int32Array(size));
-                views.ad.push(new Int8Array(size));
+                v.s.push(new Int8Array(size));
+                v.c.push(new Float32Array(size));
+                v.p.push(new Float32Array(size));
+                v.ar.push(new Int8Array(size));
+                v.ap.push(new Float32Array(size));
+                v.at.push(new Float64Array(size));
+                v.as.push(new Int32Array(size));
+                v.ad.push(new Int8Array(size));
             }
 
-            views.c[x1][0] = render_target.width;
-            views.p[x1][0] = render_target.width;
-            views.c[y1][0] = render_target.height;
-            views.p[y1][0] = render_target.height;
+            // RENDER TARGETE
+            v.c[x1][0] = rt.width;
+            v.p[x1][0] = rt.width;
+            v.c[y1][0] = rt.height;
+            v.p[y1][0] = rt.height;
 
-            return views;
+            return v;
         }
 
+        // INIT
+        let dom = init_dom();
+        let v = init_views(dom.e.length, dom);
+
         // GET
-        function x0_(i) { return views.c[x0][i]; }
-        function x1_(i) { return views.c[x1][i]; }
-        function x2_(i) { return views.c[x2][i]; }
-        function x3_(i) { return views.c[x3][i]; }
+        function x0_(i) { return v.c[x0][i]; }
+        function x1_(i) { return v.c[x1][i]; }
+        function x2_(i) { return v.c[x2][i]; }
+        function x3_(i) { return v.c[x3][i]; }
 
-        function y0_(i) { return views.c[y0][i]; }
-        function y1_(i) { return views.c[y1][i]; }
-        function y2_(i) { return views.c[y2][i]; }
-        function y3_(i) { return views.c[y3][i]; }
+        function y0_(i) { return v.c[y0][i]; }
+        function y1_(i) { return v.c[y1][i]; }
+        function y2_(i) { return v.c[y2][i]; }
+        function y3_(i) { return v.c[y3][i]; }
 
-        function z0_(i) { return views.c[y0][i]; }
-        function z1_(i) { return views.c[y1][i]; }
-        function z2_(i) { return views.c[y2][i]; }
-        function z3_(i) { return views.c[y3][i]; }
+        function z0_(i) { return v.c[y0][i]; }
+        function z1_(i) { return v.c[y1][i]; }
+        function z2_(i) { return v.c[y2][i]; }
+        function z3_(i) { return v.c[y3][i]; }
+
+        function opac_(i) { return v.c[opac][i]; }
+        function blur_(i) { return v.c[blur][i]; }
+        function cont_(i) { return v.c[cont][i]; }
+        function satu_(i) { return v.c[satu][i]; }
+        function gray_(i) { return v.c[gray][i]; }
+        function brig_(i) { return v.c[brig][i]; }
+        function sepi_(i) { return v.c[sepi][i]; }
+
+        function red_(i) { return v.c[red][i]; }
+        function green_(i) { return v.c[green][i]; }
+        function blue_(i) { return v.c[blue][i]; }
+
+        function t_red_(i) { return v.c[t_red][i]; }
+        function t_green_(i) { return v.c[t_green][i]; }
+        function t_blue_(i) { return v.c[t_blue][i]; }
+        function t_size_(i) { return v.c[t_size][i]; }
         
+        function b_red_(i) { return v.c[b_red][i]; }
+        function b_green_(i) { return v.c[b_green][i]; }
+        function b_blue_(i) { return v.c[b_blue][i]; }
+        function b_size_(i) { return v.c[b_size][i]; }
+        function b_radius_(i) { return v.c[b_radius][i]; }
+
+        function s_red_(i) { return v.c[s_red][i]; }
+        function s_green_(i) { return v.c[s_green][i]; }
+        function s_blue_(i) { return v.c[s_blue][i]; }
+        function s_size_(i) { return v.c[s_size][i]; }
+        function s_radius_(i) { return v.c[s_radius][i]; }
+
+        // STRING
+        function text_(i) { return v.c[text][i]; }
+        function t_font_(i) { return v.c[t_font][i]; }
+        function b_x0_(i) { return v.c[b_x0][i]; }
+        function b_x1_(i) { return v.c[b_x1][i]; }
+        function b_y0_(i) { return v.c[b_y0][i]; }
+        function b_y1_(i) { return v.c[b_y1][i]; }
+        
+
+
+
         // SET
-        function _x0(i, v) { views.c[x0][i] = v; }
-        function _x1(i, v) { views.c[x1][i] = v; }
-        function _x2(i, v) { views.c[x2][i] = v; }
-        function _x3(i, v) { views.c[x3][i] = v; }
+        function _x0(i, j) { v.c[x0][i] = j; }
+        function _x1(i, j) { v.c[x1][i] = j; }
+        function _x2(i, j) { v.c[x2][i] = j; }
+        function _x3(i, j) { v.c[x3][i] = j; }
 
-        function _y0(i, v) { views.c[y0][i] = v; }
-        function _y1(i, v) { views.c[y1][i] = v; }
-        function _y2(i, v) { views.c[y2][i] = v; }
-        function _y3(i, v) { views.c[y3][i] = v; }
+        function _y0(i, j) { v.c[y0][i] = j; }
+        function _y1(i, j) { v.c[y1][i] = j; }
+        function _y2(i, j) { v.c[y2][i] = j; }
+        function _y3(i, j) { v.c[y3][i] = j; }
 
-        function _z0(i, v) { views.c[z0][i] = v; }
-        function _z1(i, v) { views.c[z1][i] = v; }
-        function _z2(i, v) { views.c[z2][i] = v; }
-        function _z3(i, v) { views.c[z3][i] = v; }
+        function _z0(i, j) { v.c[z0][i] = j; }
+        function _z1(i, j) { v.c[z1][i] = j; }
+        function _z2(i, j) { v.c[z2][i] = j; }
+        function _z3(i, j) { v.c[z3][i] = j; }
+
+        function _opac(i, j) { v.c[opac][i] = j; }
+        function _blur(i, j) { v.c[blur][i] = j; }
+        function _cont(i, j) { v.c[cont][i] = j; }
+        function _satu(i, j) { v.c[satu][i] = j; }
+        function _gray(i, j) { v.c[gray][i] = j; }
+        function _brig(i, j) { v.c[brig][i] = j; }
+        function _sepi(i, j) { v.c[sepi][i] = j; }
+
+        function _red(i, j) { v.c[red][i] = j; }
+        function _green(i, j) { v.c[green][i] = j; }
+        function _blue(i, j) { v.c[blue][i] = j; }
+
+        function _t_red(i, j) { v.c[t_red][i] = j; }
+        function _t_green(i, j) { v.c[t_green][i] = j; }
+        function _t_blue(i, j) { v.c[t_blue][i] = j; }
+        function _t_size(i, j) { v.c[t_size][i] = j; }
+        
+        function _b_red(i, j) { v.c[b_red][i] = j; }
+        function _b_green(i, j) { v.c[b_green][i] = j; }
+        function _b_blue(i, j) { v.c[b_blue][i] = j; }
+        function _b_size(i, j) { v.c[b_size][i] = j; }
+        function _b_radius(i, j) { v.c[b_radius][i] = j; }
+
+        function _s_red(i, j) { v.c[s_red][i] = j; }
+        function _s_green(i, j) { v.c[s_green][i] = j; }
+        function _s_blue(i, j) { v.c[s_blue][i] = j; }
+        function _s_size(i, j) { v.c[s_size][i] = j; }
+        function _s_radius(i, j) { v.c[s_radius][i] = j; }
+
+        // STRING
+        function _text(i, j) { v.c[text][i] = j; }
+        function _t_font(i, j) { v.c[t_font][i] = j; }
+        function _b_x0(i, j) { v.c[b_x0][i] = j; }
+        function _b_x1(i, j) { v.c[b_x1][i] = j; }
+        function _b_y0(i, j) { v.c[b_y0][i] = j; }
+        function _b_y1(i, j) { v.c[b_y1][i] = j; }
 
 
 
@@ -394,8 +476,8 @@
             lock(views, x1, 1, x0, 1, 300, null, null);
             lock(views, y1, 1, y1, 0, -300, null, null);
 
-            if (views.s[x0][1] === 0) { anim(views, x0, 1, 300, 900, 500, 500, curve_quad); }
-            else if (views.s[x0][1] === 1) { anim(views, x0, 1, 900, 300, 500, 500, curve_quad); }
+            //if (views.s[x0][1] === 0) { anim(views, x0, 1, 300, 900, 500, 500, curve_quad); }
+            //else if (views.s[x0][1] === 1) { anim(views, x0, 1, 900, 300, 500, 500, curve_quad); }
 
             lock(views, x0, 3, x0, 1, 0, null, null);
             lock(views, x1, 3, x1, 1, 0, null, null);
@@ -415,9 +497,6 @@
             }
             // CLEAR EVENTS
         }
-       
-        let dom = init_dom();
-        let views = init_views(dom.e.length, dom);
 
         function main() {
 
