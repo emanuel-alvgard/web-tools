@@ -187,6 +187,8 @@
                 v.ad.push(new Int8Array(size));
             }
 
+            // @ADD fill scale properties with 1.0
+
             // STRING
             for (let i = 0; i < 6; i++) {
                 v.str_s.push(new Array(size));
@@ -197,11 +199,11 @@
                 v.str_p[i].fill("");
             }
 
-            // RENDER TARGETE
-            v.f32_c[x1][0] = rt.width;
-            v.f32_p[x1][0] = rt.width;
-            v.f32_c[y1][0] = rt.height;
-            v.f32_p[y1][0] = rt.height;
+            // RENDER TARGET
+            //v.f32_c[x1][0] = rt.width;
+            //v.f32_p[x1][0] = rt.width;
+            //v.f32_c[y1][0] = rt.height;
+            //v.f32_p[y1][0] = rt.height;
 
             return v;
         }
@@ -211,6 +213,10 @@
         let v = init_views(dom.e.length, dom);
 
         // GET
+        function state(p, i) { return v.f32_c[p][i]; }
+        function get(p, i) { return v.f32_c[p][i]; }
+
+
         function x0_(i) { return v.f32_c[x0][i]; }
         function x1_(i) { return v.f32_c[x1][i]; }
         function x2_(i) { return v.f32_c[x2][i]; }
@@ -267,6 +273,8 @@
 
 
         // SET
+        function set(p, i, j) { v.f32_c[p][i] = j; }
+
         function _x0(i, j) { v.f32_c[x0][i] = j; }
         function _x1(i, j) { v.f32_c[x1][i] = j; }
         function _x2(i, j) { v.f32_c[x2][i] = j; }
@@ -434,18 +442,40 @@
             // @ADD if a view contains text it's width and height = "auto"?
             // @ADD rounding of properties that are integers in the DOM
 
+            // WIDTH
             while (i < len) { 
-                dom.e[i].style.width = (v.f32_c[x1][i] - v.f32_c[x0][i]) + "px"; 
-                i += 1; 
-            } i = 0;
-            while (i < len) { dom.e[i].style.height = (v.f32_c[y1][i]- v.f32_c[y0][i]) + "px"; i += 1; } i = 0;
-            while (i < len) { dom.e[i].style.transform = "translate(" + v.f32_c[x0][i] + "px, " + v.f32_c[y0][i] + "px) " + "rotate(" + v.f32_c[z2][i] + "deg)"; i += 1; } i = 0;
+                if ((v.f32_c[x1][i] - v.f32_c[x0][i]) !== (v.f32_p[x1][i] - v.f32_p[x0][i])) {
+                    dom.e[i].style.width = (v.f32_c[x1][i] - v.f32_c[x0][i]) + "px";
+                } i += 1; 
+            } 
+            
+            // HEIGHT
+            i = 0;
+            while (i < len) {
+                if ((v.f32_c[y1][i] - v.f32_c[y0][i]) !== (v.f32_p[y1][i] - v.f32_p[y0][i])) { 
+                    dom.e[i].style.height = (v.f32_c[y1][i]- v.f32_c[y0][i]) + "px";
+                } i += 1; 
+            } 
+                
+            // TRANSFORM 
+            i = 0;
+            while (i < len) { 
+                dom.e[i].style.transform = 
+                    "translate(" + v.f32_c[x0][i] + 
+                    "px, " + v.f32_c[y0][i] + "px) " + 
+                    "rotate(" + v.f32_c[z2][i] + "deg)" + 
+                    "scale(" + v.f32_c[x3][i] + ", " + v.f32_c[y3][i] + ")"; 
+                    i += 1; 
+            } 
+            
+            i = 0;
 
 
             // CLEAR EVENTS
             dom.load = 0;
-
         }
+
+        function clear_dom(dom) {}
 
 
         function update_views(rt) {
@@ -480,6 +510,8 @@
                 rt.e[2].style.color = "rgb(50, 50, 50)";
                 rt.e[2].textContent = "EMANUEL ALVGARD";
 
+                set(z2, 1, 45);
+                set(z2, 3, 45);
             }
 
             // LAYOUT
@@ -487,21 +519,22 @@
             lock(v, x1, 1, x0, 1, 300, null, null);
             lock(v, y1, 1, y1, 0, -300, null, null);
 
-            if (v.f32_s[x0][1] === 0) { anim(v, x0, 1, 300, 900, 500, 500, curve_quad); }
-            else if (v.f32_s[x0][1] === 1) { anim(v, x0, 1, 900, 300, 500, 500, curve_quad); }
+            //if (v.f32_s[x0][1] === 0) { anim(v, x0, 1, 300, 900, 500, 500, curve_quad); }
+            //else if (v.f32_s[x0][1] === 1) { anim(v, x0, 1, 900, 300, 500, 500, curve_quad); }
 
             lock(v, x0, 3, x0, 1, 0, null, null);
             lock(v, x1, 3, x1, 1, 0, null, null);
             lock(v, y1, 3, y1, 1, 0, null, null);
-            let a = (y1_(1) - y0_(1)) / 2;
+            let a = (get(y1, 1) - get(y0, 1)) / 2;
             lock(v, y0, 3, y0, 1, a, null, null);
 
             lock(v, x1, 2, x1, 0, 0, null, null);
             lock(v, y1, 2, y0, 0, 100, null, null);
+        }
 
-
-            // SAVE STATE
-            for (let i = 0; i < v.f32_c.length; i++) {
+        function clear_views() {
+             // SAVE STATE
+             for (let i = 0; i < v.f32_c.length; i++) {
                 for (let j = 0; j < v.f32_c[i].length; j++) { 
                     if (v.f32_c[i][j] !== v.f32_p[i][j]) { v.f32_p[i][j] = v.f32_c[i][j]; }
                 }
@@ -518,6 +551,8 @@
             if (fonts.loaded === fonts.target) {
                 update_views(dom);
                 update_dom(dom);
+                clear_views();
+                clear_dom(dom);
             }
 
             window.requestAnimationFrame(main);
