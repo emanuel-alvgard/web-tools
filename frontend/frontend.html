@@ -103,7 +103,7 @@
         let z3 = 11;
 
         let opac = 12;
-        let blur = 13;
+        let bl = 13;
         let cont = 14;
         let satu = 15;
         let gray = 16;
@@ -140,7 +140,7 @@
         let b_y1 = 5;
 
         // @HERE
-        function init_views(size, rt) {
+        function init_views(size) {
 
             let v = {
                 
@@ -187,7 +187,16 @@
                 v.ad.push(new Int8Array(size));
             }
 
-            // @ADD fill scale properties with 1.0
+            // TRANSFORM
+            v.f32_c[x3].fill(1.0);
+            v.f32_c[y3].fill(1.0);
+            v.f32_c[z3].fill(1.0);
+            
+            // FILTER
+            v.f32_c[opac].fill(100.0);
+            v.f32_c[cont].fill(100.0);
+            v.f32_c[satu].fill(100.0);
+            v.f32_c[brig].fill(100.0);
 
             // STRING
             for (let i = 0; i < 6; i++) {
@@ -199,18 +208,12 @@
                 v.str_p[i].fill("");
             }
 
-            // RENDER TARGET
-            //v.f32_c[x1][0] = rt.width;
-            //v.f32_p[x1][0] = rt.width;
-            //v.f32_c[y1][0] = rt.height;
-            //v.f32_p[y1][0] = rt.height;
-
             return v;
         }
 
         // INIT
         let dom = init_dom();
-        let v = init_views(dom.e.length, dom);
+        let v = init_views(dom.e.length);
 
         // GET
         function state(p, i) { return v.f32_c[p][i]; }
@@ -359,8 +362,36 @@
                     i += 1; 
             } 
             
+            // FILTER
             i = 0;
+            while (i < len) {
+                
+                let update = 0;
+                let opacity = "";
+                let blur = "";
+                let contrast = "";
+                let saturate = "";
+                let grayscale = "";
+                let brightness = "";
+                let sepia = "";
 
+                if (v.f32_c[opac][i] !== v.f32_p[opac][i]) { opacity = "opacity(" + v.f32_c[opac][i] + "%) "; update = 1; }
+                if (v.f32_c[bl][i] !== v.f32_p[bl][i]) { blur = "blur(" + v.f32_c[bl][i] + "px) "; update = 1; }
+                if (v.f32_c[cont][i] !== v.f32_p[cont][i]) { contrast = "contrast(" + v.f32_c[cont][i] + "%) "; update = 1; }
+                if (v.f32_c[satu][i] !== v.f32_p[satu][i]) { saturate = "saturate(" + v.f32_c[satu][i] + "%) "; update = 1; }
+                if (v.f32_c[gray][i] !== v.f32_p[gray][i]) { grayscale = "grayscale(" + v.f32_c[gray][i] + "%) "; update = 1; }
+                if (v.f32_c[brig][i] !== v.f32_p[brig][i]) { brightness = "brightness(" + v.f32_c[brig][i] + "%) "; update = 1; }
+                if (v.f32_c[sepi][i] !== v.f32_p[sepi][i]) { sepia = "sepia(" + v.f32_c[sepi][i] + "%) "; update = 1; }
+                if (update === 1) { dom.e[i].style.filter = opacity + blur + contrast + saturate + grayscale + brightness + sepia; }    
+                i += 1; 
+            }
+            
+            // BACKGROUND COLOR
+            i = 0;
+            while (i < len) {
+                
+                i += 1;
+            }
 
             // CLEAR EVENTS
             dom.load = 0;
@@ -393,16 +424,24 @@
                 rt.e[3].style.borderRadius = "0px 0px 15px 15px";
                 rt.e[3].style.backgroundColor = "rgb(100, 100, 100)";
 
-                rt.e[2].style.backgroundColor = "rgb(200, 200, 200)";
+                rt.e[2].style.backgroundColor = "rgb(200, 50, 50)";
                 rt.e[2].style.borderStyle = "none";
                 rt.e[2].style.boxShadow = "0px 0.5px 7px rgb(175, 175, 175)";
                 rt.e[2].style.fontFamily = "libre_bodoni_700";
                 rt.e[2].style.fontSize = "24px";
                 rt.e[2].style.color = "rgb(50, 50, 50)";
-                rt.e[2].textContent = "EMANUEL ALVGARD";
+                rt.e[2].textContent = "test";
 
-                set(z2, 1, 45);
-                set(z2, 3, 45);
+                //set(opac, 2, 50);
+                //set(bl, 2, 1);
+                //set(cont, 2, 50);
+                //set(satu, 2, 150);
+                //set(gray, 2, 25);
+                //set(brig, 2, 175);
+                //set(sepi, 2, 100);
+
+                //set(z2, 1, 45);
+                //set(z2, 3, 45);
             }
 
             // LAYOUT
@@ -410,8 +449,8 @@
             lock(v, x1, 1, x0, 1, 300, null, null);
             lock(v, y1, 1, y1, 0, -300, null, null);
 
-            //if (v.f32_s[x0][1] === 0) { anim(v, x0, 1, 300, 900, 500, 500, curve_quad); }
-            //else if (v.f32_s[x0][1] === 1) { anim(v, x0, 1, 900, 300, 500, 500, curve_quad); }
+            if (v.f32_s[x0][1] === 0) { anim(v, x0, 1, 300, 900, 500, 500, curve_quad); }
+            else if (v.f32_s[x0][1] === 1) { anim(v, x0, 1, 900, 300, 500, 500, curve_quad); }
 
             lock(v, x0, 3, x0, 1, 0, null, null);
             lock(v, x1, 3, x1, 1, 0, null, null);
