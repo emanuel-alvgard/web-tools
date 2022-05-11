@@ -215,12 +215,18 @@
         let dom = init_dom();
         let v = init_views(dom.e.length);
 
-        // GET
-        function state(p, i) { return v.f32_c[p][i]; }
-        function get(p, i) { return v.f32_c[p][i]; }
+        // GET VALUE
+        function num(p, i) { return v.f32_c[p][i]; }
+        function str(p, i) { return v.str_c[p][i]; }
 
-        // SET
-        function set(p, i, j) { v.f32_c[p][i] = j; }
+        // SET VALUE
+        function _num(p, i, j) { v.f32_c[p][i] = j; }
+        function _str(p, i, j) { v.str_c[p][i] = j; }
+
+        // GET STATE
+        function num_(p, i) { return v.f32_s[p][i]; }
+        function str_(p, i) { return v.str_s[p][i]; }
+
 
 
         // lock()
@@ -432,16 +438,16 @@
                 rt.e[2].style.color = "rgb(50, 50, 50)";
                 rt.e[2].textContent = "test";
 
-                //set(opac, 2, 50);
-                //set(bl, 2, 1);
-                //set(cont, 2, 50);
-                //set(satu, 2, 150);
-                //set(gray, 2, 25);
-                //set(brig, 2, 175);
-                //set(sepi, 2, 100);
+                _num(opac, 2, 50);
+                //_num(bl, 2, 1);
+                //_num(cont, 2, 50);
+                //_num(satu, 2, 150);
+                //_num(gray, 2, 25);
+                //_num(brig, 2, 175);
+                //_num(sepi, 2, 100);
 
-                //set(z2, 1, 45);
-                //set(z2, 3, 45);
+                //_num(z2, 1, 45);
+                //_numt(z2, 3, 45);
             }
 
             // LAYOUT
@@ -455,7 +461,7 @@
             lock(v, x0, 3, x0, 1, 0, null, null);
             lock(v, x1, 3, x1, 1, 0, null, null);
             lock(v, y1, 3, y1, 1, 0, null, null);
-            let a = (get(y1, 1) - get(y0, 1)) / 2;
+            let a = (num(y1, 1) - num(y0, 1)) / 2;
             lock(v, y0, 3, y0, 1, a, null, null);
 
             lock(v, x1, 2, x1, 0, 0, null, null);
