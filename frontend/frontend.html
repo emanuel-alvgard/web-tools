@@ -342,7 +342,8 @@
 
             // @ADD simple diffing algorithm later
             // @ADD if a view contains text it's width and height = "auto"?
-            // @ADD rounding of properties that are integers in the DOM
+            // @ADD if x0 is > rt.width || x1 < 0 do not render display: none (first time then skip rendering subsequent frames)
+            // @ADD if y0 is > rt.height || y1 < make element display: none (first time then skip rendering subsequent frames)
 
             // WIDTH
             while (i < len) { 
@@ -410,11 +411,11 @@
 
         function update_views(rt) {
 
-            v.f32_c[x1][0] = rt.width;
-            v.f32_c[y1][0] = rt.height;
+            _num(x1, 0, rt.width);
+            _num(y1, 0, rt.height);
 
             let curve_line = [0.0, 2.0];
-            let curve_quad = [0.0, 3.0, 0.0];
+            let curve_quad = [3.0, 0.0, 0.0];
             let curve_cube = [2.0, 0.0, 2.0, 0.0];
 
             // STATE
@@ -457,8 +458,8 @@
             lock(v, x1, 1, x0, 1, 300, null, null);
             lock(v, y1, 1, y1, 0, -300, null, null);
 
-            if (num_(x0, 1) === 0) { anim(v, x0, 1, 300, 900, 500, 500, curve_quad); }
-            else if (num_(x0, 1) === 1) { anim(v, x0, 1, 900, 300, 500, 500, curve_quad); }
+            if (num_(x0, 1) === 0) { anim(v, x0, 1, 300, 900, 500, 1000, curve_quad); }
+            else if (num_(x0, 1) === 1) { anim(v, x0, 1, 900, 300, 500, 1000, curve_quad); }
 
             lock(v, x0, 3, x0, 1, 0, null, null);
             lock(v, x1, 3, x1, 1, 0, null, null);
