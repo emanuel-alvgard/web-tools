@@ -119,11 +119,29 @@
         let t_blue = 24;
         let t_size = 25;
         
-        let b_red = 26;
-        let b_green = 27;
-        let b_blue = 28;
-        let b_size = 29;
-        let b_radius = 30;
+        let b_x0_red = 26;
+        let b_x0_green = 27;
+        let b_x0_blue = 28;
+        let b_x0_size = 29;
+        let b_x0_radius = 30;
+
+        let b_x1_red = 26;
+        let b_x1_green = 27;
+        let b_x1_blue = 28;
+        let b_x1_size = 29;
+        let b_x1_radius = 30;
+
+        let b_y0_red = 26;
+        let b_y0_green = 27;
+        let b_y0_blue = 28;
+        let b_y0_size = 29;
+        let b_y0_radius = 30;
+
+        let b_y1_red = 26;
+        let b_y1_green = 27;
+        let b_y1_blue = 28;
+        let b_y1_size = 29;
+        let b_y1_radius = 30;
 
         let s_red = 31;
         let s_green = 32;
@@ -228,8 +246,6 @@
         // GET STATE
         function num_(p, i) { return v.f32_s[p][i]; }
         function str_(p, i) { return v.str_s[p][i]; }
-
-
 
         // lock()
         // r_lock()
@@ -398,7 +414,43 @@
             // BACKGROUND COLOR
             i = 0;
             while (i < len) {
-                
+                let update = 0;
+                if (v.f32_c[red][i] !== v.f32_p[red][i]) { update = 1; }
+                if (v.f32_c[green][i] !== v.f32_p[green][i]) { update = 1; }
+                if (v.f32_c[blue][i] !== v.f32_p[blue][i]) { update = 1; }
+                if (update === 1) { 
+                    dom.e[i].style.backgroundColor =
+                        "rgb(" + 
+                        v.f32_c[red][i] + "," +
+                        v.f32_c[green][i] + "," +
+                        v.f32_c[blue][i] + ")";
+                }
+                i += 1;
+            }
+
+            // TEXT COLOR
+            i = 0;
+            while (i < len) {
+                let update = 0;
+                if (v.f32_c[t_red][i] !== v.f32_p[t_red][i]) { update = 1; }
+                if (v.f32_c[t_green][i] !== v.f32_p[t_green][i]) { update = 1; }
+                if (v.f32_c[t_blue][i] !== v.f32_p[t_blue][i]) { update = 1; }
+                if (update === 1) { 
+                    dom.e[i].style.color =
+                        "rgb(" + 
+                        v.f32_c[t_red][i] + "," +
+                        v.f32_c[t_green][i] + "," +
+                        v.f32_c[t_blue][i] + ")";
+                }
+                i += 1;
+            }
+
+            // TEXT SIZE
+            i = 0;
+            while (i < len) {
+                if (v.f32_c[t_size][i] !== v.f32_p[t_size][i]) { 
+                    dom.e[i].style.fontSize = v.f32_c[t_size][i] + "px";
+                }
                 i += 1;
             }
 
@@ -433,7 +485,7 @@
                 rt.e[3].style.borderRadius = "0px 0px 15px 15px";
                 rt.e[3].style.backgroundColor = "rgb(100, 100, 100)";
 
-                rt.e[2].style.backgroundColor = "rgb(200, 50, 50)";
+                //rt.e[2].style.backgroundColor = "rgb(200, 50, 50)";
                 rt.e[2].style.borderStyle = "none";
                 rt.e[2].style.boxShadow = "0px 0.5px 7px rgb(175, 175, 175)";
                 rt.e[2].style.fontFamily = "libre_bodoni_700";
@@ -441,7 +493,7 @@
                 rt.e[2].style.color = "rgb(50, 50, 50)";
                 rt.e[2].textContent = "test";
 
-                _num(opac, 2, 50);
+                //_num(opac, 2, 50);
                 //_num(bl, 2, 1);
                 //_num(cont, 2, 50);
                 //_num(satu, 2, 150);
@@ -453,13 +505,23 @@
                 //_numt(z2, 3, 45);
             }
 
+            _num(red, 1, 200);
+            _num(green, 1, 200);
+            _num(blue, 1, 200);
+
+            _num(t_red, 2, 100);
+            _num(t_green, 2, 100);
+            _num(t_blue, 2, 100);
+
+            _num(t_size, 2, 36);
+
             // LAYOUT
             lock(v, y0, 1, y0, 0, 300, null, null);
             lock(v, x1, 1, x0, 1, 300, null, null);
             lock(v, y1, 1, y1, 0, -300, null, null);
 
-            if (num_(x0, 1) === 0) { anim(v, x0, 1, 300, 900, 500, 1000, curve_quad); }
-            else if (num_(x0, 1) === 1) { anim(v, x0, 1, 900, 300, 500, 1000, curve_quad); }
+            //if (num_(x0, 1) === 0) { anim(v, x0, 1, 300, 900, 500, 1000, curve_quad); }
+            //else if (num_(x0, 1) === 1) { anim(v, x0, 1, 900, 300, 500, 1000, curve_quad); }
 
             lock(v, x0, 3, x0, 1, 0, null, null);
             lock(v, x1, 3, x1, 1, 0, null, null);
