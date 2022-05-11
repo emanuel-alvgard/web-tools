@@ -455,8 +455,8 @@
             lock(v, x1, 1, x0, 1, 300, null, null);
             lock(v, y1, 1, y1, 0, -300, null, null);
 
-            if (v.f32_s[x0][1] === 0) { anim(v, x0, 1, 300, 900, 500, 500, curve_quad); }
-            else if (v.f32_s[x0][1] === 1) { anim(v, x0, 1, 900, 300, 500, 500, curve_quad); }
+            if (num_(x0, 1) === 0) { anim(v, x0, 1, 300, 900, 500, 500, curve_quad); }
+            else if (num_(x0, 1) === 1) { anim(v, x0, 1, 900, 300, 500, 500, curve_quad); }
 
             lock(v, x0, 3, x0, 1, 0, null, null);
             lock(v, x1, 3, x1, 1, 0, null, null);
