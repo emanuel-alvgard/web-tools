@@ -450,7 +450,6 @@
             while (i < len) { 
                 if (v.str_c[text][i] !== v.str_p[text][i]) {
                     dom.e[i].textContent = v.str_c[text][i];
-                    console.log("yo");
                 }
                 i += 1;
             }
@@ -461,7 +460,6 @@
                 if (v.str_c[text][i] === "") { i += 1; continue; }
                 if (v.str_c[t_font][i] !== v.str_p[t_font][i]) { 
                     dom.e[i].style.fontFamily = v.str_c[t_font][i];
-                    console.log(v.str_c[t_font][i]);
                 }
                 i += 1;
             }
@@ -557,8 +555,8 @@
             lock(v, x1, 1, x0, 1, 300, null, null);
             lock(v, y1, 1, y1, 0, -300, null, null);
 
-            if (num_(x0, 1) === 0) { anim(v, x0, 1, 300, 900, 150, 100, curve_cube); }
-            else if (num_(x0, 1) === 1) { anim(v, x0, 1, 900, 300, 150, 100, curve_cube); }
+            if (num_(x0, 1) === 0) { anim(v, x0, 1, 300, 900, 1000, 0, curve_cube); }
+            else if (num_(x0, 1) === 1) { anim(v, x0, 1, 900, 300, 1000, 0, curve_cube); }
 
             lock(v, x0, 3, x0, 1, 0, null, null);
             lock(v, x1, 3, x1, 1, 0, null, null);
