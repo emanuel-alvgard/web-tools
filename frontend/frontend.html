@@ -123,31 +123,32 @@
         let b_x0_green = 27;
         let b_x0_blue = 28;
         let b_x0_size = 29;
-        let b_x0_radius = 30;
 
-        let b_x1_red = 26;
-        let b_x1_green = 27;
-        let b_x1_blue = 28;
-        let b_x1_size = 29;
-        let b_x1_radius = 30;
+        let b_x1_red = 30;
+        let b_x1_green = 31;
+        let b_x1_blue = 32;
+        let b_x1_size = 33;
 
-        let b_y0_red = 26;
-        let b_y0_green = 27;
-        let b_y0_blue = 28;
-        let b_y0_size = 29;
-        let b_y0_radius = 30;
+        let b_y0_red = 34;
+        let b_y0_green = 35;
+        let b_y0_blue = 36;
+        let b_y0_size = 37;
 
-        let b_y1_red = 26;
-        let b_y1_green = 27;
-        let b_y1_blue = 28;
-        let b_y1_size = 29;
-        let b_y1_radius = 30;
+        let b_y1_red = 38;
+        let b_y1_green = 39;
+        let b_y1_blue = 40;
+        let b_y1_size = 41;
 
-        let s_red = 31;
-        let s_green = 32;
-        let s_blue = 33;
-        let s_size = 34;
-        let s_radius = 35;
+        let b_x0_y0_radius = 42;
+        let b_x1_y0_radius = 43;
+        let b_x1_y1_radius = 44;
+        let b_x0_y1_radius = 45;
+
+        let s_red = 46;
+        let s_green = 47;
+        let s_blue = 48;
+        let s_size = 49;
+        let s_radius = 50;
 
         // STRING
         let text = 0;
@@ -195,7 +196,7 @@
             }
 
             // FLOAT
-            for (let i = 0; i < 36; i++) {
+            for (let i = 0; i < 51; i++) {
                 
                 v.f32_s.push(new Int8Array(size));
                 v.f32_c.push(new Float32Array(size));
@@ -428,9 +429,31 @@
                 i += 1;
             }
 
+            // TEXT
+            i = 0;
+            while (i < len) { 
+                if (v.str_c[text][i] !== v.str_p[text][i]) {
+                    dom.e[i].textContent = v.str_c[text][i];
+                    console.log("yo");
+                }
+                i += 1;
+            }
+
+            // TEXT FONT
+            i = 0;
+            while (i < len) {
+                if (v.str_c[text][i] === "") { i += 1; continue; }
+                if (v.str_c[t_font][i] !== v.str_p[t_font][i]) { 
+                    dom.e[i].style.fontFamily = v.str_c[t_font][i];
+                    console.log(v.str_c[t_font][i]);
+                }
+                i += 1;
+            }
+
             // TEXT COLOR
             i = 0;
             while (i < len) {
+                if (v.str_c[text][i] === "") { i += 1; continue; }
                 let update = 0;
                 if (v.f32_c[t_red][i] !== v.f32_p[t_red][i]) { update = 1; }
                 if (v.f32_c[t_green][i] !== v.f32_p[t_green][i]) { update = 1; }
@@ -448,11 +471,22 @@
             // TEXT SIZE
             i = 0;
             while (i < len) {
+                if (v.str_c[text][i] === "") { i += 1; continue; }
                 if (v.f32_c[t_size][i] !== v.f32_p[t_size][i]) { 
                     dom.e[i].style.fontSize = v.f32_c[t_size][i] + "px";
                 }
                 i += 1;
             }
+
+            // BORDER LEFT
+
+            // BORDER RIGHT
+
+            // BORDER TOP
+
+            // BORDER BOTTOM
+
+            // SHADOW
 
             // CLEAR EVENTS
             dom.load = 0;
@@ -485,35 +519,22 @@
                 rt.e[3].style.borderRadius = "0px 0px 15px 15px";
                 rt.e[3].style.backgroundColor = "rgb(100, 100, 100)";
 
-                //rt.e[2].style.backgroundColor = "rgb(200, 50, 50)";
                 rt.e[2].style.borderStyle = "none";
                 rt.e[2].style.boxShadow = "0px 0.5px 7px rgb(175, 175, 175)";
-                rt.e[2].style.fontFamily = "libre_bodoni_700";
-                rt.e[2].style.fontSize = "24px";
-                rt.e[2].style.color = "rgb(50, 50, 50)";
-                rt.e[2].textContent = "test";
 
-                //_num(opac, 2, 50);
-                //_num(bl, 2, 1);
-                //_num(cont, 2, 50);
-                //_num(satu, 2, 150);
-                //_num(gray, 2, 25);
-                //_num(brig, 2, 175);
-                //_num(sepi, 2, 100);
+                _str(text, 2, "test");
+                _str(t_font, 2, "roboto_400");
 
-                //_num(z2, 1, 45);
-                //_numt(z2, 3, 45);
+                _num(red, 1, 200);
+                _num(green, 1, 200);
+                _num(blue, 1, 200);
+
+                _num(t_red, 2, 100);
+                _num(t_green, 2, 100);
+                _num(t_blue, 2, 100);
+
+                _num(t_size, 2, 36);
             }
-
-            _num(red, 1, 200);
-            _num(green, 1, 200);
-            _num(blue, 1, 200);
-
-            _num(t_red, 2, 100);
-            _num(t_green, 2, 100);
-            _num(t_blue, 2, 100);
-
-            _num(t_size, 2, 36);
 
             // LAYOUT
             lock(v, y0, 1, y0, 0, 300, null, null);
@@ -534,10 +555,18 @@
         }
 
         function clear_views() {
-             // SAVE STATE
-             for (let i = 0; i < v.f32_c.length; i++) {
+            
+            // FLOAT
+            for (let i = 0; i < v.f32_c.length; i++) {
                 for (let j = 0; j < v.f32_c[i].length; j++) { 
                     if (v.f32_c[i][j] !== v.f32_p[i][j]) { v.f32_p[i][j] = v.f32_c[i][j]; }
+                }
+            }
+
+            // STRING
+            for (let i = 0; i < v.str_c.length; i++) {
+                for (let j = 0; j < v.str_c[i].length; j++) { 
+                    if (v.str_c[i][j] !== v.str_p[i][j]) { v.str_p[i][j] = v.str_c[i][j]; }
                 }
             }
             // CLEAR EVENTS
