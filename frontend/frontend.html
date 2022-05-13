@@ -238,11 +238,6 @@
 
         // generate static oscillators and noises
 
-        let audio = 0; 
-        let frequency = 1;
-        let volume = 2;
-        let speed = 3;
-
         function init_sounds() {
 
 
@@ -252,6 +247,26 @@
         // INIT
         let dom = init_dom();
         let v = init_views(dom.e.length);
+
+        // audio test
+
+        let test = new AudioContext;
+        let oc = test.createOscillator();
+        oc.type = "triangle";
+        oc.frequency = 100;
+        oc.connect(test.destination);
+        oc.start();
+        dom.e[2].addEventListener("mousedown", function() {
+            test.resume();
+        });
+        dom.e[2].addEventListener("mouseup", function() {
+            test.suspend();
+        });
+
+        let audio = 0; 
+        let frequency = 1;
+        let volume = 2;
+        let speed = 3;
 
         // GET VALUE
         function num(p, i) { return v.f32_c[p][i]; }
@@ -548,6 +563,8 @@
                 _num(t_blue, 2, 100);
 
                 _num(t_size, 2, 36);
+
+
             }
 
             // LAYOUT
