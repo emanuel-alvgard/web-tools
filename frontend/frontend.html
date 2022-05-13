@@ -527,7 +527,7 @@
                 v.f32_c[x0][1] = 300;
                 rt.e[1].style.borderStyle = "none";
                 rt.e[1].style.borderRadius = "15px";
-                rt.e[1].style.boxShadow = "0px 0.5px 7px rgb(175, 175, 175)";
+                //rt.e[1].style.boxShadow = "0px 0.5px 7px rgb(175, 175, 175)";
 
                 rt.e[3].style.borderStyle = "none";
                 rt.e[3].style.borderRadius = "0px 0px 15px 15px";
@@ -555,8 +555,8 @@
             lock(v, x1, 1, x0, 1, 300, null, null);
             lock(v, y1, 1, y1, 0, -300, null, null);
 
-            if (num_(x0, 1) === 0) { anim(v, x0, 1, 300, 900, 1000, 0, curve_cube); }
-            else if (num_(x0, 1) === 1) { anim(v, x0, 1, 900, 300, 1000, 0, curve_cube); }
+            if (num_(x0, 1) === 0) { anim(v, x0, 1, 300, 900, 3000, 0, curve_cube); }
+            else if (num_(x0, 1) === 1) { anim(v, x0, 1, 900, 300, 3000, 0, curve_cube); }
 
             lock(v, x0, 3, x0, 1, 0, null, null);
             lock(v, x1, 3, x1, 1, 0, null, null);
