@@ -510,9 +510,9 @@
                 
                 if (update === 1) {
                     dom.e[i].style.transform = 
-                        "translate(" + round(v.f32_c[x0][i]) + 
-                        "px, " + round(v.f32_c[y0][i]) + "px) " + 
-                        "rotate(" + round(v.f32_c[z2][i]) + "deg)" + 
+                        "translate(" + v.f32_c[x0][i] + 
+                        "px, " + v.f32_c[y0][i] + "px) " + 
+                        "rotate(" + v.f32_c[z2][i] + "deg)" + 
                         "scale(" + v.f32_c[x3][i] + ", " + v.f32_c[y3][i] + ")";
                 } 
                 i += 1; 
@@ -522,7 +522,7 @@
             i = 0;
             while (i < len) { 
                 if ((v.f32_c[x1][i] - v.f32_c[x0][i]) !== (v.f32_p[x1][i] - v.f32_p[x0][i])) {
-                    dom.e[i].style.width = round((v.f32_c[x1][i] - v.f32_c[x0][i])) + "px";
+                    dom.e[i].style.width = (v.f32_c[x1][i] - v.f32_c[x0][i]) + "px";
                 }
                 i += 1;
             } 
@@ -531,7 +531,7 @@
             i = 0;
             while (i < len) {
                 if ((v.f32_c[y1][i] - v.f32_c[y0][i]) !== (v.f32_p[y1][i] - v.f32_p[y0][i])) { 
-                    dom.e[i].style.height = round((v.f32_c[y1][i]- v.f32_c[y0][i])) + "px";
+                    dom.e[i].style.height = (v.f32_c[y1][i]- v.f32_c[y0][i]) + "px";
                 } 
                 i += 1;
             } 
@@ -629,7 +629,7 @@
             while (i < len) {
                 if (v.str_c[text][i] === "") { i += 1; continue; }
                 if (v.f32_c[t_size][i] !== v.f32_p[t_size][i]) { 
-                    dom.e[i].style.fontSize = round(v.f32_c[t_size][i]) + "px";
+                    dom.e[i].style.fontSize = v.f32_c[t_size][i] + "px";
                 }
                 i += 1;
             }
@@ -653,63 +653,78 @@
 
         function update_views(rt) {
 
-            _num(v, 0, x1, rt.width);
-            _num(v, 0, y1, rt.height);
+            let viewport = 0;
+            let header = 1;
+            let card = 2;
+            let card_bot = 3;
+            let card_title = 4;
+
+            _num(v, viewport, x1, rt.width);
+            _num(v, viewport, y1, rt.height);
 
             let curve_line = [0.0, 2.0];
             let curve_quad = [3.0, 0.0, 0.0];
             let curve_cube = [2.5, 1.0, 0.5, 0.0];
 
             // STATE
-            if (v.f32_s[x0][1] === 0 && v.ad[x0][1] === 1) { v.f32_s[x0][1] = 1; }
-            else if (v.f32_s[x0][1] === 1 && v.ad[x0][1] === 1) { v.f32_s[x0][1] = 0; }
+            if (v.f32_s[x0][card] === 0 && v.ad[x0][card] === 1) { v.f32_s[x0][card] = 1; }
+            else if (v.f32_s[x0][card] === 1 && v.ad[x0][card] === 1) { v.f32_s[x0][card] = 0; }
 
             // LOAD
             if (rt.load === 1) {
-                v.f32_c[x0][1] = 300;
-                rt.e[1].style.borderStyle = "none";
-                rt.e[1].style.borderRadius = "15px";
-                rt.e[1].style.boxShadow = "0px 0.5px 7px rgb(175, 175, 175)";
+                v.f32_c[x0][card] = 300;
+                rt.e[card].style.borderStyle = "none";
+                rt.e[card].style.borderRadius = "15px";
+                rt.e[card].style.boxShadow = "0px 0.5px 7px rgb(175, 175, 175)";
 
-                rt.e[3].style.borderStyle = "none";
-                rt.e[3].style.borderRadius = "0px 0px 15px 15px";
-                rt.e[3].style.backgroundColor = "rgb(100, 100, 100)";
+                rt.e[card_bot].style.borderStyle = "none";
+                rt.e[card_bot].style.borderRadius = "0px 0px 15px 15px";
+                rt.e[card_bot].style.backgroundColor = "rgb(100, 100, 100)";
 
-                rt.e[2].style.borderStyle = "none";
-                rt.e[2].style.boxShadow = "0px 0.5px 7px rgb(175, 175, 175)";
+                rt.e[header].style.borderStyle = "none";
+                rt.e[header].style.boxShadow = "0px 0.5px 7px rgb(175, 175, 175)";
 
-                _str(v, 1, t_align, "center");
-                _str(v, 1, text, "this is a test to see if it works like expected. Well it seems to be working somewhat.");
-                _str(v, 2, text, "test");
-                _str(v, 2, t_font, "roboto_400");
 
-                _num(v, 1, red, 200);
-                _num(v, 1, green, 200);
-                _num(v, 1, blue, 200);
 
-                _num(v, 2, t_red, 100);
-                _num(v, 2, t_green, 100);
-                _num(v, 2, t_blue, 100);
+                _str(v, card_title, text, "this is a test to see if it works like expected. Well it seems to be working somewhat.");
+                _str(v, card_title, t_align, "center");
+                _str(v, card_title, t_font, "roboto_400");
 
-                _num(v, 2, t_size, 36);
+                _str(v, card, t_align, "center");
+                _str(v, header, t_font, "roboto_400");
+
+                _num(v, card, red, 200);
+                _num(v, card, green, 200);
+                _num(v, card, blue, 200);
+
+                _num(v, header, t_red, 100);
+                _num(v, header, t_green, 100);
+                _num(v, header, t_blue, 100);
+
+                _num(v, header, t_size, 36);
             }
 
             // LAYOUT
-            lock(v, 1, y0, 0, y0, 300, -1, -1);
-            lock(v, 1, x1, 1, x0, 300, -1, -1);
-            lock(v, 1, y1, 0, y1, -300, -1, -1);
+            lock(v, card_title, x0, card, x0, 25, -1, -1);
+            lock(v, card_title, x1, card, x1, -25, -1, -1);
+            lock(v, card_title, y0, card_title, y1, -60, -1, -1);
+            lock(v, card_title, y1, card_bot, y0, -25, -1, -1);
 
-            if (num_(v, 1, x0) === 0) { anim(x0, 1, 300, 900, 1000, 0, curve_cube); }
-            else if (num_(v, 1, x0) === 1) { anim(x0, 1, 900, 300, 1000, 0, curve_cube); }
+            lock(v, card, y0, viewport, y0, 300, -1, -1);
+            lock(v, card, x1, card, x0, 300, -1, -1);
+            lock(v, card, y1, viewport, y1, -300, -1, -1);
 
-            lock(v, 3, x0, 1, x0, 0, -1, -1);
-            lock(v, 3, x1, 1, x1, 0, -1, -1);
-            lock(v, 3, y1, 1, y1, 0, -1, -1);
-            let a = (num(v, 1, y1) - num(v, 1, y0)) / 2;
-            lock(v, 3, y0, 1, y0, a, -1, -1);
+            if (num_(v, card, x0) === 0) { anim(x0, card, 300, 900, 3000, 0, curve_cube); }
+            else if (num_(v, card, x0) === 1) { anim(x0, card, 900, 300, 3000, 0, curve_cube); }
 
-            lock(v, 2, x1, 0, x1, 0, -1, -1);
-            lock(v, 2, y1, 0, y0, 100, -1, -1);
+            lock(v, card_bot, x0, card, x0, 0, -1, -1);
+            lock(v, card_bot, x1, card, x1, 0, -1, -1);
+            lock(v, card_bot, y1, card, y1, 0, -1, -1);
+            let a = (num(v, card, y1) - num(v, card, y0)) / 2;
+            lock(v, card_bot, y0, card, y0, a, -1, -1);
+
+            lock(v, header, x1, viewport, x1, 0, -1, -1);
+            lock(v, header, y1, viewport, y0, 100, -1, -1);
 
             //update_anims(v);
             //update_links(v);
