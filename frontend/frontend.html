@@ -58,6 +58,7 @@
                 
                 h: document.head,
                 b: document.body,
+                d: document.body.getBoundingClientRect(),
                 e: [] 
             }
 
@@ -85,6 +86,7 @@
                 dom.e[i].style.height = "0px";
                 dom.e[i].style.zIndex = "0";
                 dom.e[i].style.overflow = "hidden";
+                dom.e[i].style.overflowWrap = "break-word";
             }
 
             return dom;
@@ -156,11 +158,12 @@
 
         // STRING
         let text = 0;
-        let t_font = 1;
-        let b_x0 = 2;
-        let b_x1 = 3;
-        let b_y0 = 4;
-        let b_y1 = 5;
+        let t_align = 1;
+        let t_font = 2;
+        let b_x0 = 3;
+        let b_x1 = 4;
+        let b_y0 = 5;
+        let b_y1 = 6;
 
         // @ADD clip-path properties
         
@@ -382,9 +385,8 @@
             dom.height = document.documentElement.clientHeight;
 
             // RESIZE EVENT
-            let b = dom.b.getBoundingClientRect();
-            if (b.width !== dom.width) {  b.width = dom.width; }
-            if (b.height !== dom.height) { b.height = dom.height; }
+            if (dom.d.width !== dom.width) {  dom.d.width = dom.width; }
+            if (dom.d.height !== dom.height) { dom.d.height = dom.height; }
 
             let i = 0;
             let len = dom.e.length;
@@ -551,6 +553,7 @@
                 rt.e[2].style.borderStyle = "none";
                 rt.e[2].style.boxShadow = "0px 0.5px 7px rgb(175, 175, 175)";
 
+                _str(text, 1, "this is a test to see if it works like expected. Well it seems to be working somewhat.");
                 _str(text, 2, "test");
                 _str(t_font, 2, "roboto_400");
 
@@ -602,6 +605,8 @@
             }
             // CLEAR EVENTS
         }
+
+        console.log(dom.e);
 
         function main() {
 
