@@ -484,12 +484,12 @@
         }
 
 
+        function round(n) {
+            return (n + 0.5) << 0;
+        }
+
 
         function update_dom(dom) {
-
-            // RESIZE EVENT
-            //if (dom.d.width !== dom.width) {  dom.d.width = dom.width; }
-            //if (dom.d.height !== dom.height) { dom.d.height = dom.height; }
 
             let i = 0;
             let len = dom.e.length;
@@ -498,11 +498,32 @@
             // @ADD if x0 is > rt.width || x1 < 0 do not render display: none (first time then skip rendering subsequent frames)
             // @ADD if y0 is > rt.height || y1 < make element display: none (first time then skip rendering subsequent frames)
 
+            // TRANSFORM 
+            while (i < len) {
+                
+                let update = 0;
+
+                if (v.f32_c[x0][i] !== v.f32_p[x0][i]) { update = 1; }
+                else if (v.f32_c[y0][i] !== v.f32_p[y0][i]) { update = 1; }
+                else if (v.f32_c[z2][i] !== v.f32_p[z2][i]) { update = 1; } 
+                else if (v.f32_c[x3][i] !== v.f32_p[x3][i]) { update = 1; }   
+                
+                if (update === 1) {
+                    dom.e[i].style.transform = 
+                        "translate(" + round(v.f32_c[x0][i]) + 
+                        "px, " + round(v.f32_c[y0][i]) + "px) " + 
+                        "rotate(" + round(v.f32_c[z2][i]) + "deg)" + 
+                        "scale(" + v.f32_c[x3][i] + ", " + v.f32_c[y3][i] + ")";
+                } 
+                i += 1; 
+            } 
+            
             // WIDTH
+            i = 0;
             while (i < len) { 
                 if ((v.f32_c[x1][i] - v.f32_c[x0][i]) !== (v.f32_p[x1][i] - v.f32_p[x0][i])) {
-                    dom.e[i].style.width = (v.f32_c[x1][i] - v.f32_c[x0][i]) + "px";
-                } 
+                    dom.e[i].style.width = round((v.f32_c[x1][i] - v.f32_c[x0][i])) + "px";
+                }
                 i += 1;
             } 
             
@@ -510,20 +531,9 @@
             i = 0;
             while (i < len) {
                 if ((v.f32_c[y1][i] - v.f32_c[y0][i]) !== (v.f32_p[y1][i] - v.f32_p[y0][i])) { 
-                    dom.e[i].style.height = (v.f32_c[y1][i]- v.f32_c[y0][i]) + "px";
+                    dom.e[i].style.height = round((v.f32_c[y1][i]- v.f32_c[y0][i])) + "px";
                 } 
                 i += 1;
-            } 
-                
-            // TRANSFORM 
-            i = 0;
-            while (i < len) { 
-                dom.e[i].style.transform = 
-                    "translate(" + v.f32_c[x0][i] + 
-                    "px, " + v.f32_c[y0][i] + "px) " + 
-                    "rotate(" + v.f32_c[z2][i] + "deg)" + 
-                    "scale(" + v.f32_c[x3][i] + ", " + v.f32_c[y3][i] + ")"; 
-                    i += 1; 
             } 
             
             // FILTER
@@ -619,7 +629,7 @@
             while (i < len) {
                 if (v.str_c[text][i] === "") { i += 1; continue; }
                 if (v.f32_c[t_size][i] !== v.f32_p[t_size][i]) { 
-                    dom.e[i].style.fontSize = v.f32_c[t_size][i] + "px";
+                    dom.e[i].style.fontSize = round(v.f32_c[t_size][i]) + "px";
                 }
                 i += 1;
             }
@@ -651,15 +661,15 @@
             let curve_cube = [2.5, 1.0, 0.5, 0.0];
 
             // STATE
-            //if (v.f32_s[x0][1] === 0 && v.ad[x0][1] === 1) { v.f32_s[x0][1] = 1; }
-            //else if (v.f32_s[x0][1] === 1 && v.ad[x0][1] === 1) { v.f32_s[x0][1] = 0; }
+            if (v.f32_s[x0][1] === 0 && v.ad[x0][1] === 1) { v.f32_s[x0][1] = 1; }
+            else if (v.f32_s[x0][1] === 1 && v.ad[x0][1] === 1) { v.f32_s[x0][1] = 0; }
 
             // LOAD
             if (rt.load === 1) {
                 v.f32_c[x0][1] = 300;
                 rt.e[1].style.borderStyle = "none";
                 rt.e[1].style.borderRadius = "15px";
-                //rt.e[1].style.boxShadow = "0px 0.5px 7px rgb(175, 175, 175)";
+                rt.e[1].style.boxShadow = "0px 0.5px 7px rgb(175, 175, 175)";
 
                 rt.e[3].style.borderStyle = "none";
                 rt.e[3].style.borderRadius = "0px 0px 15px 15px";
@@ -686,11 +696,11 @@
 
             // LAYOUT
             lock(v, 1, y0, 0, y0, 300, -1, -1);
-            lock(v, 1, x1, 0, x1, -300, -1, -1);
+            lock(v, 1, x1, 1, x0, 300, -1, -1);
             lock(v, 1, y1, 0, y1, -300, -1, -1);
 
-            //if (num_(x0, 1) === 0) { anim(x0, 1, 300, 900, 3000, 0, curve_cube); }
-            //else if (num_(x0, 1) === 1) { anim(x0, 1, 900, 300, 3000, 0, curve_cube); }
+            if (num_(v, 1, x0) === 0) { anim(x0, 1, 300, 900, 1000, 0, curve_cube); }
+            else if (num_(v, 1, x0) === 1) { anim(x0, 1, 900, 300, 1000, 0, curve_cube); }
 
             lock(v, 3, x0, 1, x0, 0, -1, -1);
             lock(v, 3, x1, 1, x1, 0, -1, -1);
@@ -745,7 +755,7 @@
         }
 
         main();
-    
+        
     </script>
 </body>
 </html>
