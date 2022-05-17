@@ -383,7 +383,7 @@
             return;
         }
       
-
+        // @NOT
         function update_links(t) {
 
             if (v.f32_c[tp][t] < v.f32_p[tp][t]) { v.f32_c[sp][s] -= ((v.f32_p[tp][t] - v.f32_c[tp][t]) * mult); }
@@ -454,7 +454,7 @@
 
         function anim_() {}
 
-
+        // @NOT
         function update_anims(type) {
             
             // INVERT
@@ -690,18 +690,9 @@
                 _str(v, card_title, t_align, "center");
                 _str(v, card_title, t_font, "roboto_400");
 
-                _str(v, card, t_align, "center");
-                _str(v, header, t_font, "roboto_400");
-
                 _num(v, card, red, 200);
                 _num(v, card, green, 200);
                 _num(v, card, blue, 200);
-
-                _num(v, header, t_red, 100);
-                _num(v, header, t_green, 100);
-                _num(v, header, t_blue, 100);
-
-                _num(v, header, t_size, 36);
             }
 
             // LAYOUT
