@@ -438,12 +438,12 @@
             if (curve.length === 2) { cr = lerp(curve[0], curve[1], v.at[sp][s] / time); } 
             else if (curve.length === 3) { cr = quad(curve[0], curve[1], curve[2], v.at[sp][s] / time); }
             else if (curve.length === 4) { cr = cube(curve[0], curve[1], curve[2], curve[3], v.at[sp][s] / time); }
-            let pr = ((di / time) * delta) * cr;
+            let pr = ((di / time) * cr) * delta;
             v.ap[sp][s] += pr;
             v.f32_c[sp][s] += (pr * dir);
 
             // DONE
-            if (v.ap[sp][s] >= di || v.at[sp][s] >= time) { 
+            if (v.ap[sp][s] >= di || v.at[sp][s] >= (time + delta)) { 
                 v.f32_c[sp][s] = end;
                 v.ar[sp][s] = 0;
                 v.ad[sp][s] = 1;
@@ -677,7 +677,7 @@
                 v.f32_c[x0][card] = 300;
                 rt.e[card].style.borderStyle = "none";
                 rt.e[card].style.borderRadius = "15px";
-                rt.e[card].style.boxShadow = "0px 0.5px 7px rgb(175, 175, 175)";
+                //rt.e[card].style.boxShadow = "0px 0.5px 7px rgb(175, 175, 175)";
 
                 rt.e[card_bot].style.borderStyle = "none";
                 rt.e[card_bot].style.borderRadius = "0px 0px 15px 15px";
