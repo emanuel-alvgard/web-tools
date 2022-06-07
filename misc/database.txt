@@ -1,0 +1,29 @@
+
+// EXAMPLE
+
+// a database file can only contain integers/floats/strings or references(indices).
+// the create(), delete() and set() functions re-indexes the in-memory index.
+// the in memory contains every database files value positions and the current index for fast creation. It also contains type information and other useful metadata.
+// some meta data is always stored in each database file for fast startup time.
+// every database file is basically an array.
+// every function checks modification date for re-indexing. 
+
+// user_id.txt
+// user_name.txt
+// user_age.txt
+
+
+
+
+
+
+// non relational AOS version
+id(1,2,3,4,5,6,7,8)
+info(
+    age(30)
+    name("Emanuel")
+    children("Wilhelm","Elsa")
+)
+other(
+    car("volvo")
+)
