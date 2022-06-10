@@ -13,17 +13,11 @@
 // user_age.txt
 
 
+// user.txt
+jA4ogH8F{age{30}name{Emanuel}numbers{1234567|1234567}children{names{Wilhelm|Elsa}ages{3|4}}}
+jA4ogH8F{age{30}name{Emanuel}numbers{1234567|1234567}children{names{Wilhelm|Elsa}ages{3|4}}}
+jA4ogH8F{age{30}name{Emanuel}numbers{1234567|1234567}children{names{Wilhelm|Elsa}ages{3|4}}}
+jA4ogH8F{age{30}name{Emanuel}numbers{1234567|1234567}children{names{Wilhelm|Elsa}ages{3|4}}}
+jA4ogH8F{age{30}name{Emanuel}numbers{1234567|1234567}children{names{Wilhelm|Elsa}ages{3|4}}}
 
 
-
-
-// non relational AOS version
-id(1,2,3,4,5,6,7,8)
-info(
-    age(30)
-    name("Emanuel")
-    children("Wilhelm","Elsa")
-)
-other(
-    car("volvo")
-)
