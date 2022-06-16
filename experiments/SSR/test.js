@@ -64,7 +64,6 @@ function substring() {}
 function filetype() {}
 
 
-
 // @DONE
 function q_create(l, v) {
 
@@ -113,7 +112,7 @@ function q_remove(q) {
     q.count -= 1;
     q.start += 1;
 
-    if (q.start === q.length) { q.start = 0; }
+    if (q.start === q.data.length) { q.start = 0; }
 
     return result;
 }   
@@ -180,28 +179,57 @@ for (let i = 0; i < max_requests; i++) {
 }
 
 
-function _allocate() {
+async function _allocate() {
     
     let index = q_remove(_free);
+
     if (index === -1) {
-        let wait = setInterval(function() {
-            let check = q_remove(_free);
-            if (check !== -1) { 
-                index = check; clearInterval(wait); 
-            }
-        }, 1);
+        let a = await new Promise(function (resolve, reject){
+            let b = setInterval(function () {
+                index = q_remove(_free);
+                if (index > -1) {
+                    resolve();
+                    clearInterval(b);
+                }
+            });
+        });
     }
     return index;
 }
 
 
-function _deallocate() {
-    // return result
+// @TEST
+async function test() {
+    let res = await _allocate();
 }
+
+let start = performance.now();
+test();
+console.log((performance.now() - start).toPrecision(1) + " ms");
+
+
+
+function _deallocate(i) {
+    
+    let result = _html[i].result;
+    
+    // RESET OBJECT
+    _html[i].b_head_meta = [];
+    _html[i].b_head_style = [];
+    _html[i].b_head_script = [];
+    _html[i].b_body_element = [];
+    _html[i].result = "";
+
+    q_add(i, _free);
+
+    return result;
+}
+
+/*
 
 async function generate(func, request) {
     
-    let html = _allocate();
+    let index = await _allocate();
 
     function _element(b, t, p, a, c) {
         
@@ -233,10 +261,10 @@ async function generate(func, request) {
         build: _build 
     }
 
-    // CALL RENDER TARGET
+    // CALL GENERATION TARGET
     await func(api, request);
 
-    return _deallocate();
+    return _deallocate(index);
 }
 
 async function page(html, request) {
@@ -253,6 +281,7 @@ console.log((performance.now() - start).toPrecision(1) + " ms");
 // At the bottom of the body is the async runtime script that makes the body visible once the body class is set to loaded things in the script is loaded.
 // all scripts are async by default
 
+*/
 
 
 
@@ -269,11 +298,10 @@ console.log((performance.now() - start).toPrecision(1) + " ms");
 
 
 
-
-
+// importing the api.js script is only for helping the IDE with function descriptions.
 
 // PAGE EXAMPLE
-async function home(html, request) {
+async function home(html, request) { // change this to objects within api.js? so that the user does not have to create a function????
 
     // PARSE REQUEST
 
