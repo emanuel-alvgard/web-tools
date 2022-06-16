@@ -1,10 +1,6 @@
-/*
 let fs = require("fs");
 
-
-
-//utils
-// CHARACTER TYPES
+// UTILS
 
 // @DONE
 function chr_digit(chr) {
@@ -69,19 +65,145 @@ function filetype() {}
 
 
 
+// @DONE
+function q_create(l, v) {
 
-// API INTERNALS
+    let q = {
+        data: [],
+        start: 0,
+        end: 0,
+        count: 0,
+        value: v
+    }
+
+    let data = new Array(l);
+    let i = 0;
+    while (i < l) {
+        data[i] = v;
+        i += 1;
+    }
+
+    q.data = data;
+
+    return q;
+}
+
+
+// @DONE
+function q_add(v, q) {
+
+    if (q.count >= q.data.length) { return -1; }
+
+    q.data[q.end] = v;
+    q.count += 1;
+    q.end += 1;
+
+    if (q.end === q.data.length) { q.end = 0; }
+
+    return q.end - 1;
+}
+
+// @DONE
+function q_remove(q) {
+
+    if (q.count === 0) { return -1; }
+
+    let result = q.data[q.start];
+    q.data[q.start] = q.value;
+    q.count -= 1;
+    q.start += 1;
+
+    if (q.start === q.length) { q.start = 0; }
+
+    return result;
+}   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// INTERNAL
 let _errors = {
     error_1: "exmple error 1",
     error_2: "example error 2"
 };
 
-async function render(func, request) {
-    
-    let _pages = [];
-    let _page_index = 0;
 
-    function element(b, t,p,a,c) {
+
+let _css = [];
+let _js = [];
+let _image = [];
+let _audio = [];
+let _video = [];
+
+// This automatically watches the file and reloads it when modified
+function load(path) {
+
+    let css = fs.readFileSync(path, {encoding: "utf-8"});
+    // clears the interval if the file is not found 
+}
+
+
+
+let max_requests = 3;
+let _html = new Array(max_requests);
+let _free = q_create(max_requests, -1);
+
+for (let i = 0; i < max_requests; i++) {
+    _html[i] = {
+
+        head: 0,
+        body: 1,
+        index: 2,
+        
+        // BUFFERS
+        b_head_meta: [],
+        b_head_style: [],
+        b_head_script: [],
+        b_body_element: [],
+
+        result: ""
+
+    };
+
+    q_add(i, _free);
+}
+
+
+function _allocate() {
+    
+    let index = q_remove(_free);
+    if (index === -1) {
+        let wait = setInterval(function() {
+            let check = q_remove(_free);
+            if (check !== -1) { 
+                index = check; clearInterval(wait); 
+            }
+        }, 1);
+    }
+    return index;
+}
+
+
+function _deallocate() {
+    // return result
+}
+
+async function generate(func, request) {
+    
+    let html = _allocate();
+
+    function _element(b, t, p, a, c) {
         
         // give this element a unique index and add that index to the parents "children" array.
         
@@ -95,86 +217,95 @@ async function render(func, request) {
     }
 
 
-    function style(b, p, path) {} // if style is not present in b_ss -> load the file instead.
-    function div(b, p, a, c) { element(b, "div", p, a, c); }
-    function button(b, p, a, c) { element(b, "button", p, a, c); }
-    function script(b, p, path) {} // automatically generates a nonce
+    function _style(b, p, path) {} // if style is not present in b_ss -> load the file instead.
+    function _div(b, p, a, c) { _element(b, "div", p, a, c); }
+    function _button(b, p, a, c) { _element(b, "button", p, a, c); }
+    function _script(b, p, path) {} // automatically generates a nonce
 
 
-    let _b_css = [];
-    let _b_js = [];
-    let _b_image = [];
-    let _b_audio = [];
-    let _b_video = [];
-
-    // This automatically watches the file and reloads it when modified
-    function load(path) {
-
-        let css = fs.readFileSync(path, {encoding: "utf-8"});
-        // clears the interval if the file is not found 
-    }
-
+    // DEFINE FUNCTIONS
     function _build() {
-        // iterate over "nodes" and build the html array/string
+        console.log("hello");
+    }
+    
+    // EXPOSE API
+    api = { 
+        build: _build 
     }
 
+    // CALL RENDER TARGET
+    await func(api, request);
 
-    function html() {
+    return _deallocate();
+}
 
-        _pages.push({
-
-            body: 0,
-            index: 1,
-            
-            // BUFFERS
-            b_head_meta: [],
-            b_head_style: [],
-            b_head_script: [],
-            b_body_element: [],
-
-        });
-
-        _page_index += 1;
-        return _page_index;
-    }
-
-    return func(request);
+async function page(html, request) {
+    return html.build();
 }
 
 
+let start = performance.now();
+let page_1 = generate(page, "");
+console.log((performance.now() - start).toPrecision(1) + " ms");
+
+
+// In head theres a async preload script that loads fonts and media async. when done it sets a DOM body class to loaded
+// At the bottom of the body is the async runtime script that makes the body visible once the body class is set to loaded things in the script is loaded.
+// all scripts are async by default
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // PAGE EXAMPLE
-async function home(request) {
+async function home(html, request) {
 
-    let start = performance.now();
+    // PARSE REQUEST
 
-    // CHECK REQUEST AND GET DATA
+    // GET DATA
     let data = {
         button_label: ["about", "hem"],
         button_url: ["/about", "/"],
     }
 
-    // CONSTRUCT PAGE FROM DATA
-    let page = html();
+    // GENERATE PAGE FROM DATA
 
     // HEAD
-    meta(page, head, "");
-    style(page, head, "./header.css");
+    html.meta(html.head, "");
+    html.style(html.head, "./header.css");
 
     // BODY
-    let header = div(page, body, 'class="header"', "Hello World");
-    let product = component.card(page, parent);
-    script(page, product, "./product_functions");
+    let header = html.div(html.body, 'class="header"', "Hello World");
+    let product = component.card(html, html.body);
+    html.script(product, "./product_functions");
 
     for (let i = 0; i < data.button_label.length; i++) { 
-        button(page, header, `class="header-button" href="${data.button_url[i]}"`, data.button_label[i]); 
+        html.button(header, `class="header-button" href="${data.button_url[i]}"`, data.button_label[i]); 
     }
 
-    console.log((performance.now() - start).toPrecision(1) + " ms");
+    return html.build();
 }
 
 
 
-// RENDERER / ROUTER
+
+/*
+// GENERATOR / ROUTER
 load("./header.css"); // loads the file string into the b_css then gets inlined in <head> when called with style();
 load("./product_functions.js"); // loads the file string into the b_js then gets inlined in parent when called with script();
 
@@ -183,54 +314,8 @@ let urls = [];
 pages.push(home);
 urls.push("/");
 
-// if (req.url === "/") { render(home, req); }
+// if (req.url === "/") { 
+    // send back as response
+    generate(home, req); 
+}
 */
-
-let _html = [];
-let _indicies = []
-
-function _allocate() {
-    //_indicies.pop(); // use a fast_queue here?
-    //_html.push(
-        // html object
-    //);
-}
-
-function _deallocate() {
-
-}
-
-let start = performance.now();
-async function render(page) {
-    
-    _allocate();
-
-    // DEFINE FUNCTIONS
-    function build() {
-        console.log("hello");
-    }
-    
-    // EXPOSE API
-    api = { 
-        build: build 
-    }
-
-    // CALL RENDER TARGET
-    await page(api);
-
-    _deallocate();
-}
-
-async function page(html) {
-    let result = html.build();
-    return result;
-}
-
-console.log((performance.now() - start).toPrecision(1) + " ms");
-
-render(page);
-render(page);
-
-// In head theres a async preload script that loads fonts and media async. when done it sets a DOM body class to loaded
-// At the bottom of the body is the async runtime script that makes the body visible once the body class is set to loaded things in the script is loaded.
-// all scripts are async by default
