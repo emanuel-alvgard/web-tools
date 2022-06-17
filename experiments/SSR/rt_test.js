@@ -11,7 +11,8 @@ function protocol_parse(string) {
 
 let user = _type(
     {
-        name: x.string({parse: protocol_parse, min: 3, max: 20, opt: true}),
+        name: x.string({parser:protocol_parse, min:3, max:20, opt:true}),
+        test: x.string().parser(protocol_parse).min(3).max(20).optional(true),
         age: x.integer({min: 0, max: 100, opt: true})
     }, 
     {
