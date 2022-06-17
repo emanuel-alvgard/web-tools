@@ -173,6 +173,8 @@ for (let i = 0; i < max_requests; i++) {
 
         result: ""
 
+        // put methods here??
+
     };
 
     q_add(i, _free);
