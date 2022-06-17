@@ -65,23 +65,41 @@ let test = [{a: ""}, {a: ""}, { a: ""}]
 
 */
 
-function min(p,n,e) {
-    console.log(n);
+
+// make async check function?
+
+
+schema = {
+    t: "string", // type
+    s: {}, // schema
+    o: [], // options
+}
+
+
+function min(p,i,v,e) { // pointer, index, value, error
     return p;
 }
 
-function max(p,n,e) {
-    console.log(n);
+function max(p,i,v,e) { // pointer, index, value, error
     return p;
 }
 
+// STRING
 let s_ = {
-    min(n,e="") { return min(this,n,e); },
-    max(n,e="") { return max(this,n,e); }
+    min(v,e="") { return min(this,0,v,e); },
+    max(v,e="") { return max(this,1,v,e); }
 }
+
 
 function _s() { return s_; }
 
-let str = _s;
+function _cs() {} // check string
 
-str().min(0).max(10);
+
+// CHECK
+function _c() {}
+
+
+
+// EXPORTS
+exports.string = _s;

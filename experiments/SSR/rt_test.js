@@ -1,7 +1,5 @@
-let type_checker = require("./runtime_typecheck");
+let t = require("./runtime_typecheck");
 
-const _type = type_checker.type;
-const _check = type_checker.check;
 
 function protocol_parse(string) {
 
@@ -9,16 +7,12 @@ function protocol_parse(string) {
 
 }
 
-let user = _type(
+let user = t.object(
     {
-        name: x.string({parser:protocol_parse, min:3, max:20, opt:true}),
-        test: x.string().parser(protocol_parse).min(3).max(20).optional(true),
-        age: x.integer({min: 0, max: 100, opt: true})
+        name: t.string().parser(protocol_parse).optional(),
+        age: x.number().int().min(0).max(100)
     }, 
-    {
-        strict: true
-    }
-);
+).nullable();
 
 
 let test = {
@@ -26,5 +20,5 @@ let test = {
     age: 30 
 }
 
-result = _check(test, user);
+result = t.check(test, user);
 console.log(result);
