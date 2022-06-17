@@ -9,12 +9,18 @@ function string() {}
 function integer() {}
 function float() {}
 
-function schema() {}
+function type() {}
+function check() {}
 
-let user = schema({
-    name: string({min: 3, max: 20, opt: true}),
-    age: integer({min: 0, max: 100, opt: true})
-}, true);
+let user = type(
+    {
+        name: string({min: 3, max: 20, opt: true}),
+        age: integer({min: 0, max: 100, opt: true})
+    }, 
+    {
+        strict: true
+    }
+);
 
 
 let test = {
@@ -22,5 +28,5 @@ let test = {
     age: 30 
 }
 
-parse(test, user);
+resutl = check(test, user);
 
