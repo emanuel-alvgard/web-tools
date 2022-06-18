@@ -316,8 +316,8 @@ async function home(html, request) { // change this to objects within api.js? so
     // GENERATE PAGE FROM DATA
 
     // HEAD
-    html.meta(html.head, "");
-    html.style(html.head, "./header.css");
+    html.head.meta("");
+    html.head.style("./header.css");
 
     // BODY
     let header = html.div(html.body, 'class="header"', "Hello World");
@@ -349,3 +349,17 @@ urls.push("/");
     generate(home, req); 
 }
 */
+
+
+let header = html.body.div().class("main-header");
+header.button("About").class("nav-button");
+
+
+function navbar(p, label, url) {
+    let nav = p.nav();
+    nav.button();
+    nav.button();
+    return nav;
+}
+
+let navbar = lib.navbar(header, [], []).class("navbar-top");
