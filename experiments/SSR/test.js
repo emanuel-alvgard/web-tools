@@ -154,26 +154,53 @@ function load(path) {
 
 
 
+function _head() {
+
+}
+
+
+function _element(h,p,t) { 
+    
+    // html object
+
+    let element_ = {
+        
+        _root: 0,
+        _children: [],
+        _type: t,
+        _id: a,
+        _content: c,
+
+        id() { return this; },
+        class() { return this; }
+    };
+    return element_; }
+
+
+function _body(h) { return _element(h); } // @NOT
+function _div(h,p) { return _element(); }
+
+
+
 let max_requests = 3;
 let _html = new Array(max_requests);
 let _free = q_create(max_requests, -1);
 
+
 for (let i = 0; i < max_requests; i++) {
     _html[i] = {
 
-        head: 0,
-        body: 1,
-        index: 2,
-        
-        // BUFFERS
-        b_head_meta: [],
-        b_head_style: [],
-        b_head_script: [],
-        b_body_element: [],
+        head: null,
+        body: null,
+
+        head_meta: [],
+        head_style: [],
+        head_script: [],
+        body_element: [],
+
+        div: _div(_html[i]),
 
         result: ""
-
-        // put methods here??
 
     };
 
@@ -216,16 +243,20 @@ function _deallocate(i) {
     let result = _html[i].result;
     
     // RESET OBJECT
-    _html[i].b_head_meta = [];
-    _html[i].b_head_style = [];
-    _html[i].b_head_script = [];
-    _html[i].b_body_element = [];
+    _html[i].head_meta = [];
+    _html[i].head_style = [];
+    _html[i].head_script = [];
+    _html[i].body_element = [];
     _html[i].result = "";
 
     q_add(i, _free);
 
     return result;
 }
+
+
+
+
 
 /*
 
