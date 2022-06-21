@@ -69,29 +69,29 @@ let test = [{a: ""}, {a: ""}, { a: ""}]
 // make async check function?
 
 
-schema = {
-    t: "string", // type
-    s: {}, // schema
-    o: [], // options
-}
-
-
-function min(p,i,v,e) { // pointer, index, value, error
+function _min(p,i,v,e) { // pointer, index, value, error
     return p;
 }
 
-function max(p,i,v,e) { // pointer, index, value, error
+function _max(p,i,v,e) { // pointer, index, value, error
     return p;
 }
 
 // STRING
-let s_ = {
-    min(v,e="") { return min(this,0,v,e); },
-    max(v,e="") { return max(this,1,v,e); }
+let string_ = {
+
+    schema: {
+        t: "string", // type
+        s: {}, // schema
+        o: {}, // options
+    },
+
+    min(v,e="") { return _min(this,0,v,e); },
+    max(v,e="") { return _max(this,1,v,e); }
 }
 
 
-function _s() { return s_; }
+function _string() { return string_; }
 
 function _cs() {} // check string
 
@@ -102,4 +102,4 @@ function _c() {}
 
 
 // EXPORTS
-exports.string = _s;
+exports.string = _string;

@@ -4,5 +4,3 @@
 // a field is wquivalent to a programming variable.
 // a field can contain 1 of the following: value, array, object, function.
 // each field has a unique id which can be referenced in other fields.
-
-

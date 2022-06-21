@@ -1,135 +1,25 @@
-let fs = require("fs");
-
-// UTILS
-
-// @DONE
-function chr_digit(chr) {
-    let c = chr.charCodeAt(0);
-    if (c < 48) { return false; }
-    if (c > 57) { return false; }
-    return true;
-}
-
-// @DONE
-function chr_lower(chr) {
-    let c = chr.charCodeAt(0);
-    if (c < 97) { return false; }
-    if (c > 122) { return false; }
-    return true;
-}
-
-// @DONE
-function chr_upper(chr) {
-    let c = chr.charCodeAt(0);
-    if (c < 65) { return false; }
-    if (c > 90) { return false; }
-    return true;
-}
-
-//
-function chr_symbol(chr, symbols) { // chr_symbol(chr, ["&", ":", "/"]);
-
-}
+const fs = require("fs");
+const utils = require("./utils");
 
 
-// @ADD returning of pointer or something
-function str(subject, pointer, target) {
-    
-    let target_len = target.length;
-    let p = str.pointer;
-    let l = str.length;
-    let s = str.string;
+const q_create = utils.q_create;
+const q_add = utils.q_add;
+const q_remove = utils.q_remove;
+const filetype = utils.filetype;
 
-    let i = 0;
-    while (i < target_len) {
-        if ((p + i) >= l) { return false; }
-        if (s[p + i] !== target[i]) { return false; }
-        i += 1;
-    }
+let _formats =  {
+    code: [".js", ".css"], 
+    image: [".jpg", ".png"], 
+    audio: [".mp3", ".wav", ".ogg"], 
+    video: [".mp4", ".webm", ".ogg"],
 
-    // @ADD
-    if (exact === true) {
-        if (l > i) { return false; }
-    }
+    code_buffer: [[], []],
+    image_buffer: [],
+    audio_buffer: [],
+    video_buffer: []
+};
 
-
-    str.pointer += i;
-    return true;
-}
-
-
-function substring() {}
-
-
-function filetype() {}
-
-
-// @DONE
-function q_create(l, v) {
-
-    let q = {
-        data: [],
-        start: 0,
-        end: 0,
-        count: 0,
-        value: v
-    }
-
-    let data = new Array(l);
-    let i = 0;
-    while (i < l) {
-        data[i] = v;
-        i += 1;
-    }
-
-    q.data = data;
-
-    return q;
-}
-
-
-// @DONE
-function q_add(v, q) {
-
-    if (q.count >= q.data.length) { return -1; }
-
-    q.data[q.end] = v;
-    q.count += 1;
-    q.end += 1;
-
-    if (q.end === q.data.length) { q.end = 0; }
-
-    return q.end - 1;
-}
-
-// @DONE
-function q_remove(q) {
-
-    if (q.count === 0) { return -1; }
-
-    let result = q.data[q.start];
-    q.data[q.start] = q.value;
-    q.count -= 1;
-    q.start += 1;
-
-    if (q.start === q.data.length) { q.start = 0; }
-
-    return result;
-}   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+let config;
 
 // INTERNAL
 let _errors = {
@@ -138,18 +28,27 @@ let _errors = {
 };
 
 
+// @
+async function load(path) { // load("./test.css", MEDIA_FORMATS);
 
-let _css = [];
-let _js = [];
-let _image = [];
-let _audio = [];
-let _video = [];
+    let type = filetype(path);
+    let buffer;
 
-// This automatically watches the file and reloads it when modified
-function load(path) {
+    let i0 = _formats.code.indexOf(type);
+    let i1 = _formats.image.indexOf(type);
+    let i2 = _formats.audio.indexOf(type);
+    let i3 = _formats.video.indexOf(type);
 
-    let css = fs.readFileSync(path, {encoding: "utf-8"});
-    // clears the interval if the file is not found 
+    if (i0 !== -1) { buffer = _formats.code_buffer[i0]; }
+    else if (i1 !== -1) { buffer = _formats.image_buffer; }
+    else if (i2 !== -1) { buffer = _formats.audio_buffer; }
+    else if (i3 !== -1) { buffer = _formats.video_buffer; }
+    else { return false; }
+
+    let file = await fs.readFile(path, {encoding: "utf-8"}, function() {});
+
+    // it's up to the router/generator to watch the directories and call load on change
+    // the router/generator empties all buffers and reloads everything on one change
 }
 
 
@@ -186,28 +85,31 @@ let max_requests = 3;
 let _html = new Array(max_requests);
 let _free = q_create(max_requests, -1);
 
+// @
+function _init() {
+    
+    for (let i = 0; i < max_requests; i++) {
+        _html[i] = {
 
-for (let i = 0; i < max_requests; i++) {
-    _html[i] = {
+            head: null,
+            body: null,
 
-        head: null,
-        body: null,
+            head_meta: [],
+            head_style: [],
+            head_script: [],
+            body_element: [],
 
-        head_meta: [],
-        head_style: [],
-        head_script: [],
-        body_element: [],
+            div: _div(_html[i]),
 
-        div: _div(_html[i]),
+            result: ""
 
-        result: ""
+        };
 
-    };
-
-    q_add(i, _free);
+        q_add(i, _free);
+    }
 }
 
-
+// @
 async function _allocate() {
     
     let index = q_remove(_free);
@@ -226,18 +128,7 @@ async function _allocate() {
     return index;
 }
 
-
-// @TEST
-async function test() {
-    let res = await _allocate();
-}
-
-let start = performance.now();
-test();
-console.log((performance.now() - start).toPrecision(1) + " ms");
-
-
-
+// @
 function _deallocate(i) {
     
     let result = _html[i].result;
@@ -258,44 +149,14 @@ function _deallocate(i) {
 
 
 
-/*
+
 
 async function generate(func, request) {
     
     let index = await _allocate();
 
-    function _element(b, t, p, a, c) {
-        
-        // give this element a unique index and add that index to the parents "children" array.
-        
-        return {
-            root: 0,
-            children: [],
-            type: t,
-            attributes: a,
-            content: c,
-        }
-    }
-
-
-    function _style(b, p, path) {} // if style is not present in b_ss -> load the file instead.
-    function _div(b, p, a, c) { _element(b, "div", p, a, c); }
-    function _button(b, p, a, c) { _element(b, "button", p, a, c); }
-    function _script(b, p, path) {} // automatically generates a nonce
-
-
-    // DEFINE FUNCTIONS
-    function _build() {
-        console.log("hello");
-    }
-    
-    // EXPOSE API
-    api = { 
-        build: _build 
-    }
-
     // CALL GENERATION TARGET
-    await func(api, request);
+    await func(_html[index], request);
 
     return _deallocate(index);
 }
@@ -306,7 +167,7 @@ async function page(html, request) {
 
 
 let start = performance.now();
-let page_1 = generate(page, "");
+//let page_1 = generate(page, "");
 console.log((performance.now() - start).toPrecision(1) + " ms");
 
 
@@ -314,7 +175,7 @@ console.log((performance.now() - start).toPrecision(1) + " ms");
 // At the bottom of the body is the async runtime script that makes the body visible once the body class is set to loaded things in the script is loaded.
 // all scripts are async by default
 
-*/
+
 
 
 
@@ -381,7 +242,7 @@ urls.push("/");
 }
 */
 
-
+/*
 let header = html.body.div().class("main-header");
 header.button("About").class("nav-button");
 
@@ -394,3 +255,4 @@ function navbar(p, label, url) {
 }
 
 let navbar = lib.navbar(header, [], []).class("navbar-top");
+*/
