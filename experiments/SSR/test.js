@@ -58,7 +58,7 @@ function _head() {
 }
 
 
-function _element(h,p,t) { 
+function _element(context,parent,type) { 
     
     // html object
 
@@ -67,17 +67,21 @@ function _element(h,p,t) {
         _root: 0,
         _children: [],
         _type: t,
-        _id: a,
+        _id: "",
+        _class: "",
+        _attr: "",
         _content: c,
 
         id() { return this; },
-        class() { return this; }
+        class() { return this; },
+        attr() { return this; }
     };
-    return element_; }
+    return element_; 
+}
 
 
-function _body(h) { return _element(h); } // @NOT
-function _div(h,p) { return _element(); }
+function _body(context) { return _element(h); } // @NOT
+function _div(context,parent) { return _element(); }
 
 
 
@@ -104,7 +108,6 @@ function _init() {
             result: ""
 
         };
-
         q_add(i, _free);
     }
 }
@@ -194,7 +197,7 @@ console.log((performance.now() - start).toPrecision(1) + " ms");
 
 // importing the api.js script is only for helping the IDE with function descriptions.
 
-// PAGE EXAMPLE
+/* PAGE EXAMPLE
 async function home(html, request) { // change this to objects within api.js? so that the user does not have to create a function????
 
     // PARSE REQUEST
@@ -223,7 +226,7 @@ async function home(html, request) { // change this to objects within api.js? so
     return html.build();
 }
 
-
+*/
 
 
 /*
@@ -243,6 +246,10 @@ urls.push("/");
 */
 
 /*
+html.head.meta("");
+html.head.style("./header.css");
+
+
 let header = html.body.div().class("main-header");
 header.button("About").class("nav-button");
 

@@ -30,12 +30,10 @@ function symbol(c, s) { // symbol("&", ["&", ":", "/"]);
 
 
 // @DONE
-function string(s, t, p) { // string("simple test", "simple", [0, 0]);
+function string(s, t, p={position:0,previous:0}) { // string("simple test", "simple", {position:0, previous:0});
 
-    let i = 0;
+    let i = p.position;
     let j = 0;
-
-    if (p.length === 2) { i = p[0]; }
     
     while (j < t.length) {
         if (i >= s.length) { return false; }
@@ -43,10 +41,8 @@ function string(s, t, p) { // string("simple test", "simple", [0, 0]);
         i ++; j ++;
     }
 
-    if (p.length === 2) { 
-        p[1] = p[0]; 
-        p[0] = i;
-    }
+    p.previous = p.position; 
+    p.position = i;
 
     return true;
 }
