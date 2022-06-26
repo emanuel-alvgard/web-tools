@@ -58,30 +58,36 @@ function _head() {
 }
 
 
-function _element(context,parent,type) { 
+
+
+
+// @HERE
+function _element(context,parent=0,type,content) { 
     
     // html object
 
     let element_ = {
         
-        _root: 0,
+        _index: 0,
         _children: [],
         _type: t,
         _id: "",
         _class: "",
         _attr: "",
-        _content: c,
+        _content: content,
 
-        id() { return this; },
-        class() { return this; },
-        attr() { return this; }
+        div(content) { return _element(context,this,"div",content); },
+
+        id(string) { return this; },
+        class(string) { return this; },
+        attr(string) { return this; }
     };
     return element_; 
 }
 
 
-function _body(context) { return _element(h); } // @NOT
-function _div(context,parent) { return _element(); }
+//function _body(context) { return _element(h); } // @NOT
+function _div() { return _element(); }
 
 
 
@@ -96,7 +102,7 @@ function _init() {
         _html[i] = {
 
             head: null,
-            body: null,
+            body: _element(this,),
 
             head_meta: [],
             head_style: [],
