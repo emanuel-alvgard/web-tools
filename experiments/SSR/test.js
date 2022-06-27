@@ -58,12 +58,12 @@ function _head(context) {}
 
 
 // @HERE
-function _element(context,parent,type,content) { 
+function _element(context,index,parent,type,content) { 
 
     let e = {
         
         // META
-        _index: 0,
+        _index: index,
         _children: [],
 
         // HTML
@@ -74,7 +74,8 @@ function _element(context,parent,type,content) {
         _content: content,
 
         div(content) {
-            context.element.push(_element(context, context.index, "div", content));
+            context.element.push(_element(context, context.index, this._index, "div", content));
+            // use parent here
             context.index += 1;
         },
 
