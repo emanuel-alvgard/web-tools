@@ -53,41 +53,41 @@ async function load(path) { // load("./test.css", MEDIA_FORMATS);
 
 
 
-function _head() {
-
-}
-
-
-
+// @
+function _head(context) {}
 
 
 // @HERE
-function _element(context,parent=0,type,content) { 
-    
-    // html object
+function _element(context,parent,type,content) { 
 
-    let element_ = {
+    let e = {
         
+        // META
         _index: 0,
         _children: [],
-        _type: t,
+
+        // HTML
+        _type: type,
         _id: "",
         _class: "",
         _attr: "",
         _content: content,
 
-        div(content) { return _element(context,this,"div",content); },
+        div(content) {
+            context.element.push(_element(context, context.index, "div", content));
+            context.index += 1;
+        },
 
-        id(string) { return this; },
-        class(string) { return this; },
-        attr(string) { return this; }
+        id(string) { _id = string; return this; },
+        class(string) { _class = string; return this; },
+        attr(string) { _attr = string; return this; }
     };
-    return element_; 
+
+    return e; 
 }
 
-
-//function _body(context) { return _element(h); } // @NOT
-function _div() { return _element(); }
+// @TEST
+html.body.div("hello world").id("box");
 
 
 
@@ -101,15 +101,15 @@ function _init() {
     for (let i = 0; i < max_requests; i++) {
         _html[i] = {
 
-            head: null,
-            body: _element(this,),
+            head: _head(this),
+            body: _element(this, 0, "body", ""),
 
-            head_meta: [],
-            head_style: [],
-            head_script: [],
-            body_element: [],
-
-            div: _div(_html[i]),
+            meta: [],
+            style: [],
+            script: [],
+            
+            index: 1,
+            element: [body],
 
             result: ""
 
@@ -143,10 +143,21 @@ function _deallocate(i) {
     let result = _html[i].result;
     
     // RESET OBJECT
-    _html[i].head_meta = [];
-    _html[i].head_style = [];
-    _html[i].head_script = [];
-    _html[i].body_element = [];
+    _html[i].head = 0, // reset head props
+    
+    _html[i].body._index = 0;
+    _html[i].body._children = [];
+    _html[i].body._type = "";
+    _html[i].body._id = "";
+    _html[i].body._class = "";
+    _html[i].body._attr = "";
+    _html[i].body._content = "";
+
+    _html[i].meta = [];
+    _html[i].style = [];
+    _html[i].script = [];
+    _html[i].index = 0;
+    _html[i].element = [];
     _html[i].result = "";
 
     q_add(i, _free);
