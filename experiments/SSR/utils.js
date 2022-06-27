@@ -110,3 +110,7 @@ function q_remove(q) {
 
     return result;
 }
+
+exports.q_create = q_create;
+exports.q_add = q_add;
+exports.q_remove = q_remove;

@@ -1,4 +1,5 @@
 const fs = require("fs");
+const { inherits } = require("util");
 const utils = require("./utils");
 
 
@@ -58,7 +59,7 @@ function _head(context) {}
 
 
 // @HERE
-function _element(context,index,parent,type,content) { 
+function _element(context,index,type,content) { 
 
     let e = {
         
@@ -74,8 +75,9 @@ function _element(context,index,parent,type,content) {
         _content: content,
 
         div(content) {
-            context.element.push(_element(context, context.index, this._index, "div", content));
-            // use parent here
+            console.log(context); // @HERE
+            context.element.push(_element(context, context.index, "div", content));
+            context.element[this._index].push(context.context);
             context.index += 1;
         },
 
@@ -86,10 +88,6 @@ function _element(context,index,parent,type,content) {
 
     return e; 
 }
-
-// @TEST
-html.body.div("hello world").id("box");
-
 
 
 let max_requests = 3;
@@ -110,14 +108,21 @@ function _init() {
             script: [],
             
             index: 1,
-            element: [body],
+            element: [],
 
             result: ""
 
         };
+
+        _html[i].element.push(_html[i].body);
+
         q_add(i, _free);
     }
 }
+
+_init();
+_html[0].body.div("test");
+console.log(_html);
 
 // @
 async function _allocate() {
