@@ -59,12 +59,12 @@ function _head(context) {}
 
 
 // @HERE
-function _element(context,index,type,content) { 
+function _element(context,type,content) { 
 
     let e = {
         
         // META
-        _index: index,
+        _index: context.index,
         _children: [],
 
         // HTML
@@ -74,16 +74,25 @@ function _element(context,index,type,content) {
         _attr: "",
         _content: content,
 
-        div(content) {
-            console.log(context); // @HERE
-            context.element.push(_element(context, context.index, "div", content));
-            context.element[this._index].push(context.context);
+        _create(type, content) {
             context.index += 1;
+            this._children.push(context.index);
+            let e = _element(context, type, content);
+            context.element.push(e);
+            return e;
         },
 
-        id(string) { _id = string; return this; },
-        class(string) { _class = string; return this; },
-        attr(string) { _attr = string; return this; }
+        h1(content) { return this._create("h1", content); },
+        h2(content) { return this._create("h2", content); },
+        h3(content) { return this._create("h3", content); },
+
+        div(content) { return this._create("div", content); },
+        button(content) { return this._create("button", content); },
+        input(content) { return this._create("input", content); },
+
+        id(string) { this._id = string; return this; },
+        class(string) { this._class = string; return this; },
+        attr(string) { this._attr = string; return this; }
     };
 
     return e; 
@@ -100,20 +109,21 @@ function _init() {
     for (let i = 0; i < max_requests; i++) {
         _html[i] = {
 
-            head: _head(this),
-            body: _element(this, 0, "body", ""),
+            head: null,
+            body: null,
 
             meta: [],
             style: [],
             script: [],
             
-            index: 1,
+            index: 0,
             element: [],
 
             result: ""
-
         };
 
+        _html[i].head = _head(_html[i]);
+        _html[i].body = _element(_html[i], "body", "");
         _html[i].element.push(_html[i].body);
 
         q_add(i, _free);
@@ -121,8 +131,9 @@ function _init() {
 }
 
 _init();
-_html[0].body.div("test");
-console.log(_html);
+let test = _html[0].body.div("hello world").class("yo");
+test.div("new");
+console.log(_html[0].element[1]);
 
 // @
 async function _allocate() {
@@ -177,17 +188,17 @@ function _deallocate(i) {
 
 
 
-async function generate(func, request) {
+async function generate(func, data) {
     
     let index = await _allocate();
 
     // CALL GENERATION TARGET
-    await func(_html[index], request);
+    await func(_html[index], data);
 
     return _deallocate(index);
 }
 
-async function page(html, request) {
+async function page(html, data) {
     return html.build();
 }
 
