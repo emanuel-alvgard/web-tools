@@ -1,5 +1,4 @@
-const fs = require("fs");
-const { inherits } = require("util");
+const fs_builtin = require("fs");
 const utils = require("./utils");
 
 
@@ -46,7 +45,7 @@ async function load(path) { // load("./test.css", MEDIA_FORMATS);
     else if (i3 !== -1) { buffer = _formats.video_buffer; }
     else { return false; }
 
-    let file = await fs.readFile(path, {encoding: "utf-8"}, function() {});
+    let file = await fs_builtin.readFile(path, {encoding: "utf-8"}, function() {}); // use Promisify instead
 
     // it's up to the router/generator to watch the directories and call load on change
     // the router/generator empties all buffers and reloads everything on one change
@@ -90,9 +89,9 @@ function _element(context,type,content) {
         button(content) { return this._create("button", content); },
         input(content) { return this._create("input", content); },
 
-        id(string) { this._id = string; return this; },
-        class(string) { this._class = string; return this; },
-        attr(string) { this._attr = string; return this; }
+        id(string) { this._id += string; return this; },
+        class(string) { this._class += " " + string; return this; },
+        attr(string) { this._attr += " " + string; return this; }
     };
 
     return e; 
@@ -129,11 +128,6 @@ function _init() {
         q_add(i, _free);
     }
 }
-
-_init();
-let test = _html[0].body.div("hello world").class("yo");
-test.div("new");
-console.log(_html[0].element[1]);
 
 // @
 async function _allocate() {
@@ -204,9 +198,18 @@ async function page(html, data) {
 
 
 let start = performance.now();
-//let page_1 = generate(page, "");
-console.log((performance.now() - start).toPrecision(1) + " ms");
 
+// @TEST
+_init();
+let test = _html[0].body.div("hello world").class("yo");
+for (let i = 0; i < 10000; i++) {
+    test.div("new").class("test").id("test");
+}
+test.div("last");
+
+console.log(performance.now() - start);
+
+console.log(_html[0].element[1]);
 
 // In head theres a async preload script that loads fonts and media async. when done it sets a DOM body class to loaded
 // At the bottom of the body is the async runtime script that makes the body visible once the body class is set to loaded things in the script is loaded.
