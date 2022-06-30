@@ -1,7 +1,6 @@
 const fs_builtin = require("fs");
 const utils = require("./utils");
 
-
 const q_create = utils.q_create;
 const q_add = utils.q_add;
 const q_remove = utils.q_remove;
@@ -54,11 +53,25 @@ async function load(path) { // load("./test.css", MEDIA_FORMATS);
 
 
 // @
-function _head(context) {}
+function _head(context) {
+    
+    let h = {
 
+        // PROPS
 
-// @HERE
-function _element(context,type,content) { 
+        title(string) { context.title = string; },
+        base(path) { context.base = path; },
+        meta(string) {},
+        link(path) {},
+        style(path) { context.style.push(path); },
+        script(path) { context.style.push(path); },
+    }
+
+    return h;
+}
+
+// @
+function _element(context,type="",classes="") { 
 
     let e = {
         
@@ -69,36 +82,44 @@ function _element(context,type,content) {
         // HTML
         _type: type,
         _id: "",
-        _class: "",
+        _classes: [classes],
         _attr: "",
-        _content: content,
+        _text: "",
 
-        _create(type, content) {
+        _create(type, classes) {
             context.index += 1;
             this._children.push(context.index);
-            let e = _element(context, type, content);
+            let e = _element(context, type, classes);
             context.element.push(e);
             return e;
         },
 
-        h1(content) { return this._create("h1", content); },
-        h2(content) { return this._create("h2", content); },
-        h3(content) { return this._create("h3", content); },
+        h1(classes) { return this._create("h1", classes); },
+        h2(classes) { return this._create("h2", classes); },
+        h3(classes) { return this._create("h3", classes); },
 
-        div(content) { return this._create("div", content); },
-        button(content) { return this._create("button", content); },
-        input(content) { return this._create("input", content); },
+        div(classes) { return this._create("div", classes); },
+        button(classes) { return this._create("button", classes); },
+        input(classes) { return this._create("input", classes); },
+        script(classes) {},
 
-        id(string) { this._id += string; return this; },
-        class(string) { this._class += " " + string; return this; },
-        attr(string) { this._attr += " " + string; return this; }
+        class(string) { this._classes.push(string); return this; },
+        id(string) { this._id = string; return this; },
+        attr(string) { this._attr = string; return this; },
+        text(string) { this._text = string; return this; },
     };
 
     return e; 
 }
 
+// @
+function _build(context) {
+    context.result = "BUILD SUCCESS :)";
+    return;
+}
 
-let max_requests = 3;
+
+let max_requests = 1;
 let _html = new Array(max_requests);
 let _free = q_create(max_requests, -1);
 
@@ -111,18 +132,21 @@ function _init() {
             head: null,
             body: null,
 
+            title: "",
+            base: "",
             meta: [],
+            link: [],
             style: [],
             script: [],
             
             index: 0,
             element: [],
 
-            result: ""
+            result: "",
         };
 
         _html[i].head = _head(_html[i]);
-        _html[i].body = _element(_html[i], "body", "");
+        _html[i].body = _element(_html[i], "body");
         _html[i].element.push(_html[i].body);
 
         q_add(i, _free);
@@ -160,10 +184,12 @@ function _deallocate(i) {
     _html[i].body._children = [];
     _html[i].body._type = "";
     _html[i].body._id = "";
-    _html[i].body._class = "";
+    _html[i].body._classes = [];
     _html[i].body._attr = "";
-    _html[i].body._content = "";
+    _html[i].body._text = "";
 
+    _html[i].title = "";
+    _html[i].base = "";
     _html[i].meta = [];
     _html[i].style = [];
     _html[i].script = [];
@@ -176,40 +202,82 @@ function _deallocate(i) {
     return result;
 }
 
-
-
-
-
-
-
-async function generate(func, data) {
+// @
+async function generate(func, data={}) {
     
     let index = await _allocate();
 
-    // CALL GENERATION TARGET
-    await func(_html[index], data);
+    func(_html[index], data);
+    _build(_html[index]);
 
     return _deallocate(index);
 }
 
-async function page(html, data) {
-    return html.build();
-}
 
-
-let start = performance.now();
 
 // @TEST
 _init();
-let test = _html[0].body.div("hello world").class("yo");
-for (let i = 0; i < 10000; i++) {
-    test.div("new").class("test").id("test");
+
+function page(html, data) {
+
+    let header = html.body.div("header");
+    header.class("other-header-class");
+    for (let i = 0; i < 500; i++) {
+        header.div(`button ${i}`).id(`${i}`).text("hello");
+    }
+
 }
-test.div("last");
 
-console.log(performance.now() - start);
+let time = [];
 
-console.log(_html[0].element[1]);
+async function test() {
+    
+    let start = performance.now();
+    await generate(page);
+    time.push(performance.now() - start);
+}
+
+
+    
+test();
+test();
+test();
+test();
+test();
+test();
+test();
+test();
+test();
+test();
+test();
+test();
+test();
+test();
+test();
+test();
+test();
+test();
+test();
+test();
+test();
+test();
+test();
+test();
+test();
+test();
+test();
+test();
+test();
+test();
+test();
+test();
+test();
+test();
+test();
+
+setTimeout(function() { console.log(time); }, 1000);
+
+//console.log(_html[0]);
 
 // In head theres a async preload script that loads fonts and media async. when done it sets a DOM body class to loaded
 // At the bottom of the body is the async runtime script that makes the body visible once the body class is set to loaded things in the script is loaded.
