@@ -223,9 +223,10 @@ function page(html, data) {
     let header = html.body.div("header");
     header.class("other-header-class");
     for (let i = 0; i < 500; i++) {
-        header.div(`button ${i}`).id(`${i}`).text("hello");
+        header.div(`button ${i}`)
+        .id(`${i}`)
+        .text("hello");
     }
-
 }
 
 let time = [];
