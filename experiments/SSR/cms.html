@@ -5,9 +5,52 @@
     </head>
     <body>
         <div id="output"></div>
-        <input>
-        <button id="bt"></button>
+        <div id="fields">
+            <div id="abc123-label">abc123</div>
+            <input id="abc123">
+        </div>
+        <button id="add">Add field</button>
+        <button id="save">Save</button>
         <script>
+
+            let fields = document.getElementById("fields");
+            let abc123 = document.getElementById("abc123");
+            let add = document.getElementById("add");
+            let save = document.getElementById("save");
+            
+            function create_field(id) {
+                let l = document.createElement("div");
+                l.textContent = id;
+                let f = document.createElement("input");
+                fields.append(l);
+                fields.append(f);
+            }
+            
+            add.onmousedown = function () { 
+                
+                let request = new XMLHttpRequest();
+                request.open("POST", "http://localhost:3000/create", true);
+                request.setRequestHeader("Accept", "*/*");
+                request.onreadystatechange = function () {
+                    if (request.readyState === request.DONE) { 
+                        console.log(request.response);
+                        create_field(request.responseText);
+                    }
+                }
+                request.send();
+            }
+            
+            save.onmousedown = function () { 
+
+                let request = new XMLHttpRequest();
+                request.open("POST", "http://localhost:3000/save", true);
+                request.setRequestHeader("Accept", "*/*");
+                request.onreadystatechange = function () {
+                    if (request.readyState === request.DONE) {}
+                }
+                request.send(abc123.value);
+
+            }
             
         </script>
     </body>
