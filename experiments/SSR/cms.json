@@ -1,9 +1,1 @@
-{
-    "id": ["abc123"],
-    "label": ["title"],
-    "tooltip": ["This is the page title."],
-    "type": [["string"]],
-    "value": [["Hello World!"]],
-    "limit": ["1"],
-    "allowed": [["string"]]
-}
+{"id":[],"label":[],"tooltip":[],"type":[],"value":[],"limit":[],"allowed":[]}

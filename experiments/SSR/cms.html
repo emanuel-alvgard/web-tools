@@ -2,28 +2,105 @@
 <html style="overflow-x:hidden;">
     <head>
         <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" href="./cms.css">
     </head>
     <body>
-        <div id="output"></div>
-        <div id="fields">
-            <div id="abc123-label">abc123</div>
-            <input id="abc123">
+        <div id="root">
+
         </div>
-        <button id="add">Add field</button>
-        <button id="save">Save</button>
         <script>
 
-            let fields = document.getElementById("fields");
-            let abc123 = document.getElementById("abc123");
-            let add = document.getElementById("add");
-            let save = document.getElementById("save");
+            let context = {};
+
+            // UTIL
+            function get(s) { return document.getElementById(s); }
+            function create(s, t, c) { 
+                let result = document.createElement(s);
+                result.textContent = t;
+                result.className = c;
+                return result; 
+            }
+            function hide(e) { e.hidden = true; }
+            function show(e) { e.hidden = false; }
+            function option(v,t) { 
+                let result = create("option", "");
+                result.value = v;
+                result.textContent = t;
+                return result; 
+            }
+
+            function button(label, classes, func) {
+                let b = document.createElement("button");
+                b.textContent = label;
+                b.className = classes;
+                b.onmousedown = func;
+                return b;
+            }
+
+
+            let root = get("root");
+
+
+            function field_panel() {
+
+                // PANEL
+                let panel = create("div", "", "field-panel fe");
+                let title = create("div", "Field Configuration", "title fe");
+                panel.append(title);
+                panel.style.backgroundColor = "rbg(200,200,200)";
+
+                // TYPE
+                let type_label = create("div", "Types", "label fe");
+                panel.append(type_label);
+
+                let type_select = create("select", "", "half-width fe");
+                type_select.append(option("str", "String"));
+                type_select.append(option("num", "Number"));
+                type_select.append(option("file", "File"));
+                panel.append(type_select);
+
+                // LIMIT
+                let limit_label = create("div", "Item Limit", "label fe");
+                panel.append(limit_label);
+                let limit_input = create("input", "Item Limit", "half-width fe");
+                panel.append(limit_input);
+
+                // SAVE
+                let save = create("button", "Save", "button fe");
+                panel.append(save);
+
+                // CANCEL
+                let cancel = button("Cancel", "button fe", () => { hide(panel); });
+                panel.append(cancel);
+
+                root.append(panel);
+                hide(panel);
+                return panel;
+            }
+
+            let panel = field_panel();   
+            let fields = create("div", "", "fields")
+            let add = create("button", "Add field", "button");
+            let save = create("button", "Save", "button");
+            let clear = create("button", "Clear", "button");
+
+            root.append(fields);
+            root.append(add);
+            root.append(save);
+            root.append(clear);
+
             
-            function create_field(id) {
+            function add_field() {
+                
+                console.log(panel);
+                show(panel);                
+                
+                /*
                 let l = document.createElement("div");
-                l.textContent = id;
                 let f = document.createElement("input");
                 fields.append(l);
                 fields.append(f);
+                */
             }
             
             add.onmousedown = function () { 
@@ -32,9 +109,9 @@
                 request.open("POST", "http://localhost:3000/create", true);
                 request.setRequestHeader("Accept", "*/*");
                 request.onreadystatechange = function () {
-                    if (request.readyState === request.DONE) { 
+                    if (request.readyState === request.DONE) {
+                        add_field(); 
                         console.log(request.response);
-                        create_field(request.responseText);
                     }
                 }
                 request.send();
@@ -48,10 +125,20 @@
                 request.onreadystatechange = function () {
                     if (request.readyState === request.DONE) {}
                 }
-                request.send(abc123.value);
+                request.send();
 
             }
-            
+
+            clear.onmousedown = function () { 
+
+                let request = new XMLHttpRequest();
+                request.open("POST", "http://localhost:3000/clear", true);
+                request.setRequestHeader("Accept", "*/*");
+                request.onreadystatechange = function () {
+                    if (request.readyState === request.DONE) {}
+                }
+                request.send();
+                }
         </script>
     </body>
 </html>

@@ -34,15 +34,17 @@ function generate_id() {
 }
 
 function create_field() {
-    
+    let s = performance.now();
     let id;
     while(1) {
         id = generate_id();
         if (db.id.includes(id) === false) {
             db.id.push(id);
+            fs_builtin.writeFileSync("./cms.json", JSON.stringify(db));
             break;
         }
     }
+    console.log(performance.now() - s);
     return id;
 }
 
@@ -55,6 +57,7 @@ let server = http_builtin.createServer(function (req, res) {
     req.on("end", function () { 
         if (req.url === "/create") { result = create_field(); }
         if (req.url === "/save") { }
+        if (req.url === "/clear") { db.id = []; fs_builtin.writeFileSync("./cms.json", JSON.stringify(db)); console.log(db); }
         res.end(result); 
     });
     res.writeHead(200, {
