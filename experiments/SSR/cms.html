@@ -40,7 +40,7 @@
 
             let root = get("root");
 
-
+            
             function field_panel() {
 
                 // PANEL
@@ -78,7 +78,7 @@
                 return panel;
             }
 
-            let panel = field_panel();   
+            //let panel = field_panel();   
             let fields = create("div", "", "fields")
             let add = create("button", "Add field", "button");
             let save = create("button", "Save", "button");
@@ -104,17 +104,20 @@
             }
             
             add.onmousedown = function () { 
-                
+              
+                add_field(); 
                 let request = new XMLHttpRequest();
                 request.open("POST", "http://localhost:3000/create", true);
                 request.setRequestHeader("Accept", "*/*");
                 request.onreadystatechange = function () {
                     if (request.readyState === request.DONE) {
-                        add_field(); 
                         console.log(request.response);
                     }
                 }
-                request.send();
+                request.onerror = function(e) {
+                    console.log(e);
+                }
+                try { request.send(); } catch (e) {}
             }
             
             save.onmousedown = function () { 
