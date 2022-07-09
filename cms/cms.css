@@ -37,3 +37,12 @@ button {
 .fe {
     margin-left: 10px;
 }
+
+
+.b-cancel {
+    display: block;
+}
+
+.b-save {
+    display: block;
+}
