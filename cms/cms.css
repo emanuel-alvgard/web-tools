@@ -1,48 +1,43 @@
-body {
+html, body {
+    width: 100%;
+    height: 100%;
+    display: block;
     margin: 0px;
 }
 
-button {
-    margin: 5px;
-    display: block;
-    width: 100px;
-    height: 30px;
+.root {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    grid-template-rows: 100px 1fr;
+    width: 100%;
+    height: 100%;
 }
 
-.field-panel {
-    margin: 5px;
-    width: 300px;
-    height: 300px;
-    border-style: solid;
+.header {
+    grid-area: 1 / 1 / auto / span 2;
+    background-color: gray;
+    padding: 25px;
 }
 
-.half-width {
-    margin: 5px;
-    width: 150px;
-    height: 30px;
+.header-nav {
+    display: inline-block;
+    box-sizing: border-box;
+    height: 100%;
+    padding: 10px;
+    font-size: 0px;
 }
 
-.title {
-    margin: 5px;
-    font-family:'Courier New', Courier, monospace;
+.header-nav-b {
+    display: inline-block;
+    box-sizing: border-box;
+    width: 75px;
+    height: 100%;
+    margin-right: 10px;
+    background-color: lightgray;
 }
 
-.label {
-    margin-left: 5px;
-    margin-top: 10px;
-    font-family:'Courier New', Courier, monospace;
-    font-size: 16px;
-}
-
-.fe {
-    margin-left: 10px;
-}
-
-
-.b-cancel {
-    display: block;
-}
-
-.b-save {
-    display: block;
+.left {
+    grid-area: 2 / 1;
+    background-color: rgb(109, 109, 109);
+    padding: 10px;
 }
