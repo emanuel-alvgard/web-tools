@@ -1,0 +1,83 @@
+opt gc: false
+opt spaces: 2
+opt threads: 4
+opt minimal: true
+
+# "," is used to chain multiple unscoping expressions on one or more lines
+# scoping expressions (if, else, try etc.) must be indented. 
+# the compiler accepts 1-8 spaces of indentation
+
+# @TEST
+i32 add_expl: (i32 a:0, i32 b:0): return a + b # explicit typing
+add_impl: (a:0, b:0): 
+  return a + b 
+
+i32 test_1: async add(a:1, b:2)
+i32 test_2: async add(1, 2)
+i32 test_3: async add(1, 2)
+
+await: test_1, test_2, test_3
+
+i32 x: 5 
+str test: "test"
+
+if test = 1: 
+  write()
+  if test = 2: 
+    write() 
+    if test = 3: 
+      write()
+
+
+try: 
+  if x.type:
+    = i32: write()
+    > i64: write()
+    != 6: write()
+  else: 
+    write()
+
+try:
+  if test = 1: 
+    if test = 2: write(), write("test"), 
+    else: do_this()
+
+catch SomeError: 
+  write("hello")
+  write("hey")
+  if x = 0: 
+    write("hi")
+
+enum Color: 
+  red 
+  green 
+  blue
+
+struct Person:
+  str name
+  i8 age
+  
+Person emanuel:
+  name: "Emanuel"
+  age: 30
+
+
+i8 func: async (i8() a, i8() b): return a+b
+
+# static type, length, dimesion
+i8[10] static: []
+
+# dynamic type, length, dimesion
+i8[] dynamic: [
+  first: 1,
+  second: 2
+]
+
+func(1, 2)
+static[0]
+dynamic.first: 3
+
+bool test: ([str[]] nested): return true
+
+# find good uses for {} and ?
+# find clean and simple way for using interfaces
